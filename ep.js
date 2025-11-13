@@ -653,6 +653,7 @@ var szamol = function() {
 	}
 	gabonaszukseglet_n = Math.round((templom * 100 * lakashelyzeti + kocsma * 40 * lakashelyzeti + nepesseg) / 5) * lakashelyzeti2;
 	gabonatermeles = Math.round(tanya * 50 * gabonamodosito * gabonamodosito2);
+	$("#gabonatermeles").text(gabonatermeles);
 	
 	if((gabonatermeles-gabonaszukseglet) >= 0) {
 		$("#gabonaszukseglet").html(gabonaszukseglet + ' <span class="text-green-600 font-semibold">+' + (gabonatermeles-gabonaszukseglet) + ' </span>');
