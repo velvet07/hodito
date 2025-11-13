@@ -330,7 +330,7 @@ function getLakashelyzetiTekercsMax(faj) {
     return 30;
 }
 
-// Kristálygömb importálása
+// Kristálygömb importálása - új, egyszerűbb megközelítés
 function importKristalygomb(tipus) {
     const textarea = document.getElementById(tipus + '_kristalygomb');
     const text = textarea ? textarea.value : '';
@@ -339,12 +339,105 @@ function importKristalygomb(tipus) {
     const data = {};
     let selectedFaj = 'none';
     let hasTudos = false;
+    let szemelyisegek = [];
     
-    // Faj kinyerése - formátum: "Faj:\tTörpe" vagy "Faj:<tab>Törpe"
-    // A tab után lehet még tab vagy szóköz, majd jön az érték
-    const fajMatch = text.match(/Faj:\s*\t+\s*([^\t\n\r]+)/);
-    if (fajMatch) {
-        const fajText = fajMatch[1].trim();
+    // Normalizáljuk a szöveget: tab-okat szóközökké, de megtartjuk a sorokat
+    // Többszörös szóközöket egy szóközzé (de nem a sorok közötti szóközöket)
+    let normalizedText = text.replace(/\t/g, ' ');
+    // Többszörös szóközöket egy szóközzé (de nem a newline-okat)
+    normalizedText = normalizedText.replace(/[ \t]+/g, ' ');
+    
+    // Segédfüggvény: érték kinyerése kulcsszó után
+    function extractValue(keyword) {
+        // Keresünk a kulcsszóra, majd a kettőspont után vesszük az értéket
+        // Case-insensitive keresés
+        const regex = new RegExp(keyword + ':\\s*([^\\n]+)', 'i');
+        const match = normalizedText.match(regex);
+        if (match) {
+            // Az érték a kettőspont után, sor végéig
+            let value = match[1].trim();
+            // Ha szám, akkor csak a számot vesszük (pont és szóköz eltávolítása)
+            if (/^[0-9.,\s]+/.test(value)) {
+                // Kivesszük a számot (pont, vessző, szóköz nélkül)
+                const numMatch = value.match(/^([0-9.,\s]+)/);
+                if (numMatch) {
+                    return numMatch[1].trim();
+                }
+            }
+            return value;
+        }
+        return null;
+    }
+    
+    // Föld (Hektár)
+    const foldValue = extractValue('Föld');
+    if (foldValue) {
+        // Eltávolítjuk a "hektár" szót, ha van
+        const hektarNum = foldValue.replace(/hektár/gi, '').trim();
+        if (hektarNum) {
+            data.hektar = extractNumber(hektarNum);
+        }
+    }
+    
+    // Katona
+    const katonaValue = extractValue('Katona');
+    if (katonaValue) {
+        data.katona = extractNumber(katonaValue);
+    }
+    
+    // Védő
+    const vedoValue = extractValue('Védő');
+    if (vedoValue) {
+        data.vedo = extractNumber(vedoValue);
+    }
+    
+    // Támadó
+    const tamadoValue = extractValue('Támadó');
+    if (tamadoValue) {
+        data.tamado = extractNumber(tamadoValue);
+    }
+    
+    // Íjász
+    const ijszValue = extractValue('Íjász');
+    if (ijszValue) {
+        data.ijsz = extractNumber(ijszValue);
+    }
+    
+    // Lovas
+    const lovasValue = extractValue('Lovas');
+    if (lovasValue) {
+        data.lovas = extractNumber(lovasValue);
+    }
+    
+    // Elit
+    const elitValue = extractValue('Elit');
+    if (elitValue) {
+        data.elit = extractNumber(elitValue);
+    }
+    
+    // Katonai morál
+    const moralValue = extractValue('Katonai morál');
+    if (moralValue) {
+        // Eltávolítjuk a % jelet, ha van
+        const moralNum = moralValue.replace(/%/g, '').trim();
+        if (moralNum) {
+            data.katonai_moral = extractNumber(moralNum);
+        }
+    }
+    
+    // Szövetség
+    const szovetsegValue = extractValue('Szövetség');
+    if (szovetsegValue) {
+        // Ha "Magányos"-ra kezdődik, akkor magányos farkas
+        if (szovetsegValue.trim().startsWith('Magányos')) {
+            document.getElementById(tipus + '_maganyos_farkas').checked = true;
+        }
+    }
+    
+    // Faj
+    const fajValue = extractValue('Faj');
+    if (fajValue) {
+        const fajText = fajValue.trim();
         const fajMap = {
             'Elf': 'elf',
             'Ork': 'ork',
@@ -361,78 +454,16 @@ function importKristalygomb(tipus) {
         }
     }
     
-    // Személyiség kinyerése (több személyiség is lehet, vesszővel elválasztva)
-    // Formátum: "Személyiség:\tKereskedő, Vándor, Gazdálkodó, Tudós, ..."
-    const szemelyisegMatch = text.match(/Személyiség:\s*\t+\s*([^\t\n\r]+)/);
-    let szemelyisegek = [];
-    if (szemelyisegMatch) {
-        const szemelyisegText = szemelyisegMatch[1].trim();
-        // Eltávolítjuk a felesleges szóközöket a vesszők körül
-        szemelyisegek = szemelyisegText.split(',').map(s => s.trim()).filter(s => s.length > 0);
+    // Személyiség
+    const szemelyisegValue = extractValue('Személyiség');
+    if (szemelyisegValue) {
+        // Vesszővel elválasztott személyiségek
+        szemelyisegek = szemelyisegValue.split(',').map(s => s.trim()).filter(s => s.length > 0);
         
         // Tudós ellenőrzés
         hasTudos = szemelyisegek.some(s => s.includes('Tudós'));
         if (hasTudos) {
             document.getElementById(tipus + '_tudos').checked = true;
-        }
-    }
-    
-    // Katonai egységek kinyerése - formátum: "Paraméter:\térték" ahol a tab a tabulátor
-    // A pont a számokban a tizes csoport elválasztója (pl. 1.688 = 1688)
-    // A regex-ek több variációt is elfogadnak: lehet szóköz a kettőspont után, lehet több tab
-    const katonaMatch = text.match(/Katona:\s*\t+\s*([0-9.,\s]+)/);
-    if (katonaMatch) {
-        data.katona = extractNumber(katonaMatch[1]);
-    }
-    
-    const vedoMatch = text.match(/Védő:\s*\t+\s*([0-9.,\s]+)/);
-    if (vedoMatch) {
-        data.vedo = extractNumber(vedoMatch[1]);
-    }
-    
-    const tamadoMatch = text.match(/Támadó:\s*\t+\s*([0-9.,\s]+)/);
-    if (tamadoMatch) {
-        data.tamado = extractNumber(tamadoMatch[1]);
-    }
-    
-    // Íjász, Lovas, Elit - a formátum: "Íjász:\t20.000" vagy "Íjász:\t\t20.000"
-    // A szám után lehet tab, newline vagy sor vége
-    const ijszMatch = text.match(/Íjász:\s*\t+\s*([0-9.,\s]+?)(?:\t|\n|$)/);
-    if (ijszMatch) {
-        data.ijsz = extractNumber(ijszMatch[1]);
-    }
-    
-    const lovasMatch = text.match(/Lovas:\s*\t+\s*([0-9.,\s]+?)(?:\t|\n|$)/);
-    if (lovasMatch) {
-        data.lovas = extractNumber(lovasMatch[1]);
-    }
-    
-    const elitMatch = text.match(/Elit:\s*\t+\s*([0-9.,\s]+?)(?:\t|\n|$)/);
-    if (elitMatch) {
-        data.elit = extractNumber(elitMatch[1]);
-    }
-    
-    // Katonai morál - formátum: "Katonai morál:\t95 %" (százalékban van megadva)
-    // A "Katonai morál" tartalmaz szóközt
-    const moralMatch = text.match(/Katonai\s+morál:\s*\t+\s*([0-9.,\s]+?)\s*%/);
-    if (moralMatch) {
-        data.katonai_moral = extractNumber(moralMatch[1]);
-    }
-    
-    // Hektár - formátum: "Föld:\t2.482 hektár"
-    // Az érték után lehet szóköz és "hektár" szó, majd tab
-    // A "Föld:" mezőből kinyerjük a hektárt
-    const hektarMatch = text.match(/Föld:\s*\t+\s*([0-9.,\s]+?)\s*hektár/i);
-    if (hektarMatch) {
-        data.hektar = extractNumber(hektarMatch[1]);
-    }
-    
-    // Szövetség állapot (magányos farkas ellenőrzés) - formátum: "Szövetség:\tszövetség tagja" vagy "Szövetség:\tMagányos farkas"
-    const szovetsegMatch = text.match(/Szövetség:\t+([^\t\n\r]+?)(?:\t|\n|$)/);
-    if (szovetsegMatch) {
-        const szovetsegText = szovetsegMatch[1].trim();
-        if (szovetsegText.includes('Magányos farkas') || szovetsegText.includes('magányos farkas')) {
-            document.getElementById(tipus + '_maganyos_farkas').checked = true;
         }
     }
     
