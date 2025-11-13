@@ -87,6 +87,7 @@ A félelf egy, csak általa használható tolvajakcióval is rendelkezik. Ennek 
 - a támadóerő 10%-kal alacsonyabb
 - a támadó varázslatok 30%-kal több rúnába kerülnek
 - a tudománytekercsek írása 10%-kal drágább
+- a tanyák 10%-kal kevesebbet termelnek
 
 ---
 
@@ -132,3 +133,38 @@ Ismerve a gnómok viszonyát a tudományokhoz, nem csodálható hogy a könyveke
 - az építőanyag szükséglet 10%-kal alacsonyabb
 - a templomok 15%-kal több rúnát termelnek
 - az őrtornyok összterületből elfoglalt arányával magasabb katonai elhárít
+
+### Hátrányok
+- a raktárakba 10%-kal kevesebb áru fér
+
+---
+
+## Óriás
+
+### Leírás
+Az óriások hatalmas termetű, erős faj. Testalkatuk masszív, és bár nem túl gyorsak, hatalmas erejük van. A természetben élnek, és szeretik a nyílt tereket. A mezőgazdasághoz különösen értékesek, mivel hatalmas erejükkel könnyen meg tudják művelni a földet.
+
+### Előnyök
+- a tanyák 20%-kal többet termelnek
+
+---
+
+## Élőhalott
+
+### Leírás
+Az élőhalottak a halálból visszatért lények. Nem fogyasztanak élelmet, és nem termelnek gabonát vagy nyersanyagot. Szintlépésekkel növelhetik a lakáshelyzeti módosítójukat.
+
+### Előnyök
+- nem fogyasztanak élelmet
+- szintlépésekkel növelhetik a lakáshelyzeti módosítójukat (1.2x - 1.6x)
+
+### Hátrányok
+- nem termelnek gabonát vagy nyersanyagot
+- nem használhatnak tekercseket (lakáshelyzet, mezőgazdaság, bányászat)
+
+---
+
+## Ember
+
+### Leírás
+Az emberek a legáltalánosabb faj, nincsenek speciális előnyeik vagy hátrányaik. Alapértékekkel rendelkeznek minden területen.
