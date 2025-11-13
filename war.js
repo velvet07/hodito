@@ -68,10 +68,89 @@ function feldolgozas(tipus) {
     if (tipus === 'tamado') {
         const tamadoFaj = document.getElementById('tamado_faj').value;
         if (tamadoFaj !== 'none') {
-            const maxLakashelyzeti = getLakashelyzetiTekercsMax(tamadoFaj);
+            const hasTudomanyHonapja = document.getElementById('tamado_tudomany_honapja') && document.getElementById('tamado_tudomany_honapja').checked;
+            const maxLakashelyzeti = getLakashelyzetiTekercsMax(tamadoFaj, hasTudomanyHonapja);
             const tamadoLakashelyzetiField = document.getElementById('tamado_lakashelyzeti_tekercs');
             if (tamadoLakashelyzetiField) {
                 tamadoLakashelyzetiField.value = maxLakashelyzeti;
+            }
+            
+            // Lovasok max számának számítása barakkok és lakáshelyzet alapján
+            const epuletlista = document.getElementById('tamado_epuletlista');
+            if (epuletlista && epuletlista.value.trim() !== '') {
+                const text = epuletlista.value;
+                const lines = text.split('\n');
+                let barakkok = 0;
+                for (let i = 0; i < lines.length; i++) {
+                    let line = lines[i];
+                    if (!line || !line.trim()) continue;
+                    let parts = line.split(':');
+                    if (parts.length < 2) {
+                        parts = line.split('\t');
+                    }
+                    if (parts.length >= 2) {
+                        const epuletNev = parts[0].trim();
+                        if (epuletNev.includes('Barakk')) {
+                            barakkok = extractNumber(parts[1].trim());
+                            break;
+                        }
+                    }
+                }
+                if (barakkok > 0) {
+                    const lakashelyzeti = parseFloat(tamadoLakashelyzetiField.value) || 0;
+                    const maxFerhely = Math.floor(barakkok * 40 * (1 + lakashelyzeti / 100));
+                    const lovasField = document.getElementById('tamado_lovas');
+                    if (lovasField) {
+                        lovasField.value = maxFerhely;
+                    }
+                }
+            }
+        }
+    }
+    
+    // Védőknél íjászok max számának számítása, ha faj van kiválasztva
+    if (tipus === 'vedo') {
+        const vedoFaj = document.getElementById('vedo_faj').value;
+        if (vedoFaj !== 'none') {
+            const hasTudomanyHonapja = document.getElementById('vedo_tudomany_honapja') && document.getElementById('vedo_tudomany_honapja').checked;
+            const maxLakashelyzeti = getLakashelyzetiTekercsMax(vedoFaj, hasTudomanyHonapja);
+            const vedoLakashelyzetiField = document.getElementById('vedo_lakashelyzeti_tekercs');
+            if (vedoLakashelyzetiField) {
+                const currentValue = parseInt(vedoLakashelyzetiField.value) || 0;
+                if (currentValue === 0 || currentValue > maxLakashelyzeti) {
+                    vedoLakashelyzetiField.value = maxLakashelyzeti;
+                }
+            }
+            
+            // Íjászok max számának számítása barakkok és lakáshelyzet alapján
+            const epuletlista = document.getElementById('vedo_epuletlista');
+            if (epuletlista && epuletlista.value.trim() !== '') {
+                const text = epuletlista.value;
+                const lines = text.split('\n');
+                let barakkok = 0;
+                for (let i = 0; i < lines.length; i++) {
+                    let line = lines[i];
+                    if (!line || !line.trim()) continue;
+                    let parts = line.split(':');
+                    if (parts.length < 2) {
+                        parts = line.split('\t');
+                    }
+                    if (parts.length >= 2) {
+                        const epuletNev = parts[0].trim();
+                        if (epuletNev.includes('Barakk')) {
+                            barakkok = extractNumber(parts[1].trim());
+                            break;
+                        }
+                    }
+                }
+                if (barakkok > 0) {
+                    const lakashelyzeti = parseFloat(vedoLakashelyzetiField.value) || 0;
+                    const maxFerhely = Math.floor(barakkok * 40 * (1 + lakashelyzeti / 100));
+                    const ijszField = document.getElementById('vedo_ijasz');
+                    if (ijszField) {
+                        ijszField.value = maxFerhely;
+                    }
+                }
             }
         }
     }
@@ -93,6 +172,27 @@ function szamol() {
     // Eredmények oszlopban
     document.getElementById('vedopont').textContent = formatNumber(vedoPont);
     document.getElementById('tamadopont').textContent = formatNumber(tamadoPont);
+    
+    // Eredmények színezése (zöld/piros)
+    const vedopontElement = document.getElementById('vedopont');
+    const tamadopontElement = document.getElementById('tamadopont');
+    
+    // Eltávolítjuk az előző színeket
+    vedopontElement.classList.remove('text-green-600', 'text-red-600');
+    tamadopontElement.classList.remove('text-green-600', 'text-red-600');
+    
+    // Csak akkor színezünk, ha mindkét érték nagyobb mint 0
+    if (vedoPont > 0 && tamadoPont > 0) {
+        if (vedoPont >= tamadoPont) {
+            // Védők nyernek vagy döntetlen
+            vedopontElement.classList.add('text-green-600');
+            tamadopontElement.classList.add('text-red-600');
+        } else {
+            // Támadók nyernek
+            tamadopontElement.classList.add('text-green-600');
+            vedopontElement.classList.add('text-red-600');
+        }
+    }
     
     // Oszlopokban megjelenítés
     document.getElementById('vedo_ero_megjelenites').textContent = formatNumber(vedoPont);
@@ -127,6 +227,13 @@ function szamol() {
     // Gabonaszükséglet számítása
     const gabona = szamolGabonaszukseglet();
     document.getElementById('gabonaszukseglet').textContent = formatNumber(gabona) + ' bála';
+    
+    // Támadóknál is megjelenítjük a gabonaszükségletet
+    const tamadoGabona = szamolGabonaszukseglet('tamado');
+    const tamadoGabonaElement = document.getElementById('tamado_gabonaszukseglet');
+    if (tamadoGabonaElement) {
+        tamadoGabonaElement.textContent = formatNumber(tamadoGabona) + ' bála';
+    }
     
     // Faj alapján mezők aktiválása/deaktiválása
     updateFieldStates();
@@ -212,14 +319,13 @@ function szamolVedoero() {
     // Hadi tekercs (tudós) - a mezőből olvassuk, de max-ig korlátozva
     if (document.getElementById('vedo_tudos').checked) {
         const faj = document.getElementById('vedo_faj').value;
-        const hasTudos = document.getElementById('vedo_tudos').checked;
-        const maxHadiTekercs = getHadiTekercsMax(faj, hasTudos);
+        const maxHadiTekercs = getHadiTekercsMax(faj, false);
         let tudosSzazalek = parseFloat(document.getElementById('vedo_tudos_szazalek').value) || 0;
         // Ha több mint max, akkor max-szal számolunk
         if (tudosSzazalek > maxHadiTekercs) {
             tudosSzazalek = maxHadiTekercs;
         }
-        // Ha kevesebb mint max, akkor azzal számolunk, ami be van írva
+        // Ha kevesebb mint max, akkor azzal számolunk, ami be van írva (nem csak a max-ot)
         vedoero *= (1 + tudosSzazalek / 100);
     }
     
@@ -284,14 +390,13 @@ function szamolTamadoero() {
     // Hadi tekercs (tudós) - a mezőből olvassuk, de max-ig korlátozva
     if (document.getElementById('tamado_tudos').checked) {
         const faj = document.getElementById('tamado_faj').value;
-        const hasTudos = document.getElementById('tamado_tudos').checked;
-        const maxHadiTekercs = getHadiTekercsMax(faj, hasTudos);
+        const maxHadiTekercs = getHadiTekercsMax(faj, false);
         let tudosSzazalek = parseFloat(document.getElementById('tamado_tudos_szazalek').value) || 0;
         // Ha több mint max, akkor max-szal számolunk
         if (tudosSzazalek > maxHadiTekercs) {
             tudosSzazalek = maxHadiTekercs;
         }
-        // Ha kevesebb mint max, akkor azzal számolunk, ami be van írva
+        // Ha kevesebb mint max, akkor azzal számolunk, ami be van írva (nem csak a max-ot)
         tamadoero *= (1 + tudosSzazalek / 100);
     }
     
@@ -305,17 +410,91 @@ function szamolTamadoero() {
 }
 
 // Gabonaszükséglet számítása
-function szamolGabonaszukseglet() {
-    const katona = parseInt(document.getElementById('tamado_katona').value) || 0;
-    const tamado = parseInt(document.getElementById('tamado_tamado').value) || 0;
-    const ijsz = parseInt(document.getElementById('tamado_ijasz').value) || 0;
-    const lovas = parseInt(document.getElementById('tamado_lovas').value) || 0;
-    const elit = parseInt(document.getElementById('tamado_elit').value) || 0;
-    const kor = parseInt(document.getElementById('tamado_kor').value) || 2;
+function szamolGabonaszukseglet(tipus) {
+    if (!tipus) tipus = 'vedo';
+    
+    const katona = parseInt(document.getElementById(tipus + '_katona').value) || 0;
+    const tamado = parseInt(document.getElementById(tipus + '_tamado').value) || 0;
+    const ijsz = parseInt(document.getElementById(tipus + '_ijsz').value) || 0;
+    const lovas = parseInt(document.getElementById(tipus + '_lovas').value) || 0;
+    const elit = parseInt(document.getElementById(tipus + '_elit').value) || 0;
+    const kor = parseInt(document.getElementById(tipus + '_kor').value) || 2;
     
     const osszesKatona = katona + tamado + ijsz + lovas + elit;
     // Egyszerű számítás: 1 katona = 1 bála/kör
     return osszesKatona * kor;
+}
+
+// Mennyi íjász kell a védéshez - számítja, hogy mennyi íjász kell, hogy a védőerő elérje a támadóerőt
+function szamolIjaszVedohoz() {
+    const tamadoPont = szamolTamadoero();
+    const jelenlegiVedoPont = szamolVedoero();
+    
+    // Ha már elég a védőerő, akkor 0
+    if (jelenlegiVedoPont >= tamadoPont) {
+        alert('A védőerő már elég magas, nincs szükség további íjászokra.');
+        return;
+    }
+    
+    // Szükséges védőerő különbség
+    const szuksegesVedoero = tamadoPont - jelenlegiVedoPont;
+    
+    // Íjász védőértéke (faj alapján)
+    const faj = document.getElementById('vedo_faj').value;
+    const ortoronyBonus = (faj === 'elf') ? 8 : 6;
+    
+    // Szükséges íjászok száma
+    const szuksegesIjsz = Math.ceil(szuksegesVedoero / ortoronyBonus);
+    
+    // Beállítjuk az íjászok számát
+    const ijszField = document.getElementById('vedo_ijasz');
+    const jelenlegiIjsz = parseInt(ijszField.value) || 0;
+    ijszField.value = jelenlegiIjsz + szuksegesIjsz;
+    
+    // Újraszámolás
+    szamol();
+    
+    alert(`Szükséges ${formatNumber(szuksegesIjsz)} további íjász a védéshez.`);
+}
+
+// Mennyi lovas kell a beütéshez - számítja, hogy mennyi lovas kell, hogy a támadóerő elérje a védőerőt
+function szamolLovasTamadashoz() {
+    const vedoPont = szamolVedoero();
+    const jelenlegiTamadoPont = szamolTamadoero();
+    
+    // Ha már elég a támadóerő, akkor 0
+    if (jelenlegiTamadoPont >= vedoPont) {
+        alert('A támadóerő már elég magas, nincs szükség további lovasokra.');
+        return;
+    }
+    
+    // Szükséges támadóerő különbség
+    const szuksegesTamadoero = vedoPont - jelenlegiTamadoPont;
+    
+    // Lovas támadóértéke
+    const lovasTamadoErtek = EGYSEG_ERTEK.lovas.tamado;
+    
+    // Faji bónusz
+    const faj = document.getElementById('tamado_faj').value;
+    const fajBonus = FAJ_BONUSZ[faj] || FAJ_BONUSZ.none;
+    const lovasTamadoErtekBonusszal = lovasTamadoErtek * fajBonus.tamado;
+    
+    // Katonai morál
+    const moral = parseFloat(document.getElementById('tamado_katonai_moral').value) || 75;
+    const lovasTamadoErtekMoralral = lovasTamadoErtekBonusszal * (moral / 100);
+    
+    // Szükséges lovasok száma
+    const szuksegesLovas = Math.ceil(szuksegesTamadoero / lovasTamadoErtekMoralral);
+    
+    // Beállítjuk a lovasok számát
+    const lovasField = document.getElementById('tamado_lovas');
+    const jelenlegiLovas = parseInt(lovasField.value) || 0;
+    lovasField.value = jelenlegiLovas + szuksegesLovas;
+    
+    // Újraszámolás
+    szamol();
+    
+    alert(`Szükséges ${formatNumber(szuksegesLovas)} további lovas a beütéshez.`);
 }
 
 // Szám formázása
@@ -331,17 +510,11 @@ function extractNumber(text) {
     return parseInt(text.replace(/[.,\s]/g, '')) || 0;
 }
 
-// Hadi tekercs maximum értékek faj és személyiség alapján
+// Hadi tekercs maximum értékek faj alapján (tudós személyiség nem ad extra százalékot)
 function getHadiTekercsMax(faj, hasTudos) {
     // Gnóm: 50%, más fajok: 30%
-    let baseMax = (faj === 'gnom') ? 50 : 30;
-    
-    // Tudós személyiség: +5%
-    if (hasTudos) {
-        baseMax += 5;
-    }
-    
-    return baseMax;
+    // A tudós személyiség nem ad hozzá extra százalékot a hadi tekercshez
+    return (faj === 'gnom') ? 50 : 30;
 }
 
 // Hadi tekercs értékének beállítása faj és checkboxok alapján
@@ -410,8 +583,8 @@ function updateHadiTekercs(tipus) {
     }
 }
 
-// Lakáshelyzeti tekercs maximum értékek faj alapján
-function getLakashelyzetiTekercsMax(faj) {
+// Lakáshelyzeti tekercs maximum értékek faj és tudomány hónapja alapján
+function getLakashelyzetiTekercsMax(faj, hasTudomanyHonapja) {
     // Alapértelmezett: 30%
     // Gnóm: 50% (minden tudományág)
     // Óriás: 40% (mágia és lakáshelyzet területén)
@@ -422,9 +595,16 @@ function getLakashelyzetiTekercsMax(faj) {
     // Élőhalott: 30%
     // Ember: 30%
     
-    if (faj === 'gnom') return 50;
-    if (faj === 'orias' || faj === 'felelf') return 40;
-    return 30;
+    let baseMax = 30;
+    if (faj === 'gnom') baseMax = 50;
+    else if (faj === 'orias' || faj === 'felelf') baseMax = 40;
+    
+    // Tudomány hónapja: +5%
+    if (hasTudomanyHonapja) {
+        baseMax += 5;
+    }
+    
+    return baseMax;
 }
 
 // Kristálygömb importálása - új, egyszerűbb megközelítés
@@ -573,7 +753,8 @@ function importKristalygomb(tipus) {
     
     // Lakáshelyzeti tekercs max beállítása faj alapján
     if (selectedFaj !== 'none' && tipus === 'vedo') {
-        const maxLakashelyzeti = getLakashelyzetiTekercsMax(selectedFaj);
+        const hasTudomanyHonapja = document.getElementById('vedo_tudomany_honapja') && document.getElementById('vedo_tudomany_honapja').checked;
+        const maxLakashelyzeti = getLakashelyzetiTekercsMax(selectedFaj, hasTudomanyHonapja);
         document.getElementById('vedo_lakashelyzeti_tekercs').value = maxLakashelyzeti;
     }
     
@@ -770,7 +951,8 @@ function importEpuletlista(tipus) {
         // Ha faj kiválasztásra kerül, beállítjuk a max lakáshelyzeti tekercs értékét
         const fajField = document.getElementById('vedo_faj');
         if (fajField && fajField.value !== 'none') {
-            const maxLakashelyzeti = getLakashelyzetiTekercsMax(fajField.value);
+            const hasTudomanyHonapja = document.getElementById('vedo_tudomany_honapja') && document.getElementById('vedo_tudomany_honapja').checked;
+            const maxLakashelyzeti = getLakashelyzetiTekercsMax(fajField.value, hasTudomanyHonapja);
             const lakashelyzetiField = document.getElementById('vedo_lakashelyzeti_tekercs');
             if (lakashelyzetiField) {
                 const currentValue = parseInt(lakashelyzetiField.value) || 0;
@@ -837,7 +1019,8 @@ function importEpuletlista(tipus) {
         // Ha faj kiválasztásra kerül, beállítjuk a max lakáshelyzeti tekercs értékét
         const fajField = document.getElementById('tamado_faj');
         if (fajField && fajField.value !== 'none') {
-            const maxLakashelyzeti = getLakashelyzetiTekercsMax(fajField.value);
+            const hasTudomanyHonapja = document.getElementById('tamado_tudomany_honapja') && document.getElementById('tamado_tudomany_honapja').checked;
+            const maxLakashelyzeti = getLakashelyzetiTekercsMax(fajField.value, hasTudomanyHonapja);
             const lakashelyzetiField = document.getElementById('tamado_lakashelyzeti_tekercs');
             if (lakashelyzetiField) {
                 // Támadóknál mindig max lakáshelyzeti tekercssel számolunk
@@ -947,7 +1130,8 @@ function updateFieldStates() {
     
     // Lakáshelyzeti tekercs max beállítása
     if (vedoFaj !== 'none') {
-        const maxLakashelyzeti = getLakashelyzetiTekercsMax(vedoFaj);
+        const hasTudomanyHonapja = document.getElementById('vedo_tudomany_honapja') && document.getElementById('vedo_tudomany_honapja').checked;
+        const maxLakashelyzeti = getLakashelyzetiTekercsMax(vedoFaj, hasTudomanyHonapja);
         const vedoLakashelyzeti = document.getElementById('vedo_lakashelyzeti_tekercs');
         const currentValue = parseInt(vedoLakashelyzeti.value) || 0;
         if (currentValue === 0 || currentValue > maxLakashelyzeti) {
