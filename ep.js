@@ -177,12 +177,11 @@ var szamol = function() {
 	}
 
 	/*Tudós e?*/
-	for (i = 0; i < 10; i++) {
-		if (document.getElementById("szemelyiseg").options[i].selected == true) {
-			if(document.getElementById("szemelyiseg").options[i].value == "tudos") {
-				tudosszem = true;
-				break;
-			}
+	var szemelyisegCheckboxes = document.querySelectorAll('input[name="szemelyiseg"]:checked');
+	for (i = 0; i < szemelyisegCheckboxes.length; i++) {
+		if(szemelyisegCheckboxes[i].value == "tudos") {
+			tudosszem = true;
+			break;
 		}
 	}
 	
@@ -195,31 +194,53 @@ var szamol = function() {
 				gabonamodosito = tudosszem ? 1.35 : 1.3;
 				nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
 				
-				$('#lakashelyzet').val('30');
-				tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
-				tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+				var lakashelyzetMax = 30;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				$('#lakashelyzet').val(lakashelyzetMax.toString());
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5); // +5% maximum, de max 55%
+				}
+				$('#mezogazdasag').val(tudomanyMax.toString());
+				$('#banyaszat').val(tudomanyMax.toString());
 				
 			} else {
 				/* lakáshelyzet */
-				if($('#lakashelyzet').val() > 30) {
+				var lakashelyzetMax = 30;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				if($('#lakashelyzet').val() > lakashelyzetMax) {
 					lakashelyzeti = 1.3;
-					$('#lakashelyzet').val('30');
+					$('#lakashelyzet').val(lakashelyzetMax.toString());
 				} else {
 					lakashelyzeti = $('#lakashelyzet').val() / 100 + 1;
 				}
 				
 				/* mezogazdasag */
-				if($('#mezogazdasag').val() > (tudosszem ? 35 : 30)) {
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5);
+				}
+				if($('#mezogazdasag').val() > tudomanyMax) {
 					gabonamodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
+					$('#mezogazdasag').val(tudomanyMax.toString());
 				} else {
 					gabonamodosito = $('#mezogazdasag').val() / 100 + 1;
 				}
 				
 				/* banyaszat */
-				if($('#banyaszat').val() >  (tudosszem ? 35 : 30)) {
+				if($('#banyaszat').val() > tudomanyMax) {
 					nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+					$('#banyaszat').val(tudomanyMax.toString());
 				} else {
 					nyersanyagmodosito = $('#banyaszat').val() / 100 + 1;
 				}
@@ -236,30 +257,52 @@ var szamol = function() {
 				gabonamodosito = tudosszem ? 1.35 : 1.3;
 				nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
 				
-				$('#lakashelyzet').val('30');
-				tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
-				tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+				var lakashelyzetMax = 30;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				$('#lakashelyzet').val(lakashelyzetMax.toString());
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5); // +5% maximum, de max 55%
+				}
+				$('#mezogazdasag').val(tudomanyMax.toString());
+				$('#banyaszat').val(tudomanyMax.toString());
 			} else {
 				/* lakáshelyzet */
-				if($('#lakashelyzet').val() > 30) {
+				var lakashelyzetMax = 30;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				if($('#lakashelyzet').val() > lakashelyzetMax) {
 					lakashelyzeti = 1.3;
-					$('#lakashelyzet').val('30');
+					$('#lakashelyzet').val(lakashelyzetMax.toString());
 				} else {
 					lakashelyzeti = $('#lakashelyzet').val() / 100 + 1;
 				}
 				
 				/* mezogazdasag */
-				if($('#mezogazdasag').val() > (tudosszem ? 35 : 30)) {
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5);
+				}
+				if($('#mezogazdasag').val() > tudomanyMax) {
 					gabonamodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
+					$('#mezogazdasag').val(tudomanyMax.toString());
 				} else {
 					gabonamodosito = $('#mezogazdasag').val() / 100 + 1;
 				}
 				
 				/* banyaszat */
-				if($('#banyaszat').val() >  (tudosszem ? 35 : 30)) {
+				if($('#banyaszat').val() > tudomanyMax) {
 					nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+					$('#banyaszat').val(tudomanyMax.toString());
 				} else {
 					nyersanyagmodosito = $('#banyaszat').val() / 100 + 1;
 				}							
@@ -272,30 +315,58 @@ var szamol = function() {
 				gabonamodosito = tudosszem ? 1.45 : 1.4;
 				nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
 				
-				$('#lakashelyzet').val('30');
-				tudosszem ? $('#mezogazdasag').val('45') : $('#mezogazdasag').val('40');
-				tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+				var lakashelyzetMax = 30;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				$('#lakashelyzet').val(lakashelyzetMax.toString());
+				var mezogazdasagMax = 40;
+				var banyaszatMax = 30;
+				if(tudosszem) {
+					mezogazdasagMax = 45;
+					banyaszatMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					mezogazdasagMax = Math.min(55, mezogazdasagMax + 5);
+					banyaszatMax = Math.min(55, banyaszatMax + 5);
+				}
+				$('#mezogazdasag').val(mezogazdasagMax.toString());
+				$('#banyaszat').val(banyaszatMax.toString());
 			} else {
 				/* lakáshelyzet */
-				if($('#lakashelyzet').val() > 30) {
+				var lakashelyzetMax = 30;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				if($('#lakashelyzet').val() > lakashelyzetMax) {
 					lakashelyzeti = 1.3;
-					$('#lakashelyzet').val('30');
+					$('#lakashelyzet').val(lakashelyzetMax.toString());
 				} else {
 					lakashelyzeti = $('#lakashelyzet').val() / 100 + 1;
 				}
 				
 				/* mezogazdasag */
-				if($('#mezogazdasag').val() > (tudosszem ? 45 : 40)) {
+				var mezogazdasagMax = 40;
+				var banyaszatMax = 30;
+				if(tudosszem) {
+					mezogazdasagMax = 45;
+					banyaszatMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					mezogazdasagMax = Math.min(55, mezogazdasagMax + 5);
+					banyaszatMax = Math.min(55, banyaszatMax + 5);
+				}
+				if($('#mezogazdasag').val() > mezogazdasagMax) {
 					gabonamodosito = tudosszem ? 1.45 : 1.4;
-					tudosszem ? $('#mezogazdasag').val('45') : $('#mezogazdasag').val('40');
+					$('#mezogazdasag').val(mezogazdasagMax.toString());
 				} else {
 					gabonamodosito = $('#mezogazdasag').val() / 100 + 1;
 				}
 				
 				/* banyaszat */
-				if($('#banyaszat').val() >  (tudosszem ? 35 : 30)) {
+				if($('#banyaszat').val() > banyaszatMax) {
 					nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+					$('#banyaszat').val(banyaszatMax.toString());
 				} else {
 					nyersanyagmodosito = $('#banyaszat').val() / 100 + 1;
 				}								
@@ -310,8 +381,15 @@ var szamol = function() {
 				nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
 				
 				$('#lakashelyzet').val('40');
-				tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
-				tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5); // +5% maximum, de max 55%
+				}
+				$('#mezogazdasag').val(tudomanyMax.toString());
+				$('#banyaszat').val(tudomanyMax.toString());
 			} else {
 				/* lakáshelyzet */
 				if($('#lakashelyzet').val() > 40) {
@@ -322,17 +400,24 @@ var szamol = function() {
 				}
 				
 				/* mezogazdasag */
-				if($('#mezogazdasag').val() > (tudosszem ? 35 : 30)) {
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5);
+				}
+				if($('#mezogazdasag').val() > tudomanyMax) {
 					gabonamodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
+					$('#mezogazdasag').val(tudomanyMax.toString());
 				} else {
 					gabonamodosito = $('#mezogazdasag').val() / 100 + 1;
 				}
 				
 				/* banyaszat */
-				if($('#banyaszat').val() >  (tudosszem ? 35 : 30)) {
+				if($('#banyaszat').val() > tudomanyMax) {
 					nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+					$('#banyaszat').val(tudomanyMax.toString());
 				} else {
 					nyersanyagmodosito = $('#banyaszat').val() / 100 + 1;
 				}							
@@ -349,30 +434,52 @@ var szamol = function() {
 				gabonamodosito = tudosszem ? 1.35 : 1.3;
 				nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
 				
-				$('#lakashelyzet').val('30');
-				tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
-				tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+				var lakashelyzetMax = 30;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				$('#lakashelyzet').val(lakashelyzetMax.toString());
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5); // +5% maximum, de max 55%
+				}
+				$('#mezogazdasag').val(tudomanyMax.toString());
+				$('#banyaszat').val(tudomanyMax.toString());
 			} else {
 				/* lakáshelyzet */
-				if($('#lakashelyzet').val() > 30) {
+				var lakashelyzetMax = 30;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				if($('#lakashelyzet').val() > lakashelyzetMax) {
 					lakashelyzeti = 1.56;
-					$('#lakashelyzet').val('30');
+					$('#lakashelyzet').val(lakashelyzetMax.toString());
 				} else {
 					lakashelyzeti = ($('#lakashelyzet').val() / 100 + 1) * 1.2;
 				}
 				
 				/* mezogazdasag */
-				if($('#mezogazdasag').val() > (tudosszem ? 35 : 30)) {
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5);
+				}
+				if($('#mezogazdasag').val() > tudomanyMax) {
 					gabonamodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
+					$('#mezogazdasag').val(tudomanyMax.toString());
 				} else {
 					gabonamodosito = $('#mezogazdasag').val() / 100 + 1;
 				}
 				
 				/* banyaszat */
-				if($('#banyaszat').val() >  (tudosszem ? 35 : 30)) {
+				if($('#banyaszat').val() > tudomanyMax) {
 					nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+					$('#banyaszat').val(tudomanyMax.toString());
 				} else {
 					nyersanyagmodosito = $('#banyaszat').val() / 100 + 1;
 				}							
@@ -386,30 +493,52 @@ var szamol = function() {
 				gabonamodosito = tudosszem ? 1.55 : 1.5;
 				nyersanyagmodosito = tudosszem ? 1.55 : 1.5;	
 				
-				$('#lakashelyzet').val('50');
-				tudosszem ? $('#mezogazdasag').val('55') : $('#mezogazdasag').val('50');
-				tudosszem ? $('#banyaszat').val('55') : $('#banyaszat').val('50');
+				var lakashelyzetMax = 50;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				$('#lakashelyzet').val(lakashelyzetMax.toString());
+				var tudomanyMax = 50;
+				if(tudosszem) {
+					tudomanyMax = 55;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5); // Maximum 55% marad
+				}
+				$('#mezogazdasag').val(tudomanyMax.toString());
+				$('#banyaszat').val(tudomanyMax.toString());
 			} else {
 				/* lakáshelyzet */
-				if($('#lakashelyzet').val() > 50) {
+				var lakashelyzetMax = 50;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				if($('#lakashelyzet').val() > lakashelyzetMax) {
 					lakashelyzeti = 1.5;
-					$('#lakashelyzet').val('50');
+					$('#lakashelyzet').val(lakashelyzetMax.toString());
 				} else {
 					lakashelyzeti = $('#lakashelyzet').val() / 100 + 1;
 				}
 				
 				/* mezogazdasag */
-				if($('#mezogazdasag').val() > (tudosszem ? 55 : 50)) {
+				var tudomanyMax = 50;
+				if(tudosszem) {
+					tudomanyMax = 55;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5); // Maximum 55% marad
+				}
+				if($('#mezogazdasag').val() > tudomanyMax) {
 					gabonamodosito = tudosszem ? 1.55 : 1.5;
-					tudosszem ? $('#mezogazdasag').val('55') : $('#mezogazdasag').val('50');
+					$('#mezogazdasag').val(tudomanyMax.toString());
 				} else {
 					gabonamodosito = $('#mezogazdasag').val() / 100 + 1;
 				}
 				
 				/* banyaszat */
-				if($('#banyaszat').val() >  (tudosszem ? 55 : 50)) {
+				if($('#banyaszat').val() > tudomanyMax) {
 					nyersanyagmodosito = tudosszem ? 1.55 : 1.5;
-					tudosszem ? $('#banyaszat').val('55') : $('#banyaszat').val('50');
+					$('#banyaszat').val(tudomanyMax.toString());
 				} else {
 					nyersanyagmodosito = $('#banyaszat').val() / 100 + 1;
 				}								
@@ -425,8 +554,15 @@ var szamol = function() {
 				nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
 				
 				$('#lakashelyzet').val('40');
-				tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
-				tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5); // +5% maximum, de max 55%
+				}
+				$('#mezogazdasag').val(tudomanyMax.toString());
+				$('#banyaszat').val(tudomanyMax.toString());
 				
 			} else {
 				/* lakáshelyzet */
@@ -438,17 +574,24 @@ var szamol = function() {
 				}
 				
 				/* mezogazdasag */
-				if($('#mezogazdasag').val() > (tudosszem ? 35 : 30)) {
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5);
+				}
+				if($('#mezogazdasag').val() > tudomanyMax) {
 					gabonamodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
+					$('#mezogazdasag').val(tudomanyMax.toString());
 				} else {
 					gabonamodosito = $('#mezogazdasag').val() / 100 + 1;
 				}
 				
 				/* banyaszat */
-				if($('#banyaszat').val() >  (tudosszem ? 35 : 30)) {
+				if($('#banyaszat').val() > tudomanyMax) {
 					nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+					$('#banyaszat').val(tudomanyMax.toString());
 				} else {
 					nyersanyagmodosito = $('#banyaszat').val() / 100 + 1;
 				}	
@@ -544,31 +687,53 @@ var szamol = function() {
 				gabonamodosito = tudosszem ? 1.35 : 1.3;
 				nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
 				
-				$('#lakashelyzet').val('30');
-				tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
-				tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+				var lakashelyzetMax = 30;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				$('#lakashelyzet').val(lakashelyzetMax.toString());
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5); // +5% maximum, de max 55%
+				}
+				$('#mezogazdasag').val(tudomanyMax.toString());
+				$('#banyaszat').val(tudomanyMax.toString());
 				
 			} else {
 				/* lakáshelyzet */
-				if($('#lakashelyzet').val() > 30) {
+				var lakashelyzetMax = 30;
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					lakashelyzetMax = Math.min(55, lakashelyzetMax + 5); // +5% maximum, de max 55%
+				}
+				if($('#lakashelyzet').val() > lakashelyzetMax) {
 					lakashelyzeti = 1.3;
-					$('#lakashelyzet').val('30');
+					$('#lakashelyzet').val(lakashelyzetMax.toString());
 				} else {
 					lakashelyzeti = $('#lakashelyzet').val() / 100 + 1;
 				}
 				
 				/* mezogazdasag */
-				if($('#mezogazdasag').val() > (tudosszem ? 35 : 30)) {
+				var tudomanyMax = 30;
+				if(tudosszem) {
+					tudomanyMax = 35;
+				}
+				if(document.getElementById("idoszak_tudomany_honapja") && document.getElementById("idoszak_tudomany_honapja").checked) {
+					tudomanyMax = Math.min(55, tudomanyMax + 5);
+				}
+				if($('#mezogazdasag').val() > tudomanyMax) {
 					gabonamodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#mezogazdasag').val('35') : $('#mezogazdasag').val('30');
+					$('#mezogazdasag').val(tudomanyMax.toString());
 				} else {
 					gabonamodosito = $('#mezogazdasag').val() / 100 + 1;
 				}
 				
 				/* banyaszat */
-				if($('#banyaszat').val() >  (tudosszem ? 35 : 30)) {
+				if($('#banyaszat').val() > tudomanyMax) {
 					nyersanyagmodosito = tudosszem ? 1.35 : 1.3;
-					tudosszem ? $('#banyaszat').val('35') : $('#banyaszat').val('30');
+					$('#banyaszat').val(tudomanyMax.toString());
 				} else {
 					nyersanyagmodosito = $('#banyaszat').val() / 100 + 1;
 				}	
@@ -581,13 +746,27 @@ var szamol = function() {
 	Lakáshelyzetet nem befolyosolja a személyiség
 	*/
 	
-	for (i = 0; i < 10; i++) {
-		if (document.getElementById("szemelyiseg").options[i].selected == true) {
-			if(document.getElementById("szemelyiseg").options[i].value == "gazdalkodo") {
-				nyersanyagmodosito *= 1.1;
-				gabonamodosito *= 1.1;
-			}
-		}
+	// Gazdálkodó személyiség hatása
+	if(document.getElementById("szemelyiseg_gazdalkodo") && document.getElementById("szemelyiseg_gazdalkodo").checked) {
+		nyersanyagmodosito *= 1.1;
+		gabonamodosito *= 1.1;
+	}
+	
+	// Időszakok hatása
+	if(document.getElementById("idoszak_bo_termes") && document.getElementById("idoszak_bo_termes").checked) {
+		gabonamodosito2 *= 1.2; // +20% gabona termelés
+	}
+	if(document.getElementById("idoszak_ragcsalok") && document.getElementById("idoszak_ragcsalok").checked) {
+		gabonamodosito2 *= 0.9; // -10% gabona termelés
+	}
+	if(document.getElementById("idoszak_nyersanyag_plus") && document.getElementById("idoszak_nyersanyag_plus").checked) {
+		nyersanyagmodosito2 *= 1.2; // +20% nyersanyag termelés
+	}
+	if(document.getElementById("idoszak_nyersanyag_minus") && document.getElementById("idoszak_nyersanyag_minus").checked) {
+		nyersanyagmodosito2 *= 0.9; // -10% nyersanyag termelés
+	}
+	if(document.getElementById("idoszak_zsugoraru") && document.getElementById("idoszak_zsugoraru").checked) {
+		raktarmodosito *= 3; // 3x raktár kapacitás
 	}
 	
 	// Lakosság: ház * 50 * módosító + üres terület * 8 * módosító
