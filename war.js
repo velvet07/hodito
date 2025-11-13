@@ -482,49 +482,49 @@ function importKristalygomb(tipus) {
     // Értékek beállítása - csak akkor írjuk felül, ha az adott mező 0 vagy üres
     if (data.katona !== undefined) {
         const katonaField = document.getElementById(tipus + '_katona');
-        if (!katonaField.value || parseInt(katonaField.value) === 0) {
+        if (katonaField && (!katonaField.value || parseInt(katonaField.value) === 0)) {
             katonaField.value = data.katona;
         }
     }
     if (data.vedo !== undefined && tipus === 'vedo') {
         const vedoField = document.getElementById(tipus + '_vedo');
-        if (!vedoField.value || parseInt(vedoField.value) === 0) {
+        if (vedoField && (!vedoField.value || parseInt(vedoField.value) === 0)) {
             vedoField.value = data.vedo;
         }
     }
     if (data.tamado !== undefined) {
         const tamadoField = document.getElementById(tipus + '_tamado');
-        if (!tamadoField.value || parseInt(tamadoField.value) === 0) {
+        if (tamadoField && (!tamadoField.value || parseInt(tamadoField.value) === 0)) {
             tamadoField.value = data.tamado;
         }
     }
     if (data.ijsz !== undefined) {
-        const ijszField = document.getElementById(tipus + '_ijsz');
-        if (!ijszField.value || parseInt(ijszField.value) === 0) {
+        const ijszField = document.getElementById(tipus + '_ijasz');
+        if (ijszField && (!ijszField.value || parseInt(ijszField.value) === 0)) {
             ijszField.value = data.ijsz;
         }
     }
     if (data.lovas !== undefined) {
         const lovasField = document.getElementById(tipus + '_lovas');
-        if (!lovasField.value || parseInt(lovasField.value) === 0) {
+        if (lovasField && (!lovasField.value || parseInt(lovasField.value) === 0)) {
             lovasField.value = data.lovas;
         }
     }
     if (data.elit !== undefined) {
         const elitField = document.getElementById(tipus + '_elit');
-        if (!elitField.value || parseInt(elitField.value) === 0) {
+        if (elitField && (!elitField.value || parseInt(elitField.value) === 0)) {
             elitField.value = data.elit;
         }
     }
     if (data.katonai_moral !== undefined) {
         const moralField = document.getElementById(tipus + '_katonai_moral');
-        if (!moralField.value || parseInt(moralField.value) === 0) {
+        if (moralField && (!moralField.value || parseInt(moralField.value) === 0)) {
             moralField.value = data.katonai_moral;
         }
     }
     if (data.hektar !== undefined && tipus === 'vedo') {
         const hektarField = document.getElementById('vedo_hektar');
-        if (!hektarField.value || parseInt(hektarField.value) === 0) {
+        if (hektarField && (!hektarField.value || parseInt(hektarField.value) === 0)) {
             hektarField.value = data.hektar;
         }
     }
