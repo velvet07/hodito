@@ -49,17 +49,46 @@ function szamol() {
     const vedoPont = szamolVedoero();
     const tamadoPont = szamolTamadoero();
     
+    // Eredmények oszlopban
     document.getElementById('vedopont').textContent = formatNumber(vedoPont);
     document.getElementById('tamadopont').textContent = formatNumber(tamadoPont);
+    
+    // Oszlopokban megjelenítés
+    document.getElementById('vedo_ero_megjelenites').textContent = formatNumber(vedoPont);
+    document.getElementById('tamado_ero_megjelenites').textContent = formatNumber(tamadoPont);
     
     const eredmeny = vedoPont >= tamadoPont ? 
         'A támadás sikertelen' : 
         'A támadás sikeres';
     document.getElementById('eredmeny').textContent = eredmeny;
     
+    // Győztes/vesztes keretek - csak ha mindkét érték nagyobb mint 0
+    const vedoOszlop = document.getElementById('vedo_oszlop');
+    const tamadoOszlop = document.getElementById('tamado_oszlop');
+    
+    // Eltávolítjuk az előző kereteket
+    vedoOszlop.classList.remove('border-4', 'border-green-500', 'border-red-500');
+    tamadoOszlop.classList.remove('border-4', 'border-green-500', 'border-red-500');
+    
+    // Csak akkor jelenítjük meg a kereteket, ha mindkét érték nagyobb mint 0
+    if (vedoPont > 0 && tamadoPont > 0) {
+        if (vedoPont >= tamadoPont) {
+            // Védők nyernek
+            vedoOszlop.classList.add('border-4', 'border-green-500');
+            tamadoOszlop.classList.add('border-4', 'border-red-500');
+        } else {
+            // Támadók nyernek
+            tamadoOszlop.classList.add('border-4', 'border-green-500');
+            vedoOszlop.classList.add('border-4', 'border-red-500');
+        }
+    }
+    
     // Gabonaszükséglet számítása
     const gabona = szamolGabonaszukseglet();
     document.getElementById('gabonaszukseglet').textContent = formatNumber(gabona) + ' bála';
+    
+    // Faj alapján mezők aktiválása/deaktiválása
+    updateFieldStates();
 }
 
 // Védőerő számítása
@@ -244,6 +273,36 @@ function extractNumber(text) {
     return parseInt(text.replace(/[.,\s]/g, '')) || 0;
 }
 
+// Hadi tekercs maximum értékek faj és személyiség alapján
+function getHadiTekercsMax(faj, hasTudos) {
+    // Gnóm: 50%, más fajok: 30%
+    let baseMax = (faj === 'gnom') ? 50 : 30;
+    
+    // Tudós személyiség: +5%
+    if (hasTudos) {
+        baseMax += 5;
+    }
+    
+    return baseMax;
+}
+
+// Lakáshelyzeti tekercs maximum értékek faj alapján
+function getLakashelyzetiTekercsMax(faj) {
+    // Alapértelmezett: 30%
+    // Gnóm: 50% (minden tudományág)
+    // Óriás: 40% (mágia és lakáshelyzet területén)
+    // Félelf: 40% (tolvajlás és lakáshelyzet területén)
+    // Törpe: 30% (csak ipar és hadügy 40%)
+    // Elf: 30% (csak hadügy és mágia 40%)
+    // Ork: 30% (csak hadügy és mezőgazdaság 40%)
+    // Élőhalott: 30%
+    // Ember: 30%
+    
+    if (faj === 'gnom') return 50;
+    if (faj === 'orias' || faj === 'felelf') return 40;
+    return 30;
+}
+
 // Kristálygömb importálása
 function importKristalygomb(tipus) {
     const textarea = document.getElementById(tipus + '_kristalygomb');
@@ -251,6 +310,8 @@ function importKristalygomb(tipus) {
     if (!text || text.trim() === '') return;
     
     const data = {};
+    let selectedFaj = 'none';
+    let hasTudos = false;
     
     // Faj kinyerése
     const fajMatch = text.match(/Faj:\s*([^\n\r]+)/);
@@ -267,61 +328,87 @@ function importKristalygomb(tipus) {
             'Ember': 'ember'
         };
         if (fajMap[fajText]) {
-            document.getElementById(tipus + '_faj').value = fajMap[fajText];
+            selectedFaj = fajMap[fajText];
+            document.getElementById(tipus + '_faj').value = selectedFaj;
         }
     }
     
-    // Katonai egységek kinyerése - több formátum támogatása
-    const katonaMatch = text.match(/Katona:\s*([0-9.,\s]+)/);
+    // Személyiség kinyerése (több személyiség is lehet, vesszővel elválasztva)
+    const szemelyisegMatch = text.match(/Személyiség:\s*([^\n\r]+)/);
+    if (szemelyisegMatch) {
+        const szemelyisegText = szemelyisegMatch[1].trim();
+        const szemelyisegek = szemelyisegText.split(',').map(s => s.trim());
+        
+        // Tudós ellenőrzés
+        hasTudos = szemelyisegek.some(s => s.includes('Tudós'));
+        if (hasTudos) {
+            document.getElementById(tipus + '_tudos').checked = true;
+        }
+    }
+    
+    // Katonai egységek kinyerése - tabulátorokkal és szóközökkel is működjön
+    // A minta formátum: "Katona:\t1.688" vagy "Katona: 1.688" vagy "Katona:\t\t1.688"
+    const katonaMatch = text.match(/Katona:\s*\t*\s*([0-9.,\s]+)/);
     if (katonaMatch) {
         data.katona = extractNumber(katonaMatch[1]);
     }
     
-    const vedoMatch = text.match(/Védő:\s*([0-9.,\s]+)/);
+    const vedoMatch = text.match(/Védő:\s*\t*\s*([0-9.,\s]+)/);
     if (vedoMatch) {
         data.vedo = extractNumber(vedoMatch[1]);
     }
     
-    const tamadoMatch = text.match(/Támadó:\s*([0-9.,\s]+)/);
+    const tamadoMatch = text.match(/Támadó:\s*\t*\s*([0-9.,\s]+)/);
     if (tamadoMatch) {
         data.tamado = extractNumber(tamadoMatch[1]);
     }
     
-    const ijszMatch = text.match(/Íjász:\s*([0-9.,\s]+)/);
+    const ijszMatch = text.match(/Íjász:\s*\t*\s*([0-9.,\s]+)/);
     if (ijszMatch) {
         data.ijsz = extractNumber(ijszMatch[1]);
     }
     
-    const lovasMatch = text.match(/Lovas:\s*([0-9.,\s]+)/);
+    const lovasMatch = text.match(/Lovas:\s*\t*\s*([0-9.,\s]+)/);
     if (lovasMatch) {
         data.lovas = extractNumber(lovasMatch[1]);
     }
     
-    const elitMatch = text.match(/Elit:\s*([0-9.,\s]+)/);
+    const elitMatch = text.match(/Elit:\s*\t*\s*([0-9.,\s]+)/);
     if (elitMatch) {
         data.elit = extractNumber(elitMatch[1]);
     }
     
     // Katonai morál - több formátum támogatása
-    const moralMatch = text.match(/Katonai morál:\s*([0-9.,\s]+)\s*%/);
+    const moralMatch = text.match(/Katonai morál:\s*\t*\s*([0-9.,\s]+)\s*%/);
     if (moralMatch) {
         data.katonai_moral = extractNumber(moralMatch[1]);
     }
     
-    // Hektár - több formátum támogatása
-    const hektarMatch = text.match(/Föld:\s*([0-9.,\s]+)\s*hektár/i);
+    // Hektár - több formátum támogatása (Föld: 1.100 hektár vagy Föld:\t1.100 hektár)
+    const hektarMatch = text.match(/Föld:\s*\t*\s*([0-9.,\s]+)\s*hektár/i);
     if (hektarMatch) {
         data.hektar = extractNumber(hektarMatch[1]);
     }
     
-    // Személyiség (tudós ellenőrzés)
-    if (text.includes('Tudós')) {
-        document.getElementById(tipus + '_tudos').checked = true;
-        // Próbáljuk kinyerni a hadi tekercs százalékát, ha van
-        const tudosMatch = text.match(/Tudós.*?(\d+)\s*%/);
-        if (tudosMatch) {
-            document.getElementById(tipus + '_tudos_szazalek').value = extractNumber(tudosMatch[1]);
+    // Szövetség állapot (magányos farkas ellenőrzés)
+    const szovetsegMatch = text.match(/Szövetség:\s*\t*\s*([^\n\r]+)/);
+    if (szovetsegMatch) {
+        const szovetsegText = szovetsegMatch[1].trim();
+        if (szovetsegText.includes('Magányos farkas') || szovetsegText.includes('magányos farkas')) {
+            document.getElementById(tipus + '_maganyos_farkas').checked = true;
         }
+    }
+    
+    // Hadi tekercs automatikus beállítása faj és tudós személyiség alapján
+    if (hasTudos && selectedFaj !== 'none') {
+        const maxTekercs = getHadiTekercsMax(selectedFaj, hasTudos);
+        document.getElementById(tipus + '_tudos_szazalek').value = maxTekercs;
+    }
+    
+    // Lakáshelyzeti tekercs max beállítása faj alapján
+    if (selectedFaj !== 'none' && tipus === 'vedo') {
+        const maxLakashelyzeti = getLakashelyzetiTekercsMax(selectedFaj);
+        document.getElementById('vedo_lakashelyzeti_tekercs').value = maxLakashelyzeti;
     }
     
     // Értékek beállítása
@@ -334,6 +421,8 @@ function importKristalygomb(tipus) {
     if (data.katonai_moral !== undefined) document.getElementById(tipus + '_katonai_moral').value = data.katonai_moral;
     if (data.hektar !== undefined && tipus === 'vedo') document.getElementById('vedo_hektar').value = data.hektar;
     
+    // Mezők állapotának frissítése
+    updateFieldStates();
     szamol();
 }
 
@@ -372,6 +461,116 @@ function importEpuletlista(tipus) {
     szamol();
 }
 
+// Törlés függvény - kitörli az adatokat, de a textarea mezőket nem
+function torles(tipus) {
+    // Katonai egységek törlése
+    document.getElementById(tipus + '_katona').value = '0';
+    if (tipus === 'vedo') {
+        document.getElementById('vedo_vedo').value = '0';
+    }
+    document.getElementById(tipus + '_tamado').value = '0';
+    document.getElementById(tipus + '_ijasz').value = '0';
+    document.getElementById(tipus + '_lovas').value = '0';
+    document.getElementById(tipus + '_elit').value = '0';
+    
+    // Katonai morál alapértékre
+    document.getElementById(tipus + '_katonai_moral').value = '75';
+    
+    // Faj alapértékre
+    document.getElementById(tipus + '_faj').value = 'none';
+    
+    // Checkboxok törlése
+    document.getElementById(tipus + '_tudos').checked = false;
+    document.getElementById(tipus + '_tudos_szazalek').value = '0';
+    document.getElementById(tipus + '_maganyos_farkas').checked = false;
+    
+    if (tipus === 'vedo') {
+        document.getElementById('vedo_vedelem').checked = false;
+        document.getElementById('vedo_hektar').value = '0';
+        document.getElementById('vedo_ortorony').value = '0';
+        document.getElementById('vedo_szovetseges_ijaszok').value = '0';
+        document.getElementById('vedo_kitamadasi_bonusz').checked = false;
+        document.getElementById('vedo_elohalott_szint').value = '5';
+        document.getElementById('vedo_szabadsagon_szovetsegesek').value = '0';
+        document.getElementById('vedo_lakashelyzeti_tekercs').value = '0';
+    } else {
+        document.getElementById('tamado_verszomj').checked = false;
+        document.getElementById('tamado_tabornok').value = '0';
+        document.getElementById('tamado_elohalott_szint').value = '0';
+        document.getElementById('tamado_kor').value = '2';
+        const felfeleRadio = document.getElementById('tamado_felfele');
+        if (felfeleRadio) felfeleRadio.checked = true;
+    }
+    
+    // Számítás újra
+    szamol();
+}
+
+// Mezők aktiválása/deaktiválása faj alapján
+function updateFieldStates() {
+    // Védők
+    const vedoFaj = document.getElementById('vedo_faj').value;
+    const vedoMaganyosFarkas = document.getElementById('vedo_maganyos_farkas').checked;
+    
+    // Kitámadási bónusz csak ork esetén
+    const vedoKitamadasiBonusz = document.getElementById('vedo_kitamadasi_bonusz');
+    if (vedoFaj === 'ork') {
+        vedoKitamadasiBonusz.disabled = false;
+        vedoKitamadasiBonusz.classList.remove('bg-gray-100');
+    } else {
+        vedoKitamadasiBonusz.disabled = true;
+        vedoKitamadasiBonusz.classList.add('bg-gray-100');
+        vedoKitamadasiBonusz.checked = false;
+    }
+    
+    // Élőhalott szint csak élőhalott esetén
+    const vedoElohalottSzint = document.getElementById('vedo_elohalott_szint');
+    if (vedoFaj === 'elohalott') {
+        vedoElohalottSzint.disabled = false;
+        vedoElohalottSzint.classList.remove('bg-gray-100');
+    } else {
+        vedoElohalottSzint.disabled = true;
+        vedoElohalottSzint.classList.add('bg-gray-100');
+        vedoElohalottSzint.value = '5';
+    }
+    
+    // Szabadságon lévő szövetségesek csak ha nem magányos farkas
+    const vedoSzabadsagon = document.getElementById('vedo_szabadsagon_szovetsegesek');
+    if (vedoMaganyosFarkas) {
+        vedoSzabadsagon.disabled = true;
+        vedoSzabadsagon.classList.add('bg-gray-100');
+        vedoSzabadsagon.value = '0';
+    } else {
+        vedoSzabadsagon.disabled = false;
+        vedoSzabadsagon.classList.remove('bg-gray-100');
+    }
+    
+    // Lakáshelyzeti tekercs max beállítása
+    if (vedoFaj !== 'none') {
+        const maxLakashelyzeti = getLakashelyzetiTekercsMax(vedoFaj);
+        const vedoLakashelyzeti = document.getElementById('vedo_lakashelyzeti_tekercs');
+        const currentValue = parseInt(vedoLakashelyzeti.value) || 0;
+        if (currentValue === 0 || currentValue > maxLakashelyzeti) {
+            vedoLakashelyzeti.value = maxLakashelyzeti;
+        }
+    }
+    
+    // Támadók
+    const tamadoFaj = document.getElementById('tamado_faj').value;
+    const tamadoMaganyosFarkas = document.getElementById('tamado_maganyos_farkas').checked;
+    
+    // Élőhalott szint csak élőhalott esetén
+    const tamadoElohalottSzint = document.getElementById('tamado_elohalott_szint');
+    if (tamadoFaj === 'elohalott') {
+        tamadoElohalottSzint.disabled = false;
+        tamadoElohalottSzint.classList.remove('bg-gray-100');
+    } else {
+        tamadoElohalottSzint.disabled = true;
+        tamadoElohalottSzint.classList.add('bg-gray-100');
+        tamadoElohalottSzint.value = '0';
+    }
+}
+
 // Segítő számítások
 function szamolIjaszVedohoz() {
     // Ez a funkció még fejlesztés alatt áll.
@@ -385,6 +584,7 @@ function szamolLovasTamadashoz() {
 
 // Oldal betöltésekor számolás
 $(document).ready(function() {
+    updateFieldStates();
     szamol();
 });
 
