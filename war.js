@@ -62,7 +62,7 @@ function szamol() {
         'A támadás sikeres';
     document.getElementById('eredmeny').textContent = eredmeny;
     
-    // Győztes/vesztes keretek - csak ha mindkét érték nagyobb mint 0
+    // Győztes/vesztes keretek - csak akkor ne legyen keret, ha mindkét érték 0
     const vedoOszlop = document.getElementById('vedo_oszlop');
     const tamadoOszlop = document.getElementById('tamado_oszlop');
     
@@ -70,8 +70,8 @@ function szamol() {
     vedoOszlop.classList.remove('border-4', 'border-green-500', 'border-red-500');
     tamadoOszlop.classList.remove('border-4', 'border-green-500', 'border-red-500');
     
-    // Csak akkor jelenítjük meg a kereteket, ha mindkét érték nagyobb mint 0
-    if (vedoPont > 0 && tamadoPont > 0) {
+    // Csak akkor ne legyen keret, ha mindkét érték 0
+    if (vedoPont > 0 || tamadoPont > 0) {
         if (vedoPont >= tamadoPont) {
             // Védők nyernek
             vedoOszlop.classList.add('border-4', 'border-green-500');
@@ -267,9 +267,10 @@ function formatNumber(num) {
 }
 
 // Szám kinyerése szövegből (kezeli a szóközöket és pontokat)
+// A pont a tizes csoport elválasztója, nem tizedesvessző
 function extractNumber(text) {
     if (!text) return 0;
-    // Eltávolítjuk a szóközöket és pontokat, csak a számokat hagyjuk meg
+    // Eltávolítjuk a szóközöket és pontokat (tizes csoport elválasztók), csak a számokat hagyjuk meg
     return parseInt(text.replace(/[.,\s]/g, '')) || 0;
 }
 
@@ -313,8 +314,8 @@ function importKristalygomb(tipus) {
     let selectedFaj = 'none';
     let hasTudos = false;
     
-    // Faj kinyerése
-    const fajMatch = text.match(/Faj:\s*([^\n\r]+)/);
+    // Faj kinyerése - formátum: "Faj:\tTörpe"
+    const fajMatch = text.match(/Faj:\t([^\n\r]+)/);
     if (fajMatch) {
         const fajText = fajMatch[1].trim();
         const fajMap = {
@@ -333,8 +334,8 @@ function importKristalygomb(tipus) {
         }
     }
     
-    // Személyiség kinyerése (több személyiség is lehet, vesszővel elválasztva)
-    const szemelyisegMatch = text.match(/Személyiség:\s*([^\n\r]+)/);
+    // Személyiség kinyerése (több személyiség is lehet, vesszővel elválasztva) - formátum: "Személyiség:\tKereskedő, Vándor, Gazdálkodó, Tudós"
+    const szemelyisegMatch = text.match(/Személyiség:\t([^\n\r]+)/);
     if (szemelyisegMatch) {
         const szemelyisegText = szemelyisegMatch[1].trim();
         const szemelyisegek = szemelyisegText.split(',').map(s => s.trim());
@@ -346,52 +347,52 @@ function importKristalygomb(tipus) {
         }
     }
     
-    // Katonai egységek kinyerése - tabulátorokkal és szóközökkel is működjön
-    // A minta formátum: "Katona:\t1.688" vagy "Katona: 1.688" vagy "Katona:\t\t1.688"
-    const katonaMatch = text.match(/Katona:\s*\t*\s*([0-9.,\s]+)/);
+    // Katonai egységek kinyerése - formátum: "Paraméter:\térték" ahol a tab a tabulátor
+    // A pont a számokban a tizes csoport elválasztója (pl. 1.688 = 1688)
+    const katonaMatch = text.match(/Katona:\t([0-9.,\s]+)/);
     if (katonaMatch) {
         data.katona = extractNumber(katonaMatch[1]);
     }
     
-    const vedoMatch = text.match(/Védő:\s*\t*\s*([0-9.,\s]+)/);
+    const vedoMatch = text.match(/Védő:\t([0-9.,\s]+)/);
     if (vedoMatch) {
         data.vedo = extractNumber(vedoMatch[1]);
     }
     
-    const tamadoMatch = text.match(/Támadó:\s*\t*\s*([0-9.,\s]+)/);
+    const tamadoMatch = text.match(/Támadó:\t([0-9.,\s]+)/);
     if (tamadoMatch) {
         data.tamado = extractNumber(tamadoMatch[1]);
     }
     
-    const ijszMatch = text.match(/Íjász:\s*\t*\s*([0-9.,\s]+)/);
+    const ijszMatch = text.match(/Íjász:\t([0-9.,\s]+)/);
     if (ijszMatch) {
         data.ijsz = extractNumber(ijszMatch[1]);
     }
     
-    const lovasMatch = text.match(/Lovas:\s*\t*\s*([0-9.,\s]+)/);
+    const lovasMatch = text.match(/Lovas:\t([0-9.,\s]+)/);
     if (lovasMatch) {
         data.lovas = extractNumber(lovasMatch[1]);
     }
     
-    const elitMatch = text.match(/Elit:\s*\t*\s*([0-9.,\s]+)/);
+    const elitMatch = text.match(/Elit:\t([0-9.,\s]+)/);
     if (elitMatch) {
         data.elit = extractNumber(elitMatch[1]);
     }
     
-    // Katonai morál - több formátum támogatása
-    const moralMatch = text.match(/Katonai morál:\s*\t*\s*([0-9.,\s]+)\s*%/);
+    // Katonai morál - formátum: "Katonai morál:\t95 %" (százalékban van megadva)
+    const moralMatch = text.match(/Katonai morál:\t([0-9.,\s]+)\s*%/);
     if (moralMatch) {
         data.katonai_moral = extractNumber(moralMatch[1]);
     }
     
-    // Hektár - több formátum támogatása (Föld: 1.100 hektár vagy Föld:\t1.100 hektár)
-    const hektarMatch = text.match(/Föld:\s*\t*\s*([0-9.,\s]+)\s*hektár/i);
+    // Hektár - formátum: "Föld:\t1.100 hektár"
+    const hektarMatch = text.match(/Föld:\t([0-9.,\s]+)\s*hektár/i);
     if (hektarMatch) {
         data.hektar = extractNumber(hektarMatch[1]);
     }
     
-    // Szövetség állapot (magányos farkas ellenőrzés)
-    const szovetsegMatch = text.match(/Szövetség:\s*\t*\s*([^\n\r]+)/);
+    // Szövetség állapot (magányos farkas ellenőrzés) - formátum: "Szövetség:\tMagányos farkas"
+    const szovetsegMatch = text.match(/Szövetség:\t([^\n\r]+)/);
     if (szovetsegMatch) {
         const szovetsegText = szovetsegMatch[1].trim();
         if (szovetsegText.includes('Magányos farkas') || szovetsegText.includes('magányos farkas')) {
