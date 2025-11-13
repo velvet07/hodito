@@ -44,6 +44,32 @@ const ELOHALOTT_SZINT_BONUSZ = {
     5: 0
 };
 
+// Feldolgozás és számítás - a számítás gomb lenyomásakor
+function feldolgozEsSzamol() {
+    // Védők textarea értékeinek feldolgozása
+    const vedoKristalygomb = document.getElementById('vedo_kristalygomb');
+    const vedoEpuletlista = document.getElementById('vedo_epuletlista');
+    if (vedoKristalygomb && vedoKristalygomb.value.trim() !== '') {
+        importKristalygomb('vedo');
+    }
+    if (vedoEpuletlista && vedoEpuletlista.value.trim() !== '') {
+        importEpuletlista('vedo');
+    }
+    
+    // Támadók textarea értékeinek feldolgozása
+    const tamadoKristalygomb = document.getElementById('tamado_kristalygomb');
+    const tamadoEpuletlista = document.getElementById('tamado_epuletlista');
+    if (tamadoKristalygomb && tamadoKristalygomb.value.trim() !== '') {
+        importKristalygomb('tamado');
+    }
+    if (tamadoEpuletlista && tamadoEpuletlista.value.trim() !== '') {
+        importEpuletlista('tamado');
+    }
+    
+    // Számítás
+    szamol();
+}
+
 // Számítás főfüggvény
 function szamol() {
     const vedoPont = szamolVedoero();
@@ -315,8 +341,8 @@ function importKristalygomb(tipus) {
     let hasTudos = false;
     
     // Faj kinyerése - formátum: "Faj:\tTörpe" vagy "Faj:<tab>Törpe"
-    // A tab után lehet még tab vagy szóköz, majd jön az érték, majd lehet tab/szóköz és más mező
-    const fajMatch = text.match(/Faj:\t+([^\t\n\r]+?)(?:\t|$)/);
+    // A tab után lehet még tab vagy szóköz, majd jön az érték
+    const fajMatch = text.match(/Faj:\s*\t+\s*([^\t\n\r]+)/);
     if (fajMatch) {
         const fajText = fajMatch[1].trim();
         const fajMap = {
@@ -337,7 +363,7 @@ function importKristalygomb(tipus) {
     
     // Személyiség kinyerése (több személyiség is lehet, vesszővel elválasztva)
     // Formátum: "Személyiség:\tKereskedő, Vándor, Gazdálkodó, Tudós, ..."
-    const szemelyisegMatch = text.match(/Személyiség:\t+([^\t\n\r]+?)(?:\t|$)/);
+    const szemelyisegMatch = text.match(/Személyiség:\s*\t+\s*([^\t\n\r]+)/);
     if (szemelyisegMatch) {
         const szemelyisegText = szemelyisegMatch[1].trim();
         // Eltávolítjuk a felesleges szóközöket a vesszők körül
@@ -352,53 +378,54 @@ function importKristalygomb(tipus) {
     
     // Katonai egységek kinyerése - formátum: "Paraméter:\térték" ahol a tab a tabulátor
     // A pont a számokban a tizes csoport elválasztója (pl. 1.688 = 1688)
-    // Az érték után lehet tab vagy szóköz, majd jön a következő mező
-    const katonaMatch = text.match(/Katona:\t+([0-9.,\s]+?)(?:\t|$)/);
+    // A regex-ek több variációt is elfogadnak: lehet szóköz a kettőspont után, lehet több tab
+    const katonaMatch = text.match(/Katona:\s*\t+\s*([0-9.,\s]+)/);
     if (katonaMatch) {
         data.katona = extractNumber(katonaMatch[1]);
     }
     
-    const vedoMatch = text.match(/Védő:\t+([0-9.,\s]+?)(?:\t|$)/);
+    const vedoMatch = text.match(/Védő:\s*\t+\s*([0-9.,\s]+)/);
     if (vedoMatch) {
         data.vedo = extractNumber(vedoMatch[1]);
     }
     
-    const tamadoMatch = text.match(/Támadó:\t+([0-9.,\s]+?)(?:\t|$)/);
+    const tamadoMatch = text.match(/Támadó:\s*\t+\s*([0-9.,\s]+)/);
     if (tamadoMatch) {
         data.tamado = extractNumber(tamadoMatch[1]);
     }
     
-    const ijszMatch = text.match(/Íjász:\t+([0-9.,\s]+?)(?:\t|$)/);
+    const ijszMatch = text.match(/Íjász:\s*\t+\s*([0-9.,\s]+)/);
     if (ijszMatch) {
         data.ijsz = extractNumber(ijszMatch[1]);
     }
     
-    const lovasMatch = text.match(/Lovas:\t+([0-9.,\s]+?)(?:\t|$)/);
+    const lovasMatch = text.match(/Lovas:\s*\t+\s*([0-9.,\s]+)/);
     if (lovasMatch) {
         data.lovas = extractNumber(lovasMatch[1]);
     }
     
-    const elitMatch = text.match(/Elit:\t+([0-9.,\s]+?)(?:\t|$)/);
+    const elitMatch = text.match(/Elit:\s*\t+\s*([0-9.,\s]+)/);
     if (elitMatch) {
         data.elit = extractNumber(elitMatch[1]);
     }
     
     // Katonai morál - formátum: "Katonai morál:\t95 %" (százalékban van megadva)
     // A "Katonai morál" tartalmaz szóközt
-    const moralMatch = text.match(/Katonai\s+morál:\t+([0-9.,\s]+?)\s*%(?:\t|$)/);
+    const moralMatch = text.match(/Katonai\s+morál:\s*\t+\s*([0-9.,\s]+?)\s*%/);
     if (moralMatch) {
         data.katonai_moral = extractNumber(moralMatch[1]);
     }
     
     // Hektár - formátum: "Föld:\t2.482 hektár"
     // Az érték után lehet szóköz és "hektár" szó, majd tab
-    const hektarMatch = text.match(/Föld:\t+([0-9.,\s]+?)\s*hektár(?:\t|$)/i);
+    // A "Föld:" mezőből kinyerjük a hektárt
+    const hektarMatch = text.match(/Föld:\s*\t+\s*([0-9.,\s]+?)\s*hektár/i);
     if (hektarMatch) {
         data.hektar = extractNumber(hektarMatch[1]);
     }
     
     // Szövetség állapot (magányos farkas ellenőrzés) - formátum: "Szövetség:\tszövetség tagja" vagy "Szövetség:\tMagányos farkas"
-    const szovetsegMatch = text.match(/Szövetség:\t+([^\t\n\r]+?)(?:\t|$)/);
+    const szovetsegMatch = text.match(/Szövetség:\t+([^\t\n\r]+?)(?:\t|\n|$)/);
     if (szovetsegMatch) {
         const szovetsegText = szovetsegMatch[1].trim();
         if (szovetsegText.includes('Magányos farkas') || szovetsegText.includes('magányos farkas')) {
@@ -418,19 +445,60 @@ function importKristalygomb(tipus) {
         document.getElementById('vedo_lakashelyzeti_tekercs').value = maxLakashelyzeti;
     }
     
-    // Értékek beállítása
-    if (data.katona !== undefined) document.getElementById(tipus + '_katona').value = data.katona;
-    if (data.vedo !== undefined && tipus === 'vedo') document.getElementById(tipus + '_vedo').value = data.vedo;
-    if (data.tamado !== undefined) document.getElementById(tipus + '_tamado').value = data.tamado;
-    if (data.ijsz !== undefined) document.getElementById(tipus + '_ijsz').value = data.ijsz;
-    if (data.lovas !== undefined) document.getElementById(tipus + '_lovas').value = data.lovas;
-    if (data.elit !== undefined) document.getElementById(tipus + '_elit').value = data.elit;
-    if (data.katonai_moral !== undefined) document.getElementById(tipus + '_katonai_moral').value = data.katonai_moral;
-    if (data.hektar !== undefined && tipus === 'vedo') document.getElementById('vedo_hektar').value = data.hektar;
+    // Értékek beállítása - csak akkor írjuk felül, ha az adott mező 0 vagy üres
+    if (data.katona !== undefined) {
+        const katonaField = document.getElementById(tipus + '_katona');
+        if (!katonaField.value || parseInt(katonaField.value) === 0) {
+            katonaField.value = data.katona;
+        }
+    }
+    if (data.vedo !== undefined && tipus === 'vedo') {
+        const vedoField = document.getElementById(tipus + '_vedo');
+        if (!vedoField.value || parseInt(vedoField.value) === 0) {
+            vedoField.value = data.vedo;
+        }
+    }
+    if (data.tamado !== undefined) {
+        const tamadoField = document.getElementById(tipus + '_tamado');
+        if (!tamadoField.value || parseInt(tamadoField.value) === 0) {
+            tamadoField.value = data.tamado;
+        }
+    }
+    if (data.ijsz !== undefined) {
+        const ijszField = document.getElementById(tipus + '_ijsz');
+        if (!ijszField.value || parseInt(ijszField.value) === 0) {
+            ijszField.value = data.ijsz;
+        }
+    }
+    if (data.lovas !== undefined) {
+        const lovasField = document.getElementById(tipus + '_lovas');
+        if (!lovasField.value || parseInt(lovasField.value) === 0) {
+            lovasField.value = data.lovas;
+        }
+    }
+    if (data.elit !== undefined) {
+        const elitField = document.getElementById(tipus + '_elit');
+        if (!elitField.value || parseInt(elitField.value) === 0) {
+            elitField.value = data.elit;
+        }
+    }
+    if (data.katonai_moral !== undefined) {
+        const moralField = document.getElementById(tipus + '_katonai_moral');
+        if (!moralField.value || parseInt(moralField.value) === 0) {
+            moralField.value = data.katonai_moral;
+        }
+    }
+    if (data.hektar !== undefined && tipus === 'vedo') {
+        const hektarField = document.getElementById('vedo_hektar');
+        if (!hektarField.value || parseInt(hektarField.value) === 0) {
+            hektarField.value = data.hektar;
+        }
+    }
     
     // Mezők állapotának frissítése
     updateFieldStates();
-    szamol();
+    // Ne hívjuk meg a szamol() függvényt itt, mert a feldolgozEsSzamol() vagy az onBlur hívja meg
+    // Az onBlur eseményben már meghívjuk: importKristalygomb('vedo'); szamol();
 }
 
 // Épületlista importálása
@@ -441,31 +509,63 @@ function importEpuletlista(tipus) {
     
     const data = {};
     
-    // Hektár - több formátum támogatása
-    const hektarMatch = text.match(/Hektár:\s*([0-9.,\s]+)/i);
-    if (hektarMatch && tipus === 'vedo') {
-        data.hektar = extractNumber(hektarMatch[1]);
-    }
+    // Ellenőrizzük, hogy van-e kristálygömb adat
+    const kristalygombTextarea = document.getElementById(tipus + '_kristalygomb');
+    const hasKristalygomb = kristalygombTextarea && kristalygombTextarea.value.trim() !== '';
     
-    // Őrtorony - több formátum támogatása
-    const ortoronyMatch = text.match(/Őrtorony:\s*([0-9.,\s]+)/i);
-    if (ortoronyMatch && tipus === 'vedo') {
-        data.ortorony = extractNumber(ortoronyMatch[1]);
-    }
-    
-    // Ha nincs "Hektár:" formátum, próbáljuk a "Föld:" formátumot
-    if (!data.hektar) {
-        const foldMatch = text.match(/Föld:\s*([0-9.,\s]+)\s*hektár/i);
-        if (foldMatch && tipus === 'vedo') {
-            data.hektar = extractNumber(foldMatch[1]);
+    // Ha van kristálygömb adat, csak az Őrtornyok számát vegyük ki
+    if (hasKristalygomb && tipus === 'vedo') {
+        // Őrtorony - több formátum támogatása
+        const ortoronyMatch = text.match(/Őrtorony:\s*([0-9.,\s]+)/i);
+        if (ortoronyMatch) {
+            data.ortorony = extractNumber(ortoronyMatch[1]);
+        }
+        
+        // Értékek beállítása - csak akkor írjuk felül, ha az adott mező 0 vagy üres
+        if (data.ortorony !== undefined) {
+            const ortoronyField = document.getElementById('vedo_ortorony');
+            if (!ortoronyField.value || parseInt(ortoronyField.value) === 0) {
+                ortoronyField.value = data.ortorony;
+            }
+        }
+    } else {
+        // Ha nincs kristálygömb adat, akkor mindent feldolgozunk
+        // Hektár - több formátum támogatása
+        const hektarMatch = text.match(/Hektár:\s*([0-9.,\s]+)/i);
+        if (hektarMatch && tipus === 'vedo') {
+            data.hektar = extractNumber(hektarMatch[1]);
+        }
+        
+        // Őrtorony - több formátum támogatása
+        const ortoronyMatch = text.match(/Őrtorony:\s*([0-9.,\s]+)/i);
+        if (ortoronyMatch && tipus === 'vedo') {
+            data.ortorony = extractNumber(ortoronyMatch[1]);
+        }
+        
+        // Ha nincs "Hektár:" formátum, próbáljuk a "Föld:" formátumot
+        if (!data.hektar) {
+            const foldMatch = text.match(/Föld:\s*([0-9.,\s]+)\s*hektár/i);
+            if (foldMatch && tipus === 'vedo') {
+                data.hektar = extractNumber(foldMatch[1]);
+            }
+        }
+        
+        // Értékek beállítása - csak akkor írjuk felül, ha az adott mező 0 vagy üres
+        if (data.hektar !== undefined && tipus === 'vedo') {
+            const hektarField = document.getElementById('vedo_hektar');
+            if (!hektarField.value || parseInt(hektarField.value) === 0) {
+                hektarField.value = data.hektar;
+            }
+        }
+        if (data.ortorony !== undefined && tipus === 'vedo') {
+            const ortoronyField = document.getElementById('vedo_ortorony');
+            if (!ortoronyField.value || parseInt(ortoronyField.value) === 0) {
+                ortoronyField.value = data.ortorony;
+            }
         }
     }
     
-    // Értékek beállítása
-    if (data.hektar !== undefined) document.getElementById('vedo_hektar').value = data.hektar;
-    if (data.ortorony !== undefined) document.getElementById('vedo_ortorony').value = data.ortorony;
-    
-    szamol();
+    // Ne hívjuk meg a szamol() függvényt itt, mert a feldolgozEsSzamol() hívja meg
 }
 
 // Törlés függvény - kitörli az adatokat, de a textarea mezőket nem
