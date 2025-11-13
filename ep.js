@@ -610,15 +610,15 @@ var szamol = function() {
 	// Foglalkoztatottság
 	foglalkoztatottsag = Math.round(szukseges_lakos / nepesseg * 100);
 	if(foglalkoztatottsag > 100) {
-		$("#foglalkoztatottsag").html('100% <span style="color:#FF0000">' + Math.round(nepesseg-szukseges_lakos) + '</span>');
+		$("#foglalkoztatottsag").html('100% <span class="text-red-600 font-semibold">' + Math.round(nepesseg-szukseges_lakos) + '</span>');
 	} else {
-		$("#foglalkoztatottsag").html(foglalkoztatottsag + '% <span style="color:#009900">' + szukseges_lakos + ' dolgozik</span>');
+		$("#foglalkoztatottsag").html(foglalkoztatottsag + '% <span class="text-green-600">' + szukseges_lakos + ' dolgozik</span>');
 	}
 	foglalkoztatottsag_n= Math.round(szukseges_lakos2 / nepesseg * 100);
 	if(foglalkoztatottsag_n > 100) {
-		$("#foglalkoztatottsag2").html('100% <span style="color:#FF0000">' + Math.round(nepesseg-szukseges_lakos2) + '</span>');
+		$("#foglalkoztatottsag2").html('100% <span class="text-red-600 font-semibold">' + Math.round(nepesseg-szukseges_lakos2) + '</span>');
 	} else {
-		$("#foglalkoztatottsag2").html(foglalkoztatottsag_n + '% <span style="color:#009900">' + szukseges_lakos2 + ' dolgozik</span>');
+		$("#foglalkoztatottsag2").html(foglalkoztatottsag_n + '% <span class="text-green-600">' + szukseges_lakos2 + ' dolgozik</span>');
 	}
 	
 	// Barakkhely, Templomhely, Kocsmahely, Őrtoronyhely
@@ -655,14 +655,14 @@ var szamol = function() {
 	gabonatermeles = Math.round(tanya * 50 * gabonamodosito * gabonamodosito2);
 	
 	if((gabonatermeles-gabonaszukseglet) >= 0) {
-		$("#gabonaszukseglet").html(gabonaszukseglet + ' <span style="color:#009900">+' + (gabonatermeles-gabonaszukseglet) + ' </span>');
+		$("#gabonaszukseglet").html(gabonaszukseglet + ' <span class="text-green-600 font-semibold">+' + (gabonatermeles-gabonaszukseglet) + ' </span>');
 	} else {
-		$("#gabonaszukseglet").html(gabonaszukseglet + ' <span style="color:#FF0000">' + (gabonatermeles-gabonaszukseglet) + '</span> (' + Math.floor((raktar * 1000 * raktarmodosito)/(gabonaszukseglet-gabonatermeles)) + ' körre elegendő)');
+		$("#gabonaszukseglet").html(gabonaszukseglet + ' <span class="text-red-600 font-semibold">' + (gabonatermeles-gabonaszukseglet) + '</span> <span class="text-gray-500 text-xs">(' + Math.floor((raktar * 1000 * raktarmodosito)/(gabonaszukseglet-gabonatermeles)) + ' körre elegendő)</span>');
 	}
 	if((gabonatermeles-gabonaszukseglet_n) >= 0) {
-		$("#gabonaszukseglet2").html(gabonaszukseglet_n + ' <span style="color:#009900">+' + (gabonatermeles-gabonaszukseglet_n) + ' </span>');
+		$("#gabonaszukseglet2").html(gabonaszukseglet_n + ' <span class="text-green-600 font-semibold">+' + (gabonatermeles-gabonaszukseglet_n) + ' </span>');
 	} else {
-		$("#gabonaszukseglet2").html(gabonaszukseglet_n + ' <span style="color:#FF0000">' + (gabonatermeles-gabonaszukseglet_n) + '</span> (' + Math.floor((raktar * 1000 * raktarmodosito)/(gabonaszukseglet_n-gabonatermeles)) + ' körre elegendő)');
+		$("#gabonaszukseglet2").html(gabonaszukseglet_n + ' <span class="text-red-600 font-semibold">' + (gabonatermeles-gabonaszukseglet_n) + '</span> <span class="text-gray-500 text-xs">(' + Math.floor((raktar * 1000 * raktarmodosito)/(gabonaszukseglet_n-gabonatermeles)) + ' körre elegendő)</span>');
 	}
 
 	$("#fontos_epuletek").text(15 * (barakk + templom + kocsma + ortorony + raktar));

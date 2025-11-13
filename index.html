@@ -1,398 +1,514 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="hu">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="jquery-1.3.2.min.js"></script>
-<script type="text/javascript" src="jquery.cookie.js"></script>
-<script type="text/javascript" src="ep.js"></script>
-<link href="style.css" rel="stylesheet" type="text/css"/>
-<title>Épületlista számító v2.2.0</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Épületlista számító v2.2.0 - Hódító</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="jquery.cookie.js"></script>
+    <script type="text/javascript" src="ep.js"></script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
 </head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-6 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-6">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Épületlista számító</h1>
+            <p class="text-gray-600">Hódító.hu online stratégia játék épület számítási eszköze</p>
+        </header>
 
-<body>
-<table width="1000" border="0" cellspacing="0" cellpadding="0" class="main">
-<tr>
-	<td width="253" valign="top">
-        <table width="225" border="0" cellspacing="2" cellpadding="0" class="main">
-          <tr>
-            <td width="119">Hektár:</td>
-            <td width="44"><input type="text" name="hektar" id="hektar" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td width="54" id="hektar_sz">&nbsp;</td>
-          </tr>
-          <tr>
-            <td>Szabad terület:</td>
-            <td><input type="text" name="szabad_terulet" disabled id="szabad_terulet" size="5" class="mezo"></td>
-            <td id="szabad_terulet_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Ház:</td>
-            <td><input type="text" name="haz" id="haz" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="haz_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Barakk:</td>
-            <td><input type="text" name="barakk" id="barakk" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="barakk_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Kovácsműhely:</td>
-            <td><input type="text" name="kovacsmuhely" id="kovacsmuhely" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="kovacsmuhely_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Tanya:</td>
-            <td><input type="text" name="tanya" id="tanya" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="tanya_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Könyvtár:</td>
-            <td><input type="text" name="konyvtar" id="konyvtar" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="konyvtar_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Raktár:</td>
-            <td><input type="text" name="raktar" id="raktar" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="raktar_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Bányák:</td>
-            <td><input type="text" name="banyak" disabled id="banyak" size="5" class="mezo"></td>
-            <td id="banyak_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Őrtorony:</td>
-            <td><input type="text" name="ortorony" id="ortorony" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="ortorony_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Kocsma:</td>
-            <td><input type="text" name="kocsma" id="kocsma" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="kocsma_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Templom:</td>
-            <td><input type="text" name="templom" id="templom" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="templom_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Kórház:</td>
-            <td><input type="text" name="korhaz"  id="korhaz"size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="korhaz_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Piac:</td>
-            <td><input type="text" name="piac" id="piac" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="piac_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Bank:</td>
-            <td><input type="text" name="bank" id="bank" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="bank_sz">0%</td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td>Fatelep:</td>
-            <td><input type="text" name="fatelep" id="fatelep" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="fatelep_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Kőbánya:</td>
-            <td><input type="text" name="kobanya" id="kobanya" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="kobanya_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Fémbánya:</td>
-            <td><input type="text" name="fembanya" id="fembanya" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="fembanya_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Agyagbánya:</td>
-            <td><input type="text" name="agyagbanya" id="agyagbanya" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="agyagbanya_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Drágakőbánya:</td>
-            <td><input type="text" name="dragakobanya" id="dragakobanya" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="dragakobanya_sz">0%</td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td>Erdő:</td>
-            <td><input type="text" name="erdo" id="erdo" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="erdo_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Kőlelőhely:</td>
-            <td><input type="text" name="kolelohely" id="kolelohely" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="kolelohely_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Fémlelőhely:</td>
-            <td><input type="text" name="femlelohely" id="femlelohely" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="femlelohely_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Agyaglelőhely:</td>
-            <td><input type="text" name="agyaglelohely" id="agyaglelohely" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="agyaglelohely_sz">0%</td>
-          </tr>
-          <tr>
-            <td>Drágakőlelőhely:</td>
-            <td><input type="text" name="dragakolelohely" id="dragakolelohely" size="5" onKeyUp="szamol()" class="mezo"></td>
-            <td id="dragakolelohely_sz">0%</td>
-          </tr>
-          <tr>
-            <td colspan="3">&nbsp;</td>
-          </tr>
-          <tr>
-            <td colspan="3">
-			<input type="button" name="saveButt" id="saveButt" value="Mentés" onClick="save()" onMouseOver="overSave()" onMouseOut="$('#tip').html('');"/> 
-			<input type="button" name="loadButt" id="loadButt" value="Betöltés" onClick="load()" onMouseOver="overLoad()" onMouseOut="$('#tip').html('');" /> 
-			<input type="button" name="delButt" id="delButt" value="Törlés" onClick="del()" onMouseOver="overDel()" onMouseOut="$('#tip').html('');" /> </td>
-          </tr>
-          <tr>
-            <td colspan="3"><span style="font-size:10px;"><span id="tip"></span><br/><span id="tip2"></span></span></td>
-          </tr>
-        </table>	</td>
-    <td width="315" valign="top"><table width="300" border="0" cellspacing="2" cellpadding="0" class="main">
-  <tr>
-    <td width="113">Faj:</td>
-    <td width="187"><select name="faj" id="faj" onChange="szamol()" class="mezo">
-    <option value="none">válassz</option>
-    <option value="elf">Elf</option>
-    <option value="ork">Ork</option>
-    <option value="felelf">Félelf</option>
-    <option value="torpe">Törpe</option>
-    <option value="gnom">Gnóm</option>
-    <option value="orias">Óriás</option>
-    <option value="elohalott">Élőhalott</option>
-    <option value="ember">Ember</option>
-    </select>    </td>
-  </tr>
-  <tr>
-    <td>Személyiség(ek):</td>
-    <td><select name="szemelyiseg" id="szemelyiseg" multiple size="10" onChange="szamol()" class="mezo">
-    <option value="none" selected>---</option>
-    <option value="kereskedo">Kereskedő</option>
-    <option value="tolvaj">Tolvaj</option>
-    <option value="varazslo">Varázsló</option>
-    <option value="haros">Harcos</option>
-    <option value="tabornok">Tábornok</option>
-    <option value="vandor">Vándor</option>
-    <option value="tudos">Tudós</option>
-    <option value="gazdalkodo">Gazdálkodó</option>
-    <option value="tulelo">Túlélő</option>
-    </select></td>
-  </tr>
-  <tr>
-    <td><span id="szint_label" style="display:none">Szint:</span>&nbsp;</td>
-    <td><select name="szint" id="szint" onChange="szamol()" class="mezo" style="display:none">
-    <option value="5">5.</option>
-    <option value="4">4.</option>
-    <option value="3">3.</option>
-    <option value="2">2.</option>
-    <option value="1">1.</option>
-    </select>&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="2"><input checked="checked" type="checkbox" id="skip_tekercs" onChange="szamol()" /> <label for="skip_tekercs">Számolás az elérhető legmagasabb tekercsszámmal.</label><br />
-      <span style="font-size:10px;">(ekkor figyelmen kívül hagyja a tekercsekhez beírt értékeket)</span></td>
-  </tr>
-  <tr>
-    <td colspan="2"><strong>Tekercsek</strong></td>
-    </tr>
-  <tr>
-    <td>Mezőgazdaság:</td>
-    <td><input type="text" name="mezogazdasag" id="mezogazdasag" size="5" onKeyUp="tekercs()" class="mezo"> %</td>
-  </tr>
-  <tr>
-    <td>Lakáshelyzet:</td>
-    <td><input type="text" name="lakashelyzet" id="lakashelyzet" size="5" onKeyUp="tekercs()" class="mezo"> %</td>
-  </tr>
-  <tr>
-    <td>Bányászat:</td>
-    <td><input type="text" name="banyaszat" id="banyaszat" size="5" onKeyUp="tekercs()" class="mezo"> %</td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Beillesztés:</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <textarea name="lista" id="lista" rows="10" style="width:100%;"></textarea>	</td>
-  </tr>
-  <tr>
-    <td>
-      <input type="button" name="button" id="button" value="Feldolgoz" onClick="feldolgoz()" />    </td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-     <td colspan="2"><span style="font-size:10px;">Ide beilleszthetsz egy játékbeli épületlistát, melyet autómatikusan értelmez a rendszer.<br />Formátum:<br />Épület: darabszám</span></td>
-  </tr>
-  
-</table></td>
-<td width="432" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0" class="main">
-<tr>
-    <td>Népesség:</td>
-    <td id="nepesseg">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Foglalkoztatottság:</td>
-    <td id="foglalkoztatottsag">&nbsp;</td>
-  </tr>
-  <tr>
-    <td nowrap>Foglalkoztatottság (bank nélkül):</td>
-    <td id="foglalkoztatottsag2">&nbsp;</td>
-  </tr>
-  <tr>
-    <td nowrap>Érték:</td>
-    <td id="ertek">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Barakk férőhely:</td>
-    <td id="barakkhely">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Templom férőhely:</td>
-    <td id="templomhely">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Kocsma férőhely:</td>
-    <td id="kocsmahely">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Őrtorony férőhely:</td>
-    <td id="ortoronyhely">&nbsp;</td>
-  </tr>
-   <tr>
-    <td>Barakk mínusz Torony:</td>
-    <td id="barakk_torony">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td><strong>Raktárférőhelyek</strong></td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Gabona:</td>
-    <td id="gabona">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Agyag:</td>
-    <td id="agyag">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Fa:</td>
-    <td id="fa">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Kő:</td>
-    <td id="ko">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Fém:</td>
-    <td id="fem">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Fegyver:</td>
-    <td id="fegyver">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Drágakő:</td>
-    <td id="dragako">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>  
-  <tr>
-    <td width="49%"><strong>Termelés</strong></td>
-    <td width="51%">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Gabona:</td>
-    <td id="gabona_t">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Agyag:</td>
-    <td id="agyag_t">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Fa:</td>
-    <td id="fa_t">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Kő:</td>
-    <td id="ko_t">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Fém:</td>
-    <td id="fem_t">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Fegyver:</td>
-    <td id="fegyver_t">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Drágakő:</td>
-    <td id="dragako_t">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Bankadatok</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Ellopható pénz:</td>
-    <td id="penz_lop">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Maximális kamat:</td>
-    <td id="kamat">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>  
-  <tr>
-    <td>Gabonaszükséglet:</td>
-    <td nowrap id="gabonaszukseglet">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Gabonaszükséglet (sereg nélkül):</td>
-    <td nowrap id="gabonaszukseglet2">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>Főbb épületek emberigénye:</td>
-    <td id="fontos_epuletek">&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="2"><em>barakk, templom, kocsma, őrtorony,  raktár</em></td>
-    </tr>
-</table></td>
-</tr>
-</table>
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+            
+            <!-- Left Column: Épületek -->
+            <div class="bg-white rounded-lg shadow-md p-4 lg:p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Épületek</h2>
+                
+                <div class="space-y-3">
+                    <!-- Hektár -->
+                    <div class="grid grid-cols-3 gap-2 items-center">
+                        <label class="text-sm font-medium text-gray-700">Hektár:</label>
+                        <input type="text" name="hektar" id="hektar" onKeyUp="szamol()" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <span id="hektar_sz" class="text-xs text-gray-500 text-right">&nbsp;</span>
+                    </div>
+                    
+                    <!-- Szabad terület -->
+                    <div class="grid grid-cols-3 gap-2 items-center">
+                        <label class="text-sm font-medium text-gray-700">Szabad terület:</label>
+                        <input type="text" name="szabad_terulet" disabled id="szabad_terulet" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-sm">
+                        <span id="szabad_terulet_sz" class="text-xs text-gray-500 text-right">0%</span>
+                    </div>
+
+                    <!-- Épületek listája -->
+                    <div class="mt-4 space-y-2">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-2">Lakóépületek</h3>
+                        <div class="space-y-2">
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Ház:</label>
+                                <input type="text" name="haz" id="haz" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="haz_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Barakk:</label>
+                                <input type="text" name="barakk" id="barakk" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="barakk_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Kovácsműhely:</label>
+                                <input type="text" name="kovacsmuhely" id="kovacsmuhely" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="kovacsmuhely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Tanya:</label>
+                                <input type="text" name="tanya" id="tanya" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="tanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Könyvtár:</label>
+                                <input type="text" name="konyvtar" id="konyvtar" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="konyvtar_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Raktár:</label>
+                                <input type="text" name="raktar" id="raktar" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="raktar_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Őrtorony:</label>
+                                <input type="text" name="ortorony" id="ortorony" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="ortorony_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Kocsma:</label>
+                                <input type="text" name="kocsma" id="kocsma" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="kocsma_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Templom:</label>
+                                <input type="text" name="templom" id="templom" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="templom_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Kórház:</label>
+                                <input type="text" name="korhaz" id="korhaz" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="korhaz_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Piac:</label>
+                                <input type="text" name="piac" id="piac" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="piac_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 items-center">
+                                <label class="text-sm text-gray-700">Bank:</label>
+                                <input type="text" name="bank" id="bank" onKeyUp="szamol()" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <span id="bank_sz" class="text-xs text-gray-500 text-right">0%</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <h3 class="text-sm font-semibold text-gray-700 mb-2">Bányák</h3>
+                            <div class="space-y-2">
+                                <div class="grid grid-cols-3 gap-2 items-center">
+                                    <label class="text-sm text-gray-700">Bányák:</label>
+                                    <input type="text" name="banyak" disabled id="banyak" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-sm">
+                                    <span id="banyak_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 items-center">
+                                    <label class="text-sm text-gray-700">Fatelep:</label>
+                                    <input type="text" name="fatelep" id="fatelep" onKeyUp="szamol()" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span id="fatelep_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 items-center">
+                                    <label class="text-sm text-gray-700">Kőbánya:</label>
+                                    <input type="text" name="kobanya" id="kobanya" onKeyUp="szamol()" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span id="kobanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 items-center">
+                                    <label class="text-sm text-gray-700">Fémbánya:</label>
+                                    <input type="text" name="fembanya" id="fembanya" onKeyUp="szamol()" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span id="fembanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 items-center">
+                                    <label class="text-sm text-gray-700">Agyagbánya:</label>
+                                    <input type="text" name="agyagbanya" id="agyagbanya" onKeyUp="szamol()" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span id="agyagbanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 items-center">
+                                    <label class="text-sm text-gray-700">Drágakőbánya:</label>
+                                    <input type="text" name="dragakobanya" id="dragakobanya" onKeyUp="szamol()" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span id="dragakobanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <h3 class="text-sm font-semibold text-gray-700 mb-2">Lelőhelyek</h3>
+                            <div class="space-y-2">
+                                <div class="grid grid-cols-3 gap-2 items-center">
+                                    <label class="text-sm text-gray-700">Erdő:</label>
+                                    <input type="text" name="erdo" id="erdo" onKeyUp="szamol()" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span id="erdo_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 items-center">
+                                    <label class="text-sm text-gray-700">Kőlelőhely:</label>
+                                    <input type="text" name="kolelohely" id="kolelohely" onKeyUp="szamol()" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span id="kolelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 items-center">
+                                    <label class="text-sm text-gray-700">Fémlelőhely:</label>
+                                    <input type="text" name="femlelohely" id="femlelohely" onKeyUp="szamol()" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span id="femlelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 items-center">
+                                    <label class="text-sm text-gray-700">Agyaglelőhely:</label>
+                                    <input type="text" name="agyaglelohely" id="agyaglelohely" onKeyUp="szamol()" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span id="agyaglelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 items-center">
+                                    <label class="text-sm text-gray-700">Drágakőlelőhely:</label>
+                                    <input type="text" name="dragakolelohely" id="dragakolelohely" onKeyUp="szamol()" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span id="dragakolelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-6 pt-4 border-t border-gray-200">
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <button id="saveButt" onClick="save()" onMouseOver="overSave()" onMouseOut="$('#tip').html('');"
+                                    class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors text-sm font-medium">
+                                    Mentés
+                                </button>
+                                <button id="loadButt" onClick="load()" onMouseOver="overLoad()" onMouseOut="$('#tip').html('');"
+                                    class="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors text-sm font-medium">
+                                    Betöltés
+                                </button>
+                                <button id="delButt" onClick="del()" onMouseOver="overDel()" onMouseOut="$('#tip').html('');"
+                                    class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors text-sm font-medium">
+                                    Törlés
+                                </button>
+                            </div>
+                            <div class="mt-2 text-xs text-gray-500">
+                                <span id="tip"></span>
+                                <br/><span id="tip2"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Column: Faj, Személyiség, Tekercsek -->
+            <div class="bg-white rounded-lg shadow-md p-4 lg:p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Beállítások</h2>
+                
+                <div class="space-y-4">
+                    <!-- Faj -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Faj:</label>
+                        <select name="faj" id="faj" onChange="szamol()" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                            <option value="none">válassz</option>
+                            <option value="elf">Elf</option>
+                            <option value="ork">Ork</option>
+                            <option value="felelf">Félelf</option>
+                            <option value="torpe">Törpe</option>
+                            <option value="gnom">Gnóm</option>
+                            <option value="orias">Óriás</option>
+                            <option value="elohalott">Élőhalott</option>
+                            <option value="ember">Ember</option>
+                        </select>
+                    </div>
+
+                    <!-- Személyiség -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Személyiség(ek):</label>
+                        <select name="szemelyiseg" id="szemelyiseg" multiple size="10" onChange="szamol()" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                            <option value="none" selected>---</option>
+                            <option value="kereskedo">Kereskedő</option>
+                            <option value="tolvaj">Tolvaj</option>
+                            <option value="varazslo">Varázsló</option>
+                            <option value="haros">Harcos</option>
+                            <option value="tabornok">Tábornok</option>
+                            <option value="vandor">Vándor</option>
+                            <option value="tudos">Tudós</option>
+                            <option value="gazdalkodo">Gazdálkodó</option>
+                            <option value="tulelo">Túlélő</option>
+                        </select>
+                    </div>
+
+                    <!-- Szint (élőhalott) -->
+                    <div>
+                        <span id="szint_label" class="block text-sm font-medium text-gray-700 mb-2" style="display:none">Szint:</span>
+                        <select name="szint" id="szint" onChange="szamol()" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" style="display:none">
+                            <option value="5">5.</option>
+                            <option value="4">4.</option>
+                            <option value="3">3.</option>
+                            <option value="2">2.</option>
+                            <option value="1">1.</option>
+                        </select>
+                    </div>
+
+                    <!-- Skip tekercs checkbox -->
+                    <div class="flex items-start">
+                        <input checked="checked" type="checkbox" id="skip_tekercs" onChange="szamol()" 
+                            class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="skip_tekercs" class="ml-2 text-sm text-gray-700">
+                            Számolás az elérhető legmagasabb tekercsszámmal.
+                            <span class="block text-xs text-gray-500 mt-1">(ekkor figyelmen kívül hagyja a tekercsekhez beírt értékeket)</span>
+                        </label>
+                    </div>
+
+                    <!-- Tekercsek -->
+                    <div class="pt-4 border-t border-gray-200">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-3">Tekercsek</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">Mezőgazdaság:</label>
+                                <div class="flex items-center">
+                                    <input type="text" name="mezogazdasag" id="mezogazdasag" onKeyUp="tekercs()" 
+                                        class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span class="ml-2 text-sm text-gray-600">%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">Lakáshelyzet:</label>
+                                <div class="flex items-center">
+                                    <input type="text" name="lakashelyzet" id="lakashelyzet" onKeyUp="tekercs()" 
+                                        class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span class="ml-2 text-sm text-gray-600">%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">Bányászat:</label>
+                                <div class="flex items-center">
+                                    <input type="text" name="banyaszat" id="banyaszat" onKeyUp="tekercs()" 
+                                        class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <span class="ml-2 text-sm text-gray-600">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Beillesztés -->
+                    <div class="pt-4 border-t border-gray-200">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-2">Beillesztés</h3>
+                        <textarea name="lista" id="lista" rows="8" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono"></textarea>
+                        <button id="button" onClick="feldolgoz()" 
+                            class="mt-2 w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors text-sm font-medium">
+                            Feldolgoz
+                        </button>
+                        <p class="mt-2 text-xs text-gray-500">
+                            Ide beilleszthetsz egy játékbeli épületlistát, melyet autómatikusan értelmez a rendszer.<br/>
+                            Formátum:<br/>
+                            Épület: darabszám
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Eredmények -->
+            <div class="bg-white rounded-lg shadow-md p-4 lg:p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Eredmények</h2>
+                
+                <div class="space-y-4">
+                    <!-- Alapadatok -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-sm font-medium text-gray-700">Népesség:</span>
+                            <span id="nepesseg" class="text-sm font-semibold text-gray-900">&nbsp;</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-sm font-medium text-gray-700">Foglalkoztatottság:</span>
+                            <span id="foglalkoztatottsag" class="text-sm font-semibold text-gray-900">&nbsp;</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-sm font-medium text-gray-700">Foglalkoztatottság (bank nélkül):</span>
+                            <span id="foglalkoztatottsag2" class="text-sm font-semibold text-gray-900">&nbsp;</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-sm font-medium text-gray-700">Érték:</span>
+                            <span id="ertek" class="text-sm font-semibold text-gray-900">&nbsp;</span>
+                        </div>
+                    </div>
+
+                    <!-- Férőhelyek -->
+                    <div class="pt-2">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-2">Férőhelyek</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Barakk:</span>
+                                <span id="barakkhely" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Templom:</span>
+                                <span id="templomhely" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Kocsma:</span>
+                                <span id="kocsmahely" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Őrtorony:</span>
+                                <span id="ortoronyhely" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Barakk - Torony:</span>
+                                <span id="barakk_torony" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Raktárférőhelyek -->
+                    <div class="pt-2 border-t border-gray-200">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-2">Raktárférőhelyek</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Gabona:</span>
+                                <span id="gabona" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Agyag:</span>
+                                <span id="agyag" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Fa:</span>
+                                <span id="fa" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Kő:</span>
+                                <span id="ko" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Fém:</span>
+                                <span id="fem" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Fegyver:</span>
+                                <span id="fegyver" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Drágakő:</span>
+                                <span id="dragako" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Termelés -->
+                    <div class="pt-2 border-t border-gray-200">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-2">Termelés</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Gabona:</span>
+                                <span id="gabona_t" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Agyag:</span>
+                                <span id="agyag_t" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Fa:</span>
+                                <span id="fa_t" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Kő:</span>
+                                <span id="ko_t" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Fém:</span>
+                                <span id="fem_t" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Fegyver:</span>
+                                <span id="fegyver_t" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Drágakő:</span>
+                                <span id="dragako_t" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bankadatok -->
+                    <div class="pt-2 border-t border-gray-200">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-2">Bankadatok</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Ellopható pénz:</span>
+                                <span id="penz_lop" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Maximális kamat:</span>
+                                <span id="kamat" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gabonaszükséglet -->
+                    <div class="pt-2 border-t border-gray-200">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-2">Gabonaszükséglet</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Teljes:</span>
+                                <span id="gabonaszukseglet" class="text-xs font-medium">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Sereg nélkül:</span>
+                                <span id="gabonaszukseglet2" class="text-xs font-medium">&nbsp;</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-xs text-gray-600">Főbb épületek emberigénye:</span>
+                                <span id="fontos_epuletek" class="text-xs font-medium text-gray-900">&nbsp;</span>
+                            </div>
+                            <p class="text-xs text-gray-500 italic mt-1">barakk, templom, kocsma, őrtorony, raktár</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
