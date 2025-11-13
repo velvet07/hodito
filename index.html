@@ -43,137 +43,177 @@
                 
                 <div class="space-y-3">
                     <!-- Hektár -->
-                    <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                    <div class="flex items-center justify-between gap-1.5">
                         <label class="text-xs font-medium text-gray-700 whitespace-nowrap">Hektár:</label>
-                        <input type="text" name="hektar" id="hektar" onKeyUp="szamol()" 
-                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                        <span id="hektar_sz" class="text-xs text-gray-500 text-right">&nbsp;</span>
+                        <div class="flex items-center gap-1.5">
+                            <input type="text" name="hektar" id="hektar" onKeyUp="szamol()" 
+                                class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                            <span id="hektar_sz" class="text-xs text-gray-500 text-right">&nbsp;</span>
+                        </div>
                     </div>
                     
                     <!-- Szabad terület -->
-                    <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                    <div class="flex items-center justify-between gap-1.5">
                         <label class="text-xs font-medium text-gray-700 whitespace-nowrap">Szabad terület:</label>
-                        <input type="text" name="szabad_terulet" disabled id="szabad_terulet" 
-                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md bg-gray-100 text-xs">
-                        <span id="szabad_terulet_sz" class="text-xs text-gray-500 text-right">0%</span>
+                        <div class="flex items-center gap-1.5">
+                            <input type="text" name="szabad_terulet" disabled id="szabad_terulet" 
+                                class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md bg-gray-100 text-xs">
+                            <span id="szabad_terulet_sz" class="text-xs text-gray-500 text-right">0%</span>
+                        </div>
                     </div>
 
                     <!-- Épületek listája -->
                     <div class="mt-4 space-y-2">
                         <h3 class="text-sm font-semibold text-gray-700 mb-2">Lakóépületek</h3>
                         <div class="space-y-1.5">
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Ház:</label>
-                                <input type="text" name="haz" id="haz" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="haz_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="haz" id="haz" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="haz_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Barakk:</label>
-                                <input type="text" name="barakk" id="barakk" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="barakk_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="barakk" id="barakk" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="barakk_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Kovácsműhely:</label>
-                                <input type="text" name="kovacsmuhely" id="kovacsmuhely" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="kovacsmuhely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="kovacsmuhely" id="kovacsmuhely" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="kovacsmuhely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Tanya:</label>
-                                <input type="text" name="tanya" id="tanya" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="tanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="tanya" id="tanya" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="tanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Könyvtár:</label>
-                                <input type="text" name="konyvtar" id="konyvtar" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="konyvtar_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="konyvtar" id="konyvtar" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="konyvtar_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Raktár:</label>
-                                <input type="text" name="raktar" id="raktar" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="raktar_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="raktar" id="raktar" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="raktar_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Őrtorony:</label>
-                                <input type="text" name="ortorony" id="ortorony" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="ortorony_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="ortorony" id="ortorony" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="ortorony_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Kocsma:</label>
-                                <input type="text" name="kocsma" id="kocsma" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="kocsma_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="kocsma" id="kocsma" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="kocsma_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Templom:</label>
-                                <input type="text" name="templom" id="templom" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="templom_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="templom" id="templom" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="templom_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Kórház:</label>
-                                <input type="text" name="korhaz" id="korhaz" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="korhaz_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="korhaz" id="korhaz" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="korhaz_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Piac:</label>
-                                <input type="text" name="piac" id="piac" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="piac_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="piac" id="piac" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="piac_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                            <div class="flex items-center justify-between gap-1.5">
                                 <label class="text-xs text-gray-700 whitespace-nowrap">Bank:</label>
-                                <input type="text" name="bank" id="bank" onKeyUp="szamol()" 
-                                    class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                <span id="bank_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" name="bank" id="bank" onKeyUp="szamol()" 
+                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                    <span id="bank_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                </div>
                             </div>
                         </div>
 
                         <div class="mt-4 pt-4 border-t border-gray-200">
                             <h3 class="text-sm font-semibold text-gray-700 mb-2">Bányák</h3>
                             <div class="space-y-1.5">
-                                <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                                <div class="flex items-center justify-between gap-1.5">
                                     <label class="text-xs text-gray-700 whitespace-nowrap">Bányák:</label>
-                                    <input type="text" name="banyak" disabled id="banyak" 
-                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md bg-gray-100 text-xs">
-                                    <span id="banyak_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" name="banyak" disabled id="banyak" 
+                                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md bg-gray-100 text-xs">
+                                        <span id="banyak_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                                <div class="flex items-center justify-between gap-1.5">
                                     <label class="text-xs text-gray-700 whitespace-nowrap">Fatelep:</label>
-                                    <input type="text" name="fatelep" id="fatelep" onKeyUp="szamol()" 
-                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                    <span id="fatelep_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" name="fatelep" id="fatelep" onKeyUp="szamol()" 
+                                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                        <span id="fatelep_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                                <div class="flex items-center justify-between gap-1.5">
                                     <label class="text-xs text-gray-700 whitespace-nowrap">Kőbánya:</label>
-                                    <input type="text" name="kobanya" id="kobanya" onKeyUp="szamol()" 
-                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                    <span id="kobanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" name="kobanya" id="kobanya" onKeyUp="szamol()" 
+                                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                        <span id="kobanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                                <div class="flex items-center justify-between gap-1.5">
                                     <label class="text-xs text-gray-700 whitespace-nowrap">Fémbánya:</label>
-                                    <input type="text" name="fembanya" id="fembanya" onKeyUp="szamol()" 
-                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                    <span id="fembanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" name="fembanya" id="fembanya" onKeyUp="szamol()" 
+                                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                        <span id="fembanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                                <div class="flex items-center justify-between gap-1.5">
                                     <label class="text-xs text-gray-700 whitespace-nowrap">Agyagbánya:</label>
-                                    <input type="text" name="agyagbanya" id="agyagbanya" onKeyUp="szamol()" 
-                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                    <span id="agyagbanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" name="agyagbanya" id="agyagbanya" onKeyUp="szamol()" 
+                                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                        <span id="agyagbanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                                <div class="flex items-center justify-between gap-1.5">
                                     <label class="text-xs text-gray-700 whitespace-nowrap">Drágakőbánya:</label>
-                                    <input type="text" name="dragakobanya" id="dragakobanya" onKeyUp="szamol()" 
-                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                    <span id="dragakobanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" name="dragakobanya" id="dragakobanya" onKeyUp="szamol()" 
+                                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                        <span id="dragakobanya_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -181,35 +221,45 @@
                         <div class="mt-4 pt-4 border-t border-gray-200">
                             <h3 class="text-sm font-semibold text-gray-700 mb-2">Lelőhelyek</h3>
                             <div class="space-y-1.5">
-                                <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                                <div class="flex items-center justify-between gap-1.5">
                                     <label class="text-xs text-gray-700 whitespace-nowrap">Erdő:</label>
-                                    <input type="text" name="erdo" id="erdo" onKeyUp="szamol()" 
-                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                    <span id="erdo_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" name="erdo" id="erdo" onKeyUp="szamol()" 
+                                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                        <span id="erdo_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                                <div class="flex items-center justify-between gap-1.5">
                                     <label class="text-xs text-gray-700 whitespace-nowrap">Kőlelőhely:</label>
-                                    <input type="text" name="kolelohely" id="kolelohely" onKeyUp="szamol()" 
-                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                    <span id="kolelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" name="kolelohely" id="kolelohely" onKeyUp="szamol()" 
+                                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                        <span id="kolelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                                <div class="flex items-center justify-between gap-1.5">
                                     <label class="text-xs text-gray-700 whitespace-nowrap">Fémlelőhely:</label>
-                                    <input type="text" name="femlelohely" id="femlelohely" onKeyUp="szamol()" 
-                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                    <span id="femlelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" name="femlelohely" id="femlelohely" onKeyUp="szamol()" 
+                                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                        <span id="femlelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                                <div class="flex items-center justify-between gap-1.5">
                                     <label class="text-xs text-gray-700 whitespace-nowrap">Agyaglelőhely:</label>
-                                    <input type="text" name="agyaglelohely" id="agyaglelohely" onKeyUp="szamol()" 
-                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                    <span id="agyaglelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" name="agyaglelohely" id="agyaglelohely" onKeyUp="szamol()" 
+                                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                        <span id="agyaglelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-[auto_1fr_auto] gap-1.5 items-center">
+                                <div class="flex items-center justify-between gap-1.5">
                                     <label class="text-xs text-gray-700 whitespace-nowrap">Drágakőlelőhely:</label>
-                                    <input type="text" name="dragakolelohely" id="dragakolelohely" onKeyUp="szamol()" 
-                                        class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                                    <span id="dragakolelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" name="dragakolelohely" id="dragakolelohely" onKeyUp="szamol()" 
+                                            class="w-full max-w-[6ch] px-1 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
+                                        <span id="dragakolelohely_sz" class="text-xs text-gray-500 text-right">0%</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -408,103 +458,106 @@
                         <label class="block text-xs font-medium text-gray-700 mb-2">Faj:</label>
                         <select name="faj" id="faj" onChange="szamol()" 
                             class="w-full px-2 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs">
-                            <option value="none">válassz</option>
-                            <option value="elf">Elf</option>
-                            <option value="ork">Ork</option>
-                            <option value="felelf">Félelf</option>
-                            <option value="torpe">Törpe</option>
-                            <option value="gnom">Gnóm</option>
-                            <option value="orias">Óriás</option>
-                            <option value="elohalott">Élőhalott</option>
-                            <option value="ember">Ember</option>
+    <option value="none">válassz</option>
+    <option value="elf">Elf</option>
+    <option value="ork">Ork</option>
+    <option value="felelf">Félelf</option>
+    <option value="torpe">Törpe</option>
+    <option value="gnom">Gnóm</option>
+    <option value="orias">Óriás</option>
+    <option value="elohalott">Élőhalott</option>
+    <option value="ember">Ember</option>
                         </select>
                     </div>
 
-                    <!-- Személyiség -->
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-2">Személyiség(ek):</label>
-                        <div class="space-y-1.5">
-                            <div class="flex items-center">
-                                <input type="checkbox" name="szemelyiseg" id="szemelyiseg_kereskedo" value="kereskedo" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="szemelyiseg_kereskedo" class="ml-2 text-xs text-gray-700">Kereskedő</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="szemelyiseg" id="szemelyiseg_tolvaj" value="tolvaj" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="szemelyiseg_tolvaj" class="ml-2 text-xs text-gray-700">Tolvaj</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="szemelyiseg" id="szemelyiseg_varazslo" value="varazslo" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="szemelyiseg_varazslo" class="ml-2 text-xs text-gray-700">Varázsló</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="szemelyiseg" id="szemelyiseg_haros" value="haros" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="szemelyiseg_haros" class="ml-2 text-xs text-gray-700">Harcos</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="szemelyiseg" id="szemelyiseg_tabornok" value="tabornok" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="szemelyiseg_tabornok" class="ml-2 text-xs text-gray-700">Tábornok</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="szemelyiseg" id="szemelyiseg_vandor" value="vandor" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="szemelyiseg_vandor" class="ml-2 text-xs text-gray-700">Vándor</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="szemelyiseg" id="szemelyiseg_tudos" value="tudos" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="szemelyiseg_tudos" class="ml-2 text-xs text-gray-700">Tudós</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="szemelyiseg" id="szemelyiseg_gazdalkodo" value="gazdalkodo" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="szemelyiseg_gazdalkodo" class="ml-2 text-xs text-gray-700">Gazdálkodó</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="szemelyiseg" id="szemelyiseg_tulelo" value="tulelo" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="szemelyiseg_tulelo" class="ml-2 text-xs text-gray-700">Túlélő</label>
+                    <!-- Személyiség és Időszakok -->
+                    <div class="grid grid-cols-2 gap-x-4">
+                        <!-- Személyiség -->
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-2">Személyiség(ek):</label>
+                            <div class="space-y-1.5">
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="szemelyiseg" id="szemelyiseg_kereskedo" value="kereskedo" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="szemelyiseg_kereskedo" class="ml-2 text-xs text-gray-700">Kereskedő</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="szemelyiseg" id="szemelyiseg_tolvaj" value="tolvaj" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="szemelyiseg_tolvaj" class="ml-2 text-xs text-gray-700">Tolvaj</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="szemelyiseg" id="szemelyiseg_varazslo" value="varazslo" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="szemelyiseg_varazslo" class="ml-2 text-xs text-gray-700">Varázsló</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="szemelyiseg" id="szemelyiseg_haros" value="haros" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="szemelyiseg_haros" class="ml-2 text-xs text-gray-700">Harcos</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="szemelyiseg" id="szemelyiseg_tabornok" value="tabornok" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="szemelyiseg_tabornok" class="ml-2 text-xs text-gray-700">Tábornok</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="szemelyiseg" id="szemelyiseg_vandor" value="vandor" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="szemelyiseg_vandor" class="ml-2 text-xs text-gray-700">Vándor</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="szemelyiseg" id="szemelyiseg_tudos" value="tudos" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="szemelyiseg_tudos" class="ml-2 text-xs text-gray-700">Tudós</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="szemelyiseg" id="szemelyiseg_gazdalkodo" value="gazdalkodo" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="szemelyiseg_gazdalkodo" class="ml-2 text-xs text-gray-700">Gazdálkodó</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="szemelyiseg" id="szemelyiseg_tulelo" value="tulelo" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="szemelyiseg_tulelo" class="ml-2 text-xs text-gray-700">Túlélő</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Időszakok -->
-                    <div class="pt-2 border-t border-gray-200">
-                        <label class="block text-xs font-medium text-gray-700 mb-2">Időszakok:</label>
-                        <div class="space-y-1.5">
-                            <div class="flex items-center">
-                                <input type="checkbox" id="idoszak_bo_termes" value="bo_termes" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="idoszak_bo_termes" class="ml-2 text-xs text-gray-700">Bő termés (+20% gabona)</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="idoszak_ragcsalok" value="ragcsalok" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="idoszak_ragcsalok" class="ml-2 text-xs text-gray-700">Rágcsálók (-10% gabona)</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="idoszak_nyersanyag_plus" value="nyersanyag_plus" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="idoszak_nyersanyag_plus" class="ml-2 text-xs text-gray-700">Nyersanyag+ (+20%)</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="idoszak_nyersanyag_minus" value="nyersanyag_minus" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="idoszak_nyersanyag_minus" class="ml-2 text-xs text-gray-700">Nyersanyag- (-10%)</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="idoszak_tudomany_honapja" value="tudomany_honapja" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="idoszak_tudomany_honapja" class="ml-2 text-xs text-gray-700">Tudomány hónapja (+5% max)</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="idoszak_zsugoraru" value="zsugoraru" onChange="szamol()" 
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="idoszak_zsugoraru" class="ml-2 text-xs text-gray-700">Zsugoráru (3x raktár)</label>
+                        <!-- Időszakok -->
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-2">Időszakok:</label>
+                            <div class="space-y-1.5">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="idoszak_bo_termes" value="bo_termes" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="idoszak_bo_termes" class="ml-2 text-xs text-gray-700">Bő termés (+20%)</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="idoszak_ragcsalok" value="ragcsalok" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="idoszak_ragcsalok" class="ml-2 text-xs text-gray-700">Rágcsálók (-10%)</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="idoszak_nyersanyag_plus" value="nyersanyag_plus" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="idoszak_nyersanyag_plus" class="ml-2 text-xs text-gray-700">Nyersanyag+ (+20%)</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="idoszak_nyersanyag_minus" value="nyersanyag_minus" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="idoszak_nyersanyag_minus" class="ml-2 text-xs text-gray-700">Nyersanyag- (-10%)</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="idoszak_tudomany_honapja" value="tudomany_honapja" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="idoszak_tudomany_honapja" class="ml-2 text-xs text-gray-700">Tudomány hónapja</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="idoszak_zsugoraru" value="zsugoraru" onChange="szamol()" 
+                                        class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="idoszak_zsugoraru" class="ml-2 text-xs text-gray-700">Zsugoráru (3x)</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -513,11 +566,11 @@
                     <div>
                         <span id="szint_label" class="block text-xs font-medium text-gray-700 mb-2" style="display:none">Szint:</span>
                         <select name="szint" id="szint" onChange="szamol()" class="w-full px-2 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs" style="display:none">
-                            <option value="5">5.</option>
-                            <option value="4">4.</option>
-                            <option value="3">3.</option>
-                            <option value="2">2.</option>
-                            <option value="1">1.</option>
+    <option value="5">5.</option>
+    <option value="4">4.</option>
+    <option value="3">3.</option>
+    <option value="2">2.</option>
+    <option value="1">1.</option>
                         </select>
                     </div>
 
@@ -565,7 +618,7 @@
                     <!-- Beillesztés -->
                     <div class="pt-2 border-t border-gray-200">
                         <h3 class="text-xs font-semibold text-gray-700 mb-2">Beillesztés</h3>
-                        <textarea name="lista" id="lista" rows="6" 
+                        <textarea name="lista" id="lista" rows="9" 
                             class="w-full px-2 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs font-mono"></textarea>
                         <button id="button" onClick="feldolgoz()" 
                             class="mt-2 w-full px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors text-xs font-medium">
