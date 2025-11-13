@@ -246,8 +246,9 @@ function extractNumber(text) {
 
 // Kristálygömb importálása
 function importKristalygomb(tipus) {
-    const text = prompt('Illessze be a kristálygömb szövegét:');
-    if (!text) return;
+    const textarea = document.getElementById(tipus + '_kristalygomb');
+    const text = textarea ? textarea.value : '';
+    if (!text || text.trim() === '') return;
     
     const data = {};
     
@@ -338,8 +339,9 @@ function importKristalygomb(tipus) {
 
 // Épületlista importálása
 function importEpuletlista(tipus) {
-    const text = prompt('Illessze be az épületlista szövegét:');
-    if (!text) return;
+    const textarea = document.getElementById(tipus + '_epuletlista');
+    const text = textarea ? textarea.value : '';
+    if (!text || text.trim() === '') return;
     
     const data = {};
     
@@ -372,129 +374,13 @@ function importEpuletlista(tipus) {
 
 // Segítő számítások
 function szamolIjaszVedohoz() {
-    const celVedoero = parseFloat(prompt('Mekkora védőerőt szeretnél elérni?'));
-    if (!celVedoero || isNaN(celVedoero)) return;
-    
-    // Egyszerűsített számítás
-    alert('Ez a funkció még fejlesztés alatt áll.');
+    // Ez a funkció még fejlesztés alatt áll.
+    // TODO: Implementálni textarea mezővel
 }
 
 function szamolLovasTamadashoz() {
-    const celTamadoero = parseFloat(prompt('Mekkora támadóerőt szeretnél elérni?'));
-    if (!celTamadoero || isNaN(celTamadoero)) return;
-    
-    // Egyszerűsített számítás
-    alert('Ez a funkció még fejlesztés alatt áll.');
-}
-
-// Mentés/Betöltés
-function save() {
-    const data = {};
-    
-    // Védők adatai
-    data.vedo = {
-        katona: document.getElementById('vedo_katona').value,
-        vedo: document.getElementById('vedo_vedo').value,
-        tamado: document.getElementById('vedo_tamado').value,
-        ijsz: document.getElementById('vedo_ijasz').value,
-        lovas: document.getElementById('vedo_lovas').value,
-        elit: document.getElementById('vedo_elit').value,
-        katonai_moral: document.getElementById('vedo_katonai_moral').value,
-        faj: document.getElementById('vedo_faj').value,
-        tudos: document.getElementById('vedo_tudos').checked,
-        tudos_szazalek: document.getElementById('vedo_tudos_szazalek').value,
-        maganyos_farkas: document.getElementById('vedo_maganyos_farkas').checked,
-        vedelem: document.getElementById('vedo_vedelem').checked,
-        hektar: document.getElementById('vedo_hektar').value,
-        ortorony: document.getElementById('vedo_ortorony').value,
-        szovetseges_ijaszok: document.getElementById('vedo_szovetseges_ijaszok').value,
-        kitamadasi_bonusz: document.getElementById('vedo_kitamadasi_bonusz').checked,
-        elohalott_szint: document.getElementById('vedo_elohalott_szint').value,
-        szabadsagon_szovetsegesek: document.getElementById('vedo_szabadsagon_szovetsegesek').value,
-        lakashelyzeti_tekercs: document.getElementById('vedo_lakashelyzeti_tekercs').value
-    };
-    
-    // Támadók adatai
-    data.tamado = {
-        katona: document.getElementById('tamado_katona').value,
-        tamado: document.getElementById('tamado_tamado').value,
-        ijsz: document.getElementById('tamado_ijasz').value,
-        lovas: document.getElementById('tamado_lovas').value,
-        elit: document.getElementById('tamado_elit').value,
-        katonai_moral: document.getElementById('tamado_katonai_moral').value,
-        faj: document.getElementById('tamado_faj').value,
-        tudos: document.getElementById('tamado_tudos').checked,
-        tudos_szazalek: document.getElementById('tamado_tudos_szazalek').value,
-        maganyos_farkas: document.getElementById('tamado_maganyos_farkas').checked,
-        verszomj: document.getElementById('tamado_verszomj').checked,
-        tabornok: document.getElementById('tamado_tabornok').value,
-        elohalott_szint: document.getElementById('tamado_elohalott_szint').value,
-        kor: document.getElementById('tamado_kor').value,
-        irany: document.querySelector('input[name="tamado_irany"]:checked').value
-    };
-    
-    $.cookie('war_calculator_data', JSON.stringify(data), { expires: 365 });
-    alert('Adatok mentve!');
-}
-
-function load() {
-    const saved = $.cookie('war_calculator_data');
-    if (!saved) {
-        alert('Nincs mentett adat!');
-        return;
-    }
-    
-    try {
-        const data = JSON.parse(saved);
-        
-        // Védők adatainak betöltése
-        if (data.vedo) {
-            document.getElementById('vedo_katona').value = data.vedo.katona || 0;
-            document.getElementById('vedo_vedo').value = data.vedo.vedo || 0;
-            document.getElementById('vedo_tamado').value = data.vedo.tamado || 0;
-            document.getElementById('vedo_ijasz').value = data.vedo.ijsz || 0;
-            document.getElementById('vedo_lovas').value = data.vedo.lovas || 0;
-            document.getElementById('vedo_elit').value = data.vedo.elit || 0;
-            document.getElementById('vedo_katonai_moral').value = data.vedo.katonai_moral || 75;
-            document.getElementById('vedo_faj').value = data.vedo.faj || 'none';
-            document.getElementById('vedo_tudos').checked = data.vedo.tudos || false;
-            document.getElementById('vedo_tudos_szazalek').value = data.vedo.tudos_szazalek || 0;
-            document.getElementById('vedo_maganyos_farkas').checked = data.vedo.maganyos_farkas || false;
-            document.getElementById('vedo_vedelem').checked = data.vedo.vedelem || false;
-            document.getElementById('vedo_hektar').value = data.vedo.hektar || 0;
-            document.getElementById('vedo_ortorony').value = data.vedo.ortorony || 0;
-            document.getElementById('vedo_szovetseges_ijaszok').value = data.vedo.szovetseges_ijaszok || 0;
-            document.getElementById('vedo_kitamadasi_bonusz').checked = data.vedo.kitamadasi_bonusz || false;
-            document.getElementById('vedo_elohalott_szint').value = data.vedo.elohalott_szint || 5;
-            document.getElementById('vedo_szabadsagon_szovetsegesek').value = data.vedo.szabadsagon_szovetsegesek || 0;
-            document.getElementById('vedo_lakashelyzeti_tekercs').value = data.vedo.lakashelyzeti_tekercs || 0;
-        }
-        
-        // Támadók adatainak betöltése
-        if (data.tamado) {
-            document.getElementById('tamado_katona').value = data.tamado.katona || 0;
-            document.getElementById('tamado_tamado').value = data.tamado.tamado || 0;
-            document.getElementById('tamado_ijasz').value = data.tamado.ijsz || 0;
-            document.getElementById('tamado_lovas').value = data.tamado.lovas || 0;
-            document.getElementById('tamado_elit').value = data.tamado.elit || 0;
-            document.getElementById('tamado_katonai_moral').value = data.tamado.katonai_moral || 75;
-            document.getElementById('tamado_faj').value = data.tamado.faj || 'none';
-            document.getElementById('tamado_tudos').checked = data.tamado.tudos || false;
-            document.getElementById('tamado_tudos_szazalek').value = data.tamado.tudos_szazalek || 0;
-            document.getElementById('tamado_maganyos_farkas').checked = data.tamado.maganyos_farkas || false;
-            document.getElementById('tamado_verszomj').checked = data.tamado.verszomj || false;
-            document.getElementById('tamado_tabornok').value = data.tamado.tabornok || 0;
-            document.getElementById('tamado_elohalott_szint').value = data.tamado.elohalott_szint || 0;
-            document.getElementById('tamado_kor').value = data.tamado.kor || 2;
-            const iranyRadio = document.querySelector('input[name="tamado_irany"][value="' + (data.tamado.irany || 'felfele') + '"]');
-            if (iranyRadio) iranyRadio.checked = true;
-        }
-        
-        szamol();
-        alert('Adatok betöltve!');
-    } catch (e) {
-        alert('Hiba történt az adatok betöltése során!');
-    }
+    // Ez a funkció még fejlesztés alatt áll.
+    // TODO: Implementálni textarea mezővel
 }
 
 // Oldal betöltésekor számolás

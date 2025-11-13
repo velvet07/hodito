@@ -34,14 +34,14 @@
                     <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Háború</h1>
                     <p class="text-gray-600">Hódító.hu online stratégia játék csata számító</p>
                 </div>
-                <a href="index.html" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors text-sm font-medium">
+                <a href="index.html" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors text-base font-medium">
                     Épületek
                 </a>
             </div>
         </header>
 
         <!-- Main Content Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-7xl mx-auto">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl mx-auto">
             
             <!-- Left Column: Védők -->
             <div class="bg-white rounded-lg shadow-md p-4 lg:p-6">
@@ -198,17 +198,20 @@
                         </div>
                     </div>
 
-                    <!-- Import gombok -->
+                    <!-- Import mezők -->
                     <div class="pt-2 border-t border-gray-200">
-                        <div class="flex flex-col gap-2">
-                            <button id="vedo_kristalygomb_import" onClick="importKristalygomb('vedo')" 
-                                class="w-full px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors text-xs font-medium">
-                                Kristálygömb importálása
-                            </button>
-                            <button id="vedo_epuletlista_import" onClick="importEpuletlista('vedo')" 
-                                class="w-full px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors text-xs font-medium">
-                                Épületlista importálása
-                            </button>
+                        <h3 class="text-sm font-semibold text-gray-700 mb-2">Importálás</h3>
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Kristálygömb:</label>
+                                <textarea name="vedo_kristalygomb" id="vedo_kristalygomb" rows="4" onBlur="importKristalygomb('vedo')" 
+                                    class="w-full px-2 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs font-mono"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Épületlista:</label>
+                                <textarea name="vedo_epuletlista" id="vedo_epuletlista" rows="4" onBlur="importEpuletlista('vedo')" 
+                                    class="w-full px-2 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs font-mono"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -358,17 +361,20 @@
                         </div>
                     </div>
 
-                    <!-- Import gombok -->
+                    <!-- Import mezők -->
                     <div class="pt-2 border-t border-gray-200">
-                        <div class="flex flex-col gap-2">
-                            <button id="tamado_kristalygomb_import" onClick="importKristalygomb('tamado')" 
-                                class="w-full px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors text-xs font-medium">
-                                Kristálygömb importálása
-                            </button>
-                            <button id="tamado_epuletlista_import" onClick="importEpuletlista('tamado')" 
-                                class="w-full px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors text-xs font-medium">
-                                Épületlista importálása
-                            </button>
+                        <h3 class="text-sm font-semibold text-gray-700 mb-2">Importálás</h3>
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Kristálygömb:</label>
+                                <textarea name="tamado_kristalygomb" id="tamado_kristalygomb" rows="4" onBlur="importKristalygomb('tamado')" 
+                                    class="w-full px-2 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs font-mono"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Épületlista:</label>
+                                <textarea name="tamado_epuletlista" id="tamado_epuletlista" rows="4" onBlur="importEpuletlista('tamado')" 
+                                    class="w-full px-2 py-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-xs font-mono"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -395,20 +401,6 @@
                         <div class="flex justify-between items-center py-2 border-b border-gray-200">
                             <span class="text-sm font-medium text-gray-700">Gabonaszükséglet:</span>
                             <span id="gabonaszukseglet" class="text-sm font-semibold text-gray-900">0 bála</span>
-                        </div>
-                    </div>
-
-                    <!-- Akció gombok -->
-                    <div class="pt-4 border-t border-gray-200">
-                        <div class="flex flex-col gap-2">
-                            <button id="saveButt" onClick="save()" 
-                                class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors text-sm font-medium">
-                                Mentés
-                            </button>
-                            <button id="loadButt" onClick="load()" 
-                                class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors text-sm font-medium">
-                                Betöltés
-                            </button>
                         </div>
                     </div>
 
