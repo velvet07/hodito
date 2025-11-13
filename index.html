@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="jquery.cookie.js"></script>
+<script type="text/javascript" src="ep.js"></script>
+<link href="style.css" rel="stylesheet" type="text/css"/>
+<title>Épületlista számító v2.2.0</title>
+</head>
+
+<body>
+<table width="1000" border="0" cellspacing="0" cellpadding="0" class="main">
+<tr>
+	<td width="253" valign="top">
+        <table width="225" border="0" cellspacing="2" cellpadding="0" class="main">
+          <tr>
+            <td width="119">Hektár:</td>
+            <td width="44"><input type="text" name="hektar" id="hektar" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td width="54" id="hektar_sz">&nbsp;</td>
+          </tr>
+          <tr>
+            <td>Szabad terület:</td>
+            <td><input type="text" name="szabad_terulet" disabled id="szabad_terulet" size="5" class="mezo"></td>
+            <td id="szabad_terulet_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Ház:</td>
+            <td><input type="text" name="haz" id="haz" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="haz_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Barakk:</td>
+            <td><input type="text" name="barakk" id="barakk" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="barakk_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Kovácsműhely:</td>
+            <td><input type="text" name="kovacsmuhely" id="kovacsmuhely" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="kovacsmuhely_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Tanya:</td>
+            <td><input type="text" name="tanya" id="tanya" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="tanya_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Könyvtár:</td>
+            <td><input type="text" name="konyvtar" id="konyvtar" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="konyvtar_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Raktár:</td>
+            <td><input type="text" name="raktar" id="raktar" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="raktar_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Bányák:</td>
+            <td><input type="text" name="banyak" disabled id="banyak" size="5" class="mezo"></td>
+            <td id="banyak_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Őrtorony:</td>
+            <td><input type="text" name="ortorony" id="ortorony" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="ortorony_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Kocsma:</td>
+            <td><input type="text" name="kocsma" id="kocsma" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="kocsma_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Templom:</td>
+            <td><input type="text" name="templom" id="templom" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="templom_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Kórház:</td>
+            <td><input type="text" name="korhaz"  id="korhaz"size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="korhaz_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Piac:</td>
+            <td><input type="text" name="piac" id="piac" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="piac_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Bank:</td>
+            <td><input type="text" name="bank" id="bank" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="bank_sz">0%</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>Fatelep:</td>
+            <td><input type="text" name="fatelep" id="fatelep" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="fatelep_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Kőbánya:</td>
+            <td><input type="text" name="kobanya" id="kobanya" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="kobanya_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Fémbánya:</td>
+            <td><input type="text" name="fembanya" id="fembanya" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="fembanya_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Agyagbánya:</td>
+            <td><input type="text" name="agyagbanya" id="agyagbanya" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="agyagbanya_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Drágakőbánya:</td>
+            <td><input type="text" name="dragakobanya" id="dragakobanya" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="dragakobanya_sz">0%</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>Erdő:</td>
+            <td><input type="text" name="erdo" id="erdo" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="erdo_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Kőlelőhely:</td>
+            <td><input type="text" name="kolelohely" id="kolelohely" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="kolelohely_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Fémlelőhely:</td>
+            <td><input type="text" name="femlelohely" id="femlelohely" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="femlelohely_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Agyaglelőhely:</td>
+            <td><input type="text" name="agyaglelohely" id="agyaglelohely" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="agyaglelohely_sz">0%</td>
+          </tr>
+          <tr>
+            <td>Drágakőlelőhely:</td>
+            <td><input type="text" name="dragakolelohely" id="dragakolelohely" size="5" onKeyUp="szamol()" class="mezo"></td>
+            <td id="dragakolelohely_sz">0%</td>
+          </tr>
+          <tr>
+            <td colspan="3">&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="3">
+			<input type="button" name="saveButt" id="saveButt" value="Mentés" onClick="save()" onMouseOver="overSave()" onMouseOut="$('#tip').html('');"/> 
+			<input type="button" name="loadButt" id="loadButt" value="Betöltés" onClick="load()" onMouseOver="overLoad()" onMouseOut="$('#tip').html('');" /> 
+			<input type="button" name="delButt" id="delButt" value="Törlés" onClick="del()" onMouseOver="overDel()" onMouseOut="$('#tip').html('');" /> </td>
+          </tr>
+          <tr>
+            <td colspan="3"><span style="font-size:10px;"><span id="tip"></span><br/><span id="tip2"></span></span></td>
+          </tr>
+        </table>	</td>
+    <td width="315" valign="top"><table width="300" border="0" cellspacing="2" cellpadding="0" class="main">
+  <tr>
+    <td width="113">Faj:</td>
+    <td width="187"><select name="faj" id="faj" onChange="szamol()" class="mezo">
+    <option value="none">válassz</option>
+    <option value="elf">Elf</option>
+    <option value="ork">Ork</option>
+    <option value="felelf">Félelf</option>
+    <option value="torpe">Törpe</option>
+    <option value="gnom">Gnóm</option>
+    <option value="orias">Óriás</option>
+    <option value="elohalott">Élőhalott</option>
+    <option value="ember">Ember</option>
+    </select>    </td>
+  </tr>
+  <tr>
+    <td>Személyiség(ek):</td>
+    <td><select name="szemelyiseg" id="szemelyiseg" multiple size="10" onChange="szamol()" class="mezo">
+    <option value="none" selected>---</option>
+    <option value="kereskedo">Kereskedő</option>
+    <option value="tolvaj">Tolvaj</option>
+    <option value="varazslo">Varázsló</option>
+    <option value="haros">Harcos</option>
+    <option value="tabornok">Tábornok</option>
+    <option value="vandor">Vándor</option>
+    <option value="tudos">Tudós</option>
+    <option value="gazdalkodo">Gazdálkodó</option>
+    <option value="tulelo">Túlélő</option>
+    </select></td>
+  </tr>
+  <tr>
+    <td><span id="szint_label" style="display:none">Szint:</span>&nbsp;</td>
+    <td><select name="szint" id="szint" onChange="szamol()" class="mezo" style="display:none">
+    <option value="5">5.</option>
+    <option value="4">4.</option>
+    <option value="3">3.</option>
+    <option value="2">2.</option>
+    <option value="1">1.</option>
+    </select>&nbsp;</td>
+  </tr>
+  <tr>
+    <td colspan="2"><input checked="checked" type="checkbox" id="skip_tekercs" onChange="szamol()" /> <label for="skip_tekercs">Számolás az elérhető legmagasabb tekercsszámmal.</label><br />
+      <span style="font-size:10px;">(ekkor figyelmen kívül hagyja a tekercsekhez beírt értékeket)</span></td>
+  </tr>
+  <tr>
+    <td colspan="2"><strong>Tekercsek</strong></td>
+    </tr>
+  <tr>
+    <td>Mezőgazdaság:</td>
+    <td><input type="text" name="mezogazdasag" id="mezogazdasag" size="5" onKeyUp="tekercs()" class="mezo"> %</td>
+  </tr>
+  <tr>
+    <td>Lakáshelyzet:</td>
+    <td><input type="text" name="lakashelyzet" id="lakashelyzet" size="5" onKeyUp="tekercs()" class="mezo"> %</td>
+  </tr>
+  <tr>
+    <td>Bányászat:</td>
+    <td><input type="text" name="banyaszat" id="banyaszat" size="5" onKeyUp="tekercs()" class="mezo"> %</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Beillesztés:</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <textarea name="lista" id="lista" rows="10" style="width:100%;"></textarea>	</td>
+  </tr>
+  <tr>
+    <td>
+      <input type="button" name="button" id="button" value="Feldolgoz" onClick="feldolgoz()" />    </td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+     <td colspan="2"><span style="font-size:10px;">Ide beilleszthetsz egy játékbeli épületlistát, melyet autómatikusan értelmez a rendszer.<br />Formátum:<br />Épület: darabszám</span></td>
+  </tr>
+  
+</table></td>
+<td width="432" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0" class="main">
+<tr>
+    <td>Népesség:</td>
+    <td id="nepesseg">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Foglalkoztatottság:</td>
+    <td id="foglalkoztatottsag">&nbsp;</td>
+  </tr>
+  <tr>
+    <td nowrap>Foglalkoztatottság (bank nélkül):</td>
+    <td id="foglalkoztatottsag2">&nbsp;</td>
+  </tr>
+  <tr>
+    <td nowrap>Érték:</td>
+    <td id="ertek">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Barakk férőhely:</td>
+    <td id="barakkhely">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Templom férőhely:</td>
+    <td id="templomhely">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Kocsma férőhely:</td>
+    <td id="kocsmahely">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Őrtorony férőhely:</td>
+    <td id="ortoronyhely">&nbsp;</td>
+  </tr>
+   <tr>
+    <td>Barakk mínusz Torony:</td>
+    <td id="barakk_torony">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td><strong>Raktárférőhelyek</strong></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Gabona:</td>
+    <td id="gabona">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Agyag:</td>
+    <td id="agyag">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Fa:</td>
+    <td id="fa">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Kő:</td>
+    <td id="ko">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Fém:</td>
+    <td id="fem">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Fegyver:</td>
+    <td id="fegyver">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Drágakő:</td>
+    <td id="dragako">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>  
+  <tr>
+    <td width="49%"><strong>Termelés</strong></td>
+    <td width="51%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Gabona:</td>
+    <td id="gabona_t">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Agyag:</td>
+    <td id="agyag_t">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Fa:</td>
+    <td id="fa_t">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Kő:</td>
+    <td id="ko_t">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Fém:</td>
+    <td id="fem_t">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Fegyver:</td>
+    <td id="fegyver_t">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Drágakő:</td>
+    <td id="dragako_t">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Bankadatok</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Ellopható pénz:</td>
+    <td id="penz_lop">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Maximális kamat:</td>
+    <td id="kamat">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>  
+  <tr>
+    <td>Gabonaszükséglet:</td>
+    <td nowrap id="gabonaszukseglet">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Gabonaszükséglet (sereg nélkül):</td>
+    <td nowrap id="gabonaszukseglet2">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Főbb épületek emberigénye:</td>
+    <td id="fontos_epuletek">&nbsp;</td>
+  </tr>
+  <tr>
+    <td colspan="2"><em>barakk, templom, kocsma, őrtorony,  raktár</em></td>
+    </tr>
+</table></td>
+</tr>
+</table>
+</body>
+</html>
