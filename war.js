@@ -44,67 +44,44 @@ const ELOHALOTT_SZINT_BONUSZ = {
     5: 0
 };
 
-// Feldolgozás és számítás - a számítás gomb lenyomásakor
-function feldolgozEsSzamol() {
-    // Védők textarea értékeinek feldolgozása
-    const vedoKristalygomb = document.getElementById('vedo_kristalygomb');
-    const vedoEpuletlista = document.getElementById('vedo_epuletlista');
-    if (vedoKristalygomb && vedoKristalygomb.value.trim() !== '') {
-        importKristalygomb('vedo');
-    }
-    if (vedoEpuletlista && vedoEpuletlista.value.trim() !== '') {
-        importEpuletlista('vedo');
+// Feldolgozás - csak feldolgozza a textarea-kat és beírja az adatokat
+function feldolgozas(tipus) {
+    // Kristálygömb feldolgozása
+    const kristalygomb = document.getElementById(tipus + '_kristalygomb');
+    if (kristalygomb && kristalygomb.value.trim() !== '') {
+        importKristalygomb(tipus);
     }
     
-    // Támadók textarea értékeinek feldolgozása
-    const tamadoKristalygomb = document.getElementById('tamado_kristalygomb');
-    const tamadoEpuletlista = document.getElementById('tamado_epuletlista');
-    if (tamadoKristalygomb && tamadoKristalygomb.value.trim() !== '') {
-        importKristalygomb('tamado');
-    }
-    if (tamadoEpuletlista && tamadoEpuletlista.value.trim() !== '') {
-        importEpuletlista('tamado');
+    // Épületlista feldolgozása
+    const epuletlista = document.getElementById(tipus + '_epuletlista');
+    if (epuletlista && epuletlista.value.trim() !== '') {
+        importEpuletlista(tipus);
     }
     
-    // Mezők állapotának frissítése (faj változás után)
+    // Mezők állapotának frissítése
     updateFieldStates();
     
-    // Védőknél hadi tekercs max beállítása
-    const vedoFaj = document.getElementById('vedo_faj').value;
-    if (vedoFaj !== 'none') {
-        const vedoTudos = document.getElementById('vedo_tudos').checked;
-        const maxHadiTekercs = getHadiTekercsMax(vedoFaj, vedoTudos);
-        const vedoTudosSzazalekField = document.getElementById('vedo_tudos_szazalek');
-        if (vedoTudosSzazalekField) {
-            const currentValue = parseFloat(vedoTudosSzazalekField.value) || 0;
-            if (currentValue === 0 || currentValue > maxHadiTekercs) {
-                vedoTudosSzazalekField.value = maxHadiTekercs;
+    // Hadi tekercs beállítása
+    updateHadiTekercs(tipus);
+    
+    // Támadóknál mindig max lakáshelyzeti tekercssel számolunk
+    if (tipus === 'tamado') {
+        const tamadoFaj = document.getElementById('tamado_faj').value;
+        if (tamadoFaj !== 'none') {
+            const maxLakashelyzeti = getLakashelyzetiTekercsMax(tamadoFaj);
+            const tamadoLakashelyzetiField = document.getElementById('tamado_lakashelyzeti_tekercs');
+            if (tamadoLakashelyzetiField) {
+                tamadoLakashelyzetiField.value = maxLakashelyzeti;
             }
         }
     }
     
-    // Támadóknál hadi tekercs max beállítása
-    const tamadoFaj = document.getElementById('tamado_faj').value;
-    if (tamadoFaj !== 'none') {
-        const tamadoTudos = document.getElementById('tamado_tudos').checked;
-        const maxHadiTekercs = getHadiTekercsMax(tamadoFaj, tamadoTudos);
-        const tamadoTudosSzazalekField = document.getElementById('tamado_tudos_szazalek');
-        if (tamadoTudosSzazalekField) {
-            const currentValue = parseFloat(tamadoTudosSzazalekField.value) || 0;
-            if (currentValue === 0 || currentValue > maxHadiTekercs) {
-                tamadoTudosSzazalekField.value = maxHadiTekercs;
-            }
-        }
-        
-        // Támadóknál mindig max lakáshelyzeti tekercssel számolunk
-        const maxLakashelyzeti = getLakashelyzetiTekercsMax(tamadoFaj);
-        const tamadoLakashelyzetiField = document.getElementById('tamado_lakashelyzeti_tekercs');
-        if (tamadoLakashelyzetiField) {
-            tamadoLakashelyzetiField.value = maxLakashelyzeti;
-        }
-    }
-    
-    // Számítás (újraszámolja a seregek mezőt is)
+    // Számítás
+    szamol();
+}
+
+// Számítás gomb - csak számol, nem ír felül semmit
+function feldolgozEsSzamol() {
     szamol();
 }
 
@@ -232,9 +209,17 @@ function szamolVedoero() {
     const lakashelyzeti = parseFloat(document.getElementById('vedo_lakashelyzeti_tekercs').value) || 0;
     // Ez a számításban már benne van az őrtorony számításban
     
-    // Hadi tekercs (tudós)
+    // Hadi tekercs (tudós) - a mezőből olvassuk, de max-ig korlátozva
     if (document.getElementById('vedo_tudos').checked) {
-        const tudosSzazalek = parseFloat(document.getElementById('vedo_tudos_szazalek').value) || 0;
+        const faj = document.getElementById('vedo_faj').value;
+        const hasTudos = document.getElementById('vedo_tudos').checked;
+        const maxHadiTekercs = getHadiTekercsMax(faj, hasTudos);
+        let tudosSzazalek = parseFloat(document.getElementById('vedo_tudos_szazalek').value) || 0;
+        // Ha több mint max, akkor max-szal számolunk
+        if (tudosSzazalek > maxHadiTekercs) {
+            tudosSzazalek = maxHadiTekercs;
+        }
+        // Ha kevesebb mint max, akkor azzal számolunk, ami be van írva
         vedoero *= (1 + tudosSzazalek / 100);
     }
     
@@ -296,9 +281,17 @@ function szamolTamadoero() {
         tamadoero *= (1 + ELOHALOTT_SZINT_BONUSZ[elohalottSzint]);
     }
     
-    // Hadi tekercs (tudós)
+    // Hadi tekercs (tudós) - a mezőből olvassuk, de max-ig korlátozva
     if (document.getElementById('tamado_tudos').checked) {
-        const tudosSzazalek = parseFloat(document.getElementById('tamado_tudos_szazalek').value) || 0;
+        const faj = document.getElementById('tamado_faj').value;
+        const hasTudos = document.getElementById('tamado_tudos').checked;
+        const maxHadiTekercs = getHadiTekercsMax(faj, hasTudos);
+        let tudosSzazalek = parseFloat(document.getElementById('tamado_tudos_szazalek').value) || 0;
+        // Ha több mint max, akkor max-szal számolunk
+        if (tudosSzazalek > maxHadiTekercs) {
+            tudosSzazalek = maxHadiTekercs;
+        }
+        // Ha kevesebb mint max, akkor azzal számolunk, ami be van írva
         tamadoero *= (1 + tudosSzazalek / 100);
     }
     
@@ -349,6 +342,72 @@ function getHadiTekercsMax(faj, hasTudos) {
     }
     
     return baseMax;
+}
+
+// Hadi tekercs értékének beállítása faj és checkboxok alapján
+function updateHadiTekercs(tipus) {
+    const fajField = document.getElementById(tipus + '_faj');
+    const faj = fajField ? fajField.value : 'none';
+    
+    if (faj === 'none') return;
+    
+    const tudosCheckbox = document.getElementById(tipus + '_tudos');
+    const tudomanyHonapjaCheckbox = document.getElementById(tipus + '_tudomany_honapja');
+    const tudosSzazalekField = document.getElementById(tipus + '_tudos_szazalek');
+    
+    if (!tudosSzazalekField) return;
+    
+    const hasTudos = tudosCheckbox && tudosCheckbox.checked;
+    const hasTudomanyHonapja = tudomanyHonapjaCheckbox && tudomanyHonapjaCheckbox.checked;
+    
+    // Max érték számítása
+    const maxHadiTekercs = getHadiTekercsMax(faj, hasTudos);
+    
+    // Jelenlegi érték
+    let currentValue = parseFloat(tudosSzazalekField.value) || 0;
+    
+    // Ha 0 vagy üres, beállítjuk a max-ot
+    if (currentValue === 0) {
+        tudosSzazalekField.value = maxHadiTekercs;
+        currentValue = maxHadiTekercs;
+    }
+    
+    // Ha mindkettő be van kapcsolva (Tudós + Tudomány hónapja), módosítjuk az értéket
+    if (hasTudos && hasTudomanyHonapja) {
+        // Tudomány hónapja: +5% bónusz a hadi tekercshez
+        const modifiedValue = currentValue + 5;
+        // De ne lépjük túl a max-ot
+        if (modifiedValue <= maxHadiTekercs) {
+            tudosSzazalekField.value = modifiedValue;
+        } else {
+            tudosSzazalekField.value = maxHadiTekercs;
+        }
+    } else if (hasTudos && !hasTudomanyHonapja) {
+        // Ha csak Tudós van bekapcsolva, akkor a max-ot használjuk (ha 0 volt)
+        if (currentValue === 0 || currentValue > maxHadiTekercs) {
+            tudosSzazalekField.value = maxHadiTekercs;
+        }
+    } else if (!hasTudos && hasTudomanyHonapja) {
+        // Ha csak Tudomány hónapja van bekapcsolva, akkor nem módosítunk (csak ha Tudós is be van)
+        // De ha 0 volt, akkor beállítjuk a base max-ot
+        const baseMax = (faj === 'gnom') ? 50 : 30;
+        if (currentValue === 0) {
+            tudosSzazalekField.value = baseMax;
+        }
+    } else {
+        // Ha egyik sincs bekapcsolva, akkor csak a base max-ot használjuk
+        const baseMax = (faj === 'gnom') ? 50 : 30;
+        if (currentValue === 0 || currentValue > baseMax) {
+            tudosSzazalekField.value = baseMax;
+        }
+    }
+    
+    // Ha a jelenlegi érték több mint a max, akkor max-ra korlátozzuk
+    const finalMax = getHadiTekercsMax(faj, hasTudos);
+    const finalValue = parseFloat(tudosSzazalekField.value) || 0;
+    if (finalValue > finalMax) {
+        tudosSzazalekField.value = finalMax;
+    }
 }
 
 // Lakáshelyzeti tekercs maximum értékek faj alapján
