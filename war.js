@@ -364,10 +364,11 @@ function importKristalygomb(tipus) {
     // Személyiség kinyerése (több személyiség is lehet, vesszővel elválasztva)
     // Formátum: "Személyiség:\tKereskedő, Vándor, Gazdálkodó, Tudós, ..."
     const szemelyisegMatch = text.match(/Személyiség:\s*\t+\s*([^\t\n\r]+)/);
+    let szemelyisegek = [];
     if (szemelyisegMatch) {
         const szemelyisegText = szemelyisegMatch[1].trim();
         // Eltávolítjuk a felesleges szóközöket a vesszők körül
-        const szemelyisegek = szemelyisegText.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        szemelyisegek = szemelyisegText.split(',').map(s => s.trim()).filter(s => s.length > 0);
         
         // Tudós ellenőrzés
         hasTudos = szemelyisegek.some(s => s.includes('Tudós'));
@@ -394,17 +395,19 @@ function importKristalygomb(tipus) {
         data.tamado = extractNumber(tamadoMatch[1]);
     }
     
-    const ijszMatch = text.match(/Íjász:\s*\t+\s*([0-9.,\s]+)/);
+    // Íjász, Lovas, Elit - a formátum: "Íjász:\t20.000" vagy "Íjász:\t\t20.000"
+    // A szám után lehet tab, newline vagy sor vége
+    const ijszMatch = text.match(/Íjász:\s*\t+\s*([0-9.,\s]+?)(?:\t|\n|$)/);
     if (ijszMatch) {
         data.ijsz = extractNumber(ijszMatch[1]);
     }
     
-    const lovasMatch = text.match(/Lovas:\s*\t+\s*([0-9.,\s]+)/);
+    const lovasMatch = text.match(/Lovas:\s*\t+\s*([0-9.,\s]+?)(?:\t|\n|$)/);
     if (lovasMatch) {
         data.lovas = extractNumber(lovasMatch[1]);
     }
     
-    const elitMatch = text.match(/Elit:\s*\t+\s*([0-9.,\s]+)/);
+    const elitMatch = text.match(/Elit:\s*\t+\s*([0-9.,\s]+?)(?:\t|\n|$)/);
     if (elitMatch) {
         data.elit = extractNumber(elitMatch[1]);
     }
@@ -497,6 +500,48 @@ function importKristalygomb(tipus) {
     
     // Mezők állapotának frissítése
     updateFieldStates();
+    
+    // Tábornok maximum értékek beállítása (csak támadóknál)
+    if (tipus === 'tamado') {
+        const tamadoFaj = document.getElementById('tamado_faj').value;
+        const tamadoTabornok = document.getElementById('tamado_tabornok');
+        let hasTabornokSzemelyiseg = szemelyisegek.some(s => s.includes('Tábornok'));
+        
+        // Tábornok maximum értékek:
+        // - Gnóm: max 4, ha van Tábornok személyiség: max 5
+        // - Ork: max 6, ha van Tábornok személyiség: max 7
+        // - Más fajok: max 5, ha van Tábornok személyiség: max 6
+        let maxTabornok = 5;
+        if (tamadoFaj === 'gnom') {
+            maxTabornok = 4;
+        } else if (tamadoFaj === 'ork') {
+            maxTabornok = 6;
+        }
+        
+        // Ha van Tábornok személyiség, +1
+        if (hasTabornokSzemelyiseg) {
+            maxTabornok += 1;
+        }
+        
+        // Frissítjük a select opciókat
+        const currentValue = parseInt(tamadoTabornok.value) || 0;
+        tamadoTabornok.innerHTML = '';
+        for (let i = 0; i <= maxTabornok; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            if (i === currentValue || (i === 5 && currentValue > maxTabornok)) {
+                option.selected = true;
+            }
+            tamadoTabornok.appendChild(option);
+        }
+        
+        // Ha a jelenlegi érték nagyobb mint a maximum, akkor állítsuk be a maximumra
+        if (currentValue > maxTabornok) {
+            tamadoTabornok.value = maxTabornok;
+        }
+    }
+    
     // Ne hívjuk meg a szamol() függvényt itt, mert a feldolgozEsSzamol() vagy az onBlur hívja meg
     // Az onBlur eseményben már meghívjuk: importKristalygomb('vedo'); szamol();
 }
@@ -675,6 +720,55 @@ function updateFieldStates() {
         tamadoElohalottSzint.disabled = true;
         tamadoElohalottSzint.classList.add('bg-gray-100');
         tamadoElohalottSzint.value = '0';
+    }
+    
+    // Tábornok maximum értékek faj és személyiség alapján
+    const tamadoTabornok = document.getElementById('tamado_tabornok');
+    const tamadoKristalygomb = document.getElementById('tamado_kristalygomb');
+    let hasTabornokSzemelyiseg = false;
+    
+    // Ellenőrizzük, hogy van-e Tábornok személyiség a kristálygömb szövegében
+    if (tamadoKristalygomb && tamadoKristalygomb.value.trim() !== '') {
+        const szemelyisegMatch = tamadoKristalygomb.value.match(/Személyiség:\s*\t+\s*([^\t\n\r]+)/);
+        if (szemelyisegMatch) {
+            const szemelyisegText = szemelyisegMatch[1].trim();
+            const szemelyisegek = szemelyisegText.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            hasTabornokSzemelyiseg = szemelyisegek.some(s => s.includes('Tábornok'));
+        }
+    }
+    
+    // Tábornok maximum értékek:
+    // - Gnóm: max 4, ha van Tábornok személyiség: max 5
+    // - Ork: max 6, ha van Tábornok személyiség: max 7
+    // - Más fajok: max 5, ha van Tábornok személyiség: max 6
+    let maxTabornok = 5;
+    if (tamadoFaj === 'gnom') {
+        maxTabornok = 4;
+    } else if (tamadoFaj === 'ork') {
+        maxTabornok = 6;
+    }
+    
+    // Ha van Tábornok személyiség, +1
+    if (hasTabornokSzemelyiseg) {
+        maxTabornok += 1;
+    }
+    
+    // Frissítjük a select opciókat
+    const currentValue = parseInt(tamadoTabornok.value) || 0;
+    tamadoTabornok.innerHTML = '';
+    for (let i = 0; i <= maxTabornok; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        if (i === currentValue || (i === 5 && currentValue > maxTabornok)) {
+            option.selected = true;
+        }
+        tamadoTabornok.appendChild(option);
+    }
+    
+    // Ha a jelenlegi érték nagyobb mint a maximum, akkor állítsuk be a maximumra
+    if (currentValue > maxTabornok) {
+        tamadoTabornok.value = maxTabornok;
     }
 }
 
