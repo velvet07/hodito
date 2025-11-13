@@ -314,8 +314,9 @@ function importKristalygomb(tipus) {
     let selectedFaj = 'none';
     let hasTudos = false;
     
-    // Faj kinyerése - formátum: "Faj:\tTörpe"
-    const fajMatch = text.match(/Faj:\t([^\n\r]+)/);
+    // Faj kinyerése - formátum: "Faj:\tTörpe" vagy "Faj:<tab>Törpe"
+    // A tab után lehet még tab vagy szóköz, majd jön az érték, majd lehet tab/szóköz és más mező
+    const fajMatch = text.match(/Faj:\t+([^\t\n\r]+?)(?:\t|$)/);
     if (fajMatch) {
         const fajText = fajMatch[1].trim();
         const fajMap = {
@@ -334,11 +335,13 @@ function importKristalygomb(tipus) {
         }
     }
     
-    // Személyiség kinyerése (több személyiség is lehet, vesszővel elválasztva) - formátum: "Személyiség:\tKereskedő, Vándor, Gazdálkodó, Tudós"
-    const szemelyisegMatch = text.match(/Személyiség:\t([^\n\r]+)/);
+    // Személyiség kinyerése (több személyiség is lehet, vesszővel elválasztva)
+    // Formátum: "Személyiség:\tKereskedő, Vándor, Gazdálkodó, Tudós, ..."
+    const szemelyisegMatch = text.match(/Személyiség:\t+([^\t\n\r]+?)(?:\t|$)/);
     if (szemelyisegMatch) {
         const szemelyisegText = szemelyisegMatch[1].trim();
-        const szemelyisegek = szemelyisegText.split(',').map(s => s.trim());
+        // Eltávolítjuk a felesleges szóközöket a vesszők körül
+        const szemelyisegek = szemelyisegText.split(',').map(s => s.trim()).filter(s => s.length > 0);
         
         // Tudós ellenőrzés
         hasTudos = szemelyisegek.some(s => s.includes('Tudós'));
@@ -349,50 +352,53 @@ function importKristalygomb(tipus) {
     
     // Katonai egységek kinyerése - formátum: "Paraméter:\térték" ahol a tab a tabulátor
     // A pont a számokban a tizes csoport elválasztója (pl. 1.688 = 1688)
-    const katonaMatch = text.match(/Katona:\t([0-9.,\s]+)/);
+    // Az érték után lehet tab vagy szóköz, majd jön a következő mező
+    const katonaMatch = text.match(/Katona:\t+([0-9.,\s]+?)(?:\t|$)/);
     if (katonaMatch) {
         data.katona = extractNumber(katonaMatch[1]);
     }
     
-    const vedoMatch = text.match(/Védő:\t([0-9.,\s]+)/);
+    const vedoMatch = text.match(/Védő:\t+([0-9.,\s]+?)(?:\t|$)/);
     if (vedoMatch) {
         data.vedo = extractNumber(vedoMatch[1]);
     }
     
-    const tamadoMatch = text.match(/Támadó:\t([0-9.,\s]+)/);
+    const tamadoMatch = text.match(/Támadó:\t+([0-9.,\s]+?)(?:\t|$)/);
     if (tamadoMatch) {
         data.tamado = extractNumber(tamadoMatch[1]);
     }
     
-    const ijszMatch = text.match(/Íjász:\t([0-9.,\s]+)/);
+    const ijszMatch = text.match(/Íjász:\t+([0-9.,\s]+?)(?:\t|$)/);
     if (ijszMatch) {
         data.ijsz = extractNumber(ijszMatch[1]);
     }
     
-    const lovasMatch = text.match(/Lovas:\t([0-9.,\s]+)/);
+    const lovasMatch = text.match(/Lovas:\t+([0-9.,\s]+?)(?:\t|$)/);
     if (lovasMatch) {
         data.lovas = extractNumber(lovasMatch[1]);
     }
     
-    const elitMatch = text.match(/Elit:\t([0-9.,\s]+)/);
+    const elitMatch = text.match(/Elit:\t+([0-9.,\s]+?)(?:\t|$)/);
     if (elitMatch) {
         data.elit = extractNumber(elitMatch[1]);
     }
     
     // Katonai morál - formátum: "Katonai morál:\t95 %" (százalékban van megadva)
-    const moralMatch = text.match(/Katonai morál:\t([0-9.,\s]+)\s*%/);
+    // A "Katonai morál" tartalmaz szóközt
+    const moralMatch = text.match(/Katonai\s+morál:\t+([0-9.,\s]+?)\s*%(?:\t|$)/);
     if (moralMatch) {
         data.katonai_moral = extractNumber(moralMatch[1]);
     }
     
-    // Hektár - formátum: "Föld:\t1.100 hektár"
-    const hektarMatch = text.match(/Föld:\t([0-9.,\s]+)\s*hektár/i);
+    // Hektár - formátum: "Föld:\t2.482 hektár"
+    // Az érték után lehet szóköz és "hektár" szó, majd tab
+    const hektarMatch = text.match(/Föld:\t+([0-9.,\s]+?)\s*hektár(?:\t|$)/i);
     if (hektarMatch) {
         data.hektar = extractNumber(hektarMatch[1]);
     }
     
-    // Szövetség állapot (magányos farkas ellenőrzés) - formátum: "Szövetség:\tMagányos farkas"
-    const szovetsegMatch = text.match(/Szövetség:\t([^\n\r]+)/);
+    // Szövetség állapot (magányos farkas ellenőrzés) - formátum: "Szövetség:\tszövetség tagja" vagy "Szövetség:\tMagányos farkas"
+    const szovetsegMatch = text.match(/Szövetség:\t+([^\t\n\r]+?)(?:\t|$)/);
     if (szovetsegMatch) {
         const szovetsegText = szovetsegMatch[1].trim();
         if (szovetsegText.includes('Magányos farkas') || szovetsegText.includes('magányos farkas')) {
