@@ -66,7 +66,45 @@ function feldolgozEsSzamol() {
         importEpuletlista('tamado');
     }
     
-    // Számítás
+    // Mezők állapotának frissítése (faj változás után)
+    updateFieldStates();
+    
+    // Védőknél hadi tekercs max beállítása
+    const vedoFaj = document.getElementById('vedo_faj').value;
+    if (vedoFaj !== 'none') {
+        const vedoTudos = document.getElementById('vedo_tudos').checked;
+        const maxHadiTekercs = getHadiTekercsMax(vedoFaj, vedoTudos);
+        const vedoTudosSzazalekField = document.getElementById('vedo_tudos_szazalek');
+        if (vedoTudosSzazalekField) {
+            const currentValue = parseFloat(vedoTudosSzazalekField.value) || 0;
+            if (currentValue === 0 || currentValue > maxHadiTekercs) {
+                vedoTudosSzazalekField.value = maxHadiTekercs;
+            }
+        }
+    }
+    
+    // Támadóknál hadi tekercs max beállítása
+    const tamadoFaj = document.getElementById('tamado_faj').value;
+    if (tamadoFaj !== 'none') {
+        const tamadoTudos = document.getElementById('tamado_tudos').checked;
+        const maxHadiTekercs = getHadiTekercsMax(tamadoFaj, tamadoTudos);
+        const tamadoTudosSzazalekField = document.getElementById('tamado_tudos_szazalek');
+        if (tamadoTudosSzazalekField) {
+            const currentValue = parseFloat(tamadoTudosSzazalekField.value) || 0;
+            if (currentValue === 0 || currentValue > maxHadiTekercs) {
+                tamadoTudosSzazalekField.value = maxHadiTekercs;
+            }
+        }
+        
+        // Támadóknál mindig max lakáshelyzeti tekercssel számolunk
+        const maxLakashelyzeti = getLakashelyzetiTekercsMax(tamadoFaj);
+        const tamadoLakashelyzetiField = document.getElementById('tamado_lakashelyzeti_tekercs');
+        if (tamadoLakashelyzetiField) {
+            tamadoLakashelyzetiField.value = maxLakashelyzeti;
+        }
+    }
+    
+    // Számítás (újraszámolja a seregek mezőt is)
     szamol();
 }
 
@@ -691,6 +729,71 @@ function importEpuletlista(tipus) {
                 const ijszField = document.getElementById('vedo_ijasz');
                 if (ijszField && (!ijszField.value || parseInt(ijszField.value) === 0)) {
                     ijszField.value = maxFerhely;
+                }
+            }
+        }
+    } else if (tipus === 'tamado') {
+        // Támadóknál is ugyanez, ha nincs kristálygömb adat
+        // Összes épület összeadása a hektár számításához
+        let totalHektar = 0;
+        let barakkok = 0;
+        
+        // Épületek listája
+        const epuletek = [
+            'Szabad terület', 'Üres', 'Ház', 'Barakk', 'Kovácsműhely', 'Tanya',
+            'Könyvtár', 'Raktár', 'Őrtorony', 'Kocsma', 'Templom', 'Kórház',
+            'Piac', 'Bank', 'Fatelep', 'Kőbánya', 'Fémbánya', 'Agyagbánya',
+            'Drágakőbánya', 'Erdő', 'Kőlelőhely', 'Fémlelőhely', 'Agyaglelőhely',
+            'Drágakőlelőhely'
+        ];
+        
+        // Feldolgozzuk a sorokat
+        const lines = text.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
+            if (!line || !line.trim()) continue;
+            
+            // Kettőspont vagy tab alapján szétválasztás
+            let parts = line.split(':');
+            if (parts.length < 2) {
+                parts = line.split('\t');
+            }
+            
+            if (parts.length >= 2) {
+                const epuletNev = parts[0].trim();
+                const epuletSzam = extractNumber(parts[1].trim());
+                
+                // Ha ez egy épület, adjuk hozzá a hektárhoz
+                if (epuletek.some(e => epuletNev.includes(e))) {
+                    totalHektar += epuletSzam;
+                    
+                    // Barakkok számának mentése
+                    if (epuletNev.includes('Barakk')) {
+                        barakkok = epuletSzam;
+                    }
+                }
+            }
+        }
+        
+        // Ha faj kiválasztásra kerül, beállítjuk a max lakáshelyzeti tekercs értékét
+        const fajField = document.getElementById('tamado_faj');
+        if (fajField && fajField.value !== 'none') {
+            const maxLakashelyzeti = getLakashelyzetiTekercsMax(fajField.value);
+            const lakashelyzetiField = document.getElementById('tamado_lakashelyzeti_tekercs');
+            if (lakashelyzetiField) {
+                // Támadóknál mindig max lakáshelyzeti tekercssel számolunk
+                lakashelyzetiField.value = maxLakashelyzeti;
+            }
+            
+            // Lovasok max számának számítása barakkok és lakáshelyzet alapján
+            // Barakk: 40 katonai egység alapból, lakáshelyzeti tekercs növeli
+            if (barakkok > 0) {
+                const lakashelyzeti = parseFloat(lakashelyzetiField.value) || 0;
+                // Férőhely = barakkok * 40 * (1 + lakashelyzeti / 100)
+                const maxFerhely = Math.floor(barakkok * 40 * (1 + lakashelyzeti / 100));
+                const lovasField = document.getElementById('tamado_lovas');
+                if (lovasField && (!lovasField.value || parseInt(lovasField.value) === 0)) {
+                    lovasField.value = maxFerhely;
                 }
             }
         }
