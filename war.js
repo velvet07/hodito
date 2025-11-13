@@ -428,8 +428,9 @@ function importKristalygomb(tipus) {
     // Szövetség
     const szovetsegValue = extractValue('Szövetség');
     if (szovetsegValue) {
-        // Ha "Magányos"-ra kezdődik, akkor magányos farkas
-        if (szovetsegValue.trim().startsWith('Magányos')) {
+        // Ha "magányos"-ra kezdődik (kisbetűvel), akkor magányos farkas
+        const szovetsegLower = szovetsegValue.trim().toLowerCase();
+        if (szovetsegLower.startsWith('magányos')) {
             document.getElementById(tipus + '_maganyos_farkas').checked = true;
         }
     }
@@ -600,43 +601,97 @@ function importEpuletlista(tipus) {
         // Értékek beállítása - csak akkor írjuk felül, ha az adott mező 0 vagy üres
         if (data.ortorony !== undefined) {
             const ortoronyField = document.getElementById('vedo_ortorony');
-            if (!ortoronyField.value || parseInt(ortoronyField.value) === 0) {
+            if (ortoronyField && (!ortoronyField.value || parseInt(ortoronyField.value) === 0)) {
                 ortoronyField.value = data.ortorony;
             }
         }
-    } else {
+    } else if (tipus === 'vedo') {
         // Ha nincs kristálygömb adat, akkor mindent feldolgozunk
-        // Hektár - több formátum támogatása
-        const hektarMatch = text.match(/Hektár:\s*([0-9.,\s]+)/i);
-        if (hektarMatch && tipus === 'vedo') {
-            data.hektar = extractNumber(hektarMatch[1]);
-        }
+        // Összes épület összeadása a hektár számításához
+        let totalHektar = 0;
+        let barakkok = 0;
         
-        // Őrtorony - több formátum támogatása
-        const ortoronyMatch = text.match(/Őrtorony:\s*([0-9.,\s]+)/i);
-        if (ortoronyMatch && tipus === 'vedo') {
-            data.ortorony = extractNumber(ortoronyMatch[1]);
-        }
+        // Épületek listája (ugyanazok, mint az index.html-ben)
+        const epuletek = [
+            'Szabad terület', 'Üres', 'Ház', 'Barakk', 'Kovácsműhely', 'Tanya',
+            'Könyvtár', 'Raktár', 'Őrtorony', 'Kocsma', 'Templom', 'Kórház',
+            'Piac', 'Bank', 'Fatelep', 'Kőbánya', 'Fémbánya', 'Agyagbánya',
+            'Drágakőbánya', 'Erdő', 'Kőlelőhely', 'Fémlelőhely', 'Agyaglelőhely',
+            'Drágakőlelőhely'
+        ];
         
-        // Ha nincs "Hektár:" formátum, próbáljuk a "Föld:" formátumot
-        if (!data.hektar) {
-            const foldMatch = text.match(/Föld:\s*([0-9.,\s]+)\s*hektár/i);
-            if (foldMatch && tipus === 'vedo') {
-                data.hektar = extractNumber(foldMatch[1]);
+        // Feldolgozzuk a sorokat (megtartjuk a newline-okat)
+        const lines = text.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
+            if (!line || !line.trim()) continue;
+            
+            // Kettőspont vagy tab alapján szétválasztás
+            let parts = line.split(':');
+            if (parts.length < 2) {
+                parts = line.split('\t');
+            }
+            
+            if (parts.length >= 2) {
+                const epuletNev = parts[0].trim();
+                // A számot kinyerjük, eltávolítva a pontokat és szóközöket
+                const epuletSzam = extractNumber(parts[1].trim());
+                
+                // Ha ez egy épület, adjuk hozzá a hektárhoz
+                if (epuletek.some(e => epuletNev.includes(e))) {
+                    totalHektar += epuletSzam;
+                    
+                    // Barakkok számának mentése
+                    if (epuletNev.includes('Barakk')) {
+                        barakkok = epuletSzam;
+                    }
+                    
+                    // Őrtorony mentése
+                    if (epuletNev.includes('Őrtorony')) {
+                        data.ortorony = epuletSzam;
+                    }
+                }
             }
         }
         
-        // Értékek beállítása - csak akkor írjuk felül, ha az adott mező 0 vagy üres
-        if (data.hektar !== undefined && tipus === 'vedo') {
+        // Hektár beállítása (összes épület összege)
+        if (totalHektar > 0) {
             const hektarField = document.getElementById('vedo_hektar');
-            if (!hektarField.value || parseInt(hektarField.value) === 0) {
-                hektarField.value = data.hektar;
+            if (hektarField && (!hektarField.value || parseInt(hektarField.value) === 0)) {
+                hektarField.value = totalHektar;
             }
         }
-        if (data.ortorony !== undefined && tipus === 'vedo') {
+        
+        // Őrtorony beállítása
+        if (data.ortorony !== undefined) {
             const ortoronyField = document.getElementById('vedo_ortorony');
-            if (!ortoronyField.value || parseInt(ortoronyField.value) === 0) {
+            if (ortoronyField && (!ortoronyField.value || parseInt(ortoronyField.value) === 0)) {
                 ortoronyField.value = data.ortorony;
+            }
+        }
+        
+        // Ha faj kiválasztásra kerül, beállítjuk a max lakáshelyzeti tekercs értékét
+        const fajField = document.getElementById('vedo_faj');
+        if (fajField && fajField.value !== 'none') {
+            const maxLakashelyzeti = getLakashelyzetiTekercsMax(fajField.value);
+            const lakashelyzetiField = document.getElementById('vedo_lakashelyzeti_tekercs');
+            if (lakashelyzetiField) {
+                const currentValue = parseInt(lakashelyzetiField.value) || 0;
+                if (currentValue === 0 || currentValue > maxLakashelyzeti) {
+                    lakashelyzetiField.value = maxLakashelyzeti;
+                }
+            }
+            
+            // Íjászok max számának számítása barakkok és lakáshelyzet alapján
+            // Barakk: 40 katonai egység alapból, lakáshelyzeti tekercs növeli
+            if (barakkok > 0) {
+                const lakashelyzeti = parseFloat(lakashelyzetiField.value) || 0;
+                // Férőhely = barakkok * 40 * (1 + lakashelyzeti / 100)
+                const maxFerhely = Math.floor(barakkok * 40 * (1 + lakashelyzeti / 100));
+                const ijszField = document.getElementById('vedo_ijasz');
+                if (ijszField && (!ijszField.value || parseInt(ijszField.value) === 0)) {
+                    ijszField.value = maxFerhely;
+                }
             }
         }
     }
