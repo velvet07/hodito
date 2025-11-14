@@ -294,7 +294,7 @@ const BuildingCalculatorComponent: React.FC = () => {
             <h2 className="card-title">Épületlista beillesztése</h2>
             <div className="relative">
               <textarea
-                className="textarea textarea-bordered w-full"
+                className="textarea textarea-bordered w-full pr-8"
                 rows={5}
                 value={buildingListText}
                 onChange={(e) => setBuildingListText(e.target.value)}
@@ -303,10 +303,11 @@ const BuildingCalculatorComponent: React.FC = () => {
               {buildingListText && buildingListText.trim().length > 0 && (
                 <button
                   onClick={handleClearTextarea}
-                  className="btn btn-ghost btn-xs absolute top-2 right-2 z-10"
+                  className="btn btn-ghost btn-xs absolute top-2 right-2 z-10 opacity-70 hover:opacity-100 bg-base-100"
                   title="Textarea tartalmának törlése"
+                  type="button"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
