@@ -1,5 +1,4 @@
 import { BuildingData, CalculationSettings, CalculationResults, Scrolls } from '../types';
-import { RACE_BONUSES, Race } from '../constants';
 
 export class BuildingCalculator {
   private buildings: BuildingData;
@@ -110,9 +109,9 @@ export class BuildingCalculator {
     const { tanya, agyagbanya, fatelep, kobanya, fembanya, kovacsmuhely, dragakobanya } = this.buildings;
     
     let gabonamodosito = this.getGabonaModosito();
-    let gabonamodosito2 = this.getGabonaModosito2();
+    const gabonamodosito2 = this.getGabonaModosito2();
     let nyersanyagmodosito = this.getNyersanyagModosito();
-    let nyersanyagmodosito2 = this.getNyersanyagModosito2();
+    const nyersanyagmodosito2 = this.getNyersanyagModosito2();
     const fegyvermodosito = this.getFegyverModosito();
     
     // Gazdálkodó személyiség hatása (az eredeti kód szerint itt alkalmazódik)
@@ -121,12 +120,6 @@ export class BuildingCalculator {
       gabonamodosito *= 1.1;
       nyersanyagmodosito *= 1.1;
     }
-    
-    // Időszaki módosítók (az eredeti kód szerint itt alkalmazódnak)
-    const hasNyersanyagPlus = this.settings.idoszakok.includes('nyersanyag_plus');
-    const hasNyersanyagMinus = this.settings.idoszakok.includes('nyersanyag_minus');
-    if (hasNyersanyagPlus) nyersanyagmodosito *= 1.2; // +20%
-    if (hasNyersanyagMinus) nyersanyagmodosito *= 0.9; // -10%
     
     return {
       gabona: Math.round(tanya * 50 * gabonamodosito * gabonamodosito2),
@@ -214,7 +207,11 @@ export class BuildingCalculator {
     
     if (this.settings.skip_tekercs) {
       const max = this.getMaxLakashelyzeti();
-      return max / 100 + 1;
+      let multiplier = max / 100 + 1;
+      if (this.settings.faj === 'torpe') {
+        multiplier *= 1.2;
+      }
+      return multiplier;
     }
     
     const max = this.getMaxLakashelyzeti();
@@ -258,13 +255,13 @@ export class BuildingCalculator {
   private getGabonaModosito2(): number {
     let modosito2 = 1.0;
     
-    // Faji alapértékek
-    if (this.settings.faj === 'orias') {
-      modosito2 = 1.2;
-    } else if (this.settings.faj === 'ember' || this.settings.faj === 'elf') {
+    // Faji alapértékek az eredeti logika szerint
+    if (this.settings.faj === 'elf') {
       modosito2 = 1.3;
-    } else if (this.settings.faj === 'elohalott' || this.settings.faj === 'felelf') {
+    } else if (this.settings.faj === 'felelf') {
       modosito2 = 0.9;
+    } else if (this.settings.faj === 'orias') {
+      modosito2 = 1.2;
     }
     
     // Időszaki módosítók
@@ -277,8 +274,7 @@ export class BuildingCalculator {
     return modosito2;
   }
 
-  // Nyersanyag módosító 2 (faji alapérték)
-  // FONTOS: Az időszaki módosítók NEM itt számolódnak, hanem a calculateProduction-ban!
+  // Nyersanyag módosító 2 (faji alapérték + időszaki módosítók)
   private getNyersanyagModosito2(): number {
     let modosito2 = 1.0;
     
@@ -289,21 +285,21 @@ export class BuildingCalculator {
       modosito2 = 3.0;
     }
     
-    // FONTOS: Az időszaki módosítók (nyersanyag_plus, nyersanyag_minus) NEM itt számolódnak!
-    // Ezek a calculateProduction-ban alkalmazódnak a nyersanyagmodosito-ra
+    const hasNyersanyagPlus = this.settings.idoszakok.includes('nyersanyag_plus');
+    const hasNyersanyagMinus = this.settings.idoszakok.includes('nyersanyag_minus');
+    
+    if (hasNyersanyagPlus) modosito2 *= 1.2;
+    if (hasNyersanyagMinus) modosito2 *= 0.9;
     
     return modosito2;
   }
 
-  // Nyersanyag módosító (tekercs + faji bónusz)
-  // FONTOS: A gazdálkodó személyiség és időszaki módosítók NEM itt számolódnak!
+  // Nyersanyag módosító (csak tekercs érték)
   private getNyersanyagModosito(): number {
     // Élőhalott esetén mindig 1.0
     if (this.settings.faj === 'elohalott') {
       return 1.0;
     }
-    
-    const raceBonus = RACE_BONUSES[this.settings.faj].nyersanyag;
     
     let modosito = 1.0;
     
@@ -314,16 +310,6 @@ export class BuildingCalculator {
       const value = Math.min(this.scrolls.banyaszat, max);
       modosito = value / 100 + 1;
     }
-    
-    // Faji bónusz alkalmazása
-    if (this.settings.faj === 'torpe') {
-      modosito *= 3;
-    } else {
-      modosito *= raceBonus;
-    }
-    
-    // FONTOS: A gazdálkodó személyiség és időszaki módosítók NEM itt számolódnak!
-    // Ezek a calculateProduction-ban alkalmazódnak
     
     return modosito;
   }
