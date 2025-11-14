@@ -188,15 +188,14 @@ export class WarCalculator {
   }
 
   static calculateRequiredArchersForDefense(settings: WarSettings, targetAttack: number): number | null {
+    const requiredDefense = targetAttack + 1;
     const baseDefense = this.calculateDefense(settings);
-    if (targetAttack <= baseDefense) {
+    if (requiredDefense <= baseDefense) {
       return 0;
     }
 
     const baseArchers = settings.ijsz || 0;
     let high = 1;
-
-    const requiredDefense = targetAttack;
 
     const defenseWith = (additional: number) =>
       this.calculateDefense({

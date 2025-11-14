@@ -143,8 +143,8 @@ const WarCalculatorComponent: React.FC = () => {
   const [tamadoEpuletlista, setTamadoEpuletlista] = useState('');
   const [vedoBarakkCount, setVedoBarakkCount] = useState<number | null>(null);
   const [tamadoBarakkCount, setTamadoBarakkCount] = useState<number | null>(null);
-  const [archerRequirement, setArcherRequirement] = useState<number | undefined>(undefined);
-  const [cavalryRequirement, setCavalryRequirement] = useState<number | undefined>(undefined);
+  const [archerSuggestion, setArcherSuggestion] = useState<{ total: number; added: number } | null>(null);
+  const [cavalrySuggestion, setCavalrySuggestion] = useState<{ total: number; added: number } | null>(null);
   const [archerCalcError, setArcherCalcError] = useState<string | null>(null);
   const [cavalryCalcError, setCavalryCalcError] = useState<string | null>(null);
 
@@ -392,53 +392,50 @@ const WarCalculatorComponent: React.FC = () => {
     [tamadoTabornokMax]
   );
 
-  useEffect(() => {
-    setArcherRequirement(undefined);
-    setCavalryRequirement(undefined);
-    setArcherCalcError(null);
-    setCavalryCalcError(null);
-  }, [vedoResults.vedoero, tamadoResults.tamadoero]);
-
   const handleArcherRequirement = useCallback(() => {
     setArcherCalcError(null);
     if (!hasVedoData) {
-      setArcherRequirement(undefined);
+      setArcherSuggestion(null);
       setArcherCalcError('Add meg a védő adatait a számításhoz.');
       return;
     }
     if (!hasTamadoData) {
-      setArcherRequirement(undefined);
+      setArcherSuggestion(null);
       setArcherCalcError('Add meg a támadó adatait a számításhoz.');
       return;
     }
     const result = WarCalculator.calculateRequiredArchersForDefense(vedoSettings, tamadoResults.tamadoero);
     if (result === null) {
-      setArcherRequirement(undefined);
+      setArcherSuggestion(null);
       setArcherCalcError('A számítás nem sikerült. Próbáld meg pontosítani az adatokat.');
       return;
     }
-    setArcherRequirement(result);
+    const newTotal = (vedoSettings.ijsz || 0) + result;
+    setArcherSuggestion({ total: newTotal, added: result });
+    setVedoSettings(prev => ({ ...prev, ijsz: newTotal }));
   }, [hasVedoData, hasTamadoData, vedoSettings, tamadoResults.tamadoero]);
 
   const handleCavalryRequirement = useCallback(() => {
     setCavalryCalcError(null);
     if (!hasVedoData) {
-      setCavalryRequirement(undefined);
+      setCavalrySuggestion(null);
       setCavalryCalcError('Add meg a védő adatait a számításhoz.');
       return;
     }
     if (!hasTamadoData) {
-      setCavalryRequirement(undefined);
+      setCavalrySuggestion(null);
       setCavalryCalcError('Add meg a támadó adatait a számításhoz.');
       return;
     }
     const result = WarCalculator.calculateRequiredCavalryForAttack(tamadoSettings, vedoResults.vedoero);
     if (result === null) {
-      setCavalryRequirement(undefined);
+      setCavalrySuggestion(null);
       setCavalryCalcError('A számítás nem sikerült. Próbáld meg pontosítani az adatokat.');
       return;
     }
-    setCavalryRequirement(result);
+    const newTotal = (tamadoSettings.lovas || 0) + result;
+    setCavalrySuggestion({ total: newTotal, added: result });
+    setTamadoSettings(prev => ({ ...prev, lovas: newTotal }));
   }, [hasVedoData, hasTamadoData, tamadoSettings, vedoResults.vedoero]);
 
   return (
@@ -995,34 +992,38 @@ const WarCalculatorComponent: React.FC = () => {
                   <div>
                     <button
                       type="button"
-                      className="btn btn-outline btn-sm w-full justify-between"
+                      className="btn btn-primary btn-sm w-full justify-between"
                       onClick={handleArcherRequirement}
                     >
                       Mennyi íjász kell a védéshez?
                     </button>
                     {archerCalcError && <p className="text-xs text-error mt-1">{archerCalcError}</p>}
-                    {archerRequirement !== undefined && !archerCalcError && (
+                    {archerSuggestion && !archerCalcError && (
                       <p className="text-xs text-base-content mt-1">
-                        {archerRequirement === 0
+                        {archerSuggestion.added === 0
                           ? 'A jelenlegi íjász mennyiség elegendő a támadás kivédéséhez.'
-                          : `Legalább ${formatNumber(archerRequirement)} új íjászra van szükség a védelemhez.`}
+                          : `Új íjász összlétszám: ${formatNumber(archerSuggestion.total)} fő ( +${formatNumber(
+                              archerSuggestion.added
+                            )} ).`}
                       </p>
                     )}
                   </div>
                   <div>
                     <button
                       type="button"
-                      className="btn btn-outline btn-sm w-full justify-between"
+                      className="btn btn-primary btn-sm w-full justify-between"
                       onClick={handleCavalryRequirement}
                     >
                       Mennyi lovas kell a beütéshez?
                     </button>
                     {cavalryCalcError && <p className="text-xs text-error mt-1">{cavalryCalcError}</p>}
-                    {cavalryRequirement !== undefined && !cavalryCalcError && (
+                    {cavalrySuggestion && !cavalryCalcError && (
                       <p className="text-xs text-base-content mt-1">
-                        {cavalryRequirement === 0
+                        {cavalrySuggestion.added === 0
                           ? 'A jelenlegi lovas mennyiség elegendő a védelem áttöréséhez.'
-                          : `Legalább ${formatNumber(cavalryRequirement)} új lovas szükséges a sikeres támadáshoz.`}
+                          : `Új lovas összlétszám: ${formatNumber(cavalrySuggestion.total)} fő ( +${formatNumber(
+                              cavalrySuggestion.added
+                            )} ).`}
                       </p>
                     )}
                   </div>
