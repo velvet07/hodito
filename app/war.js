@@ -340,31 +340,50 @@ function szamolVedoero() {
         alapVedoero = hektar;
     }
     
-    // Módosítók
+    // Módosítók - dokumentáció szerinti sorrend: ork kitámadási bónusz, katonai morál, védelem varázslat, 
+    // magányos farkas bónusza, őrtornyok területarányos védőértéke, országod hadügyi fejlettsége, faji bónuszok
+    // Mivel minden szorzás, a sorrend közömbös, de követjük a dokumentáció sorrendjét az átláthatóságért
     let vedoero = alapVedoero;
     
-    // Faji bónusz
-    const fajBonus = FAJ_BONUSZ[faj] || FAJ_BONUSZ.none;
-    vedoero *= fajBonus.vedo;
+    // 1. Kitámadási bónusz (ork) - dokumentáció szerint első
+    if (document.getElementById('vedo_kitamadasi_bonusz').checked && faj === 'ork') {
+        vedoero *= 1.20;
+    }
     
-    // Katonai morál
+    // 2. Katonai morál - dokumentáció szerint második
     const moral = parseFloat(document.getElementById('vedo_katonai_moral').value) || 75;
     vedoero *= (moral / 100);
     
-    // Magányos farkas
-    if (document.getElementById('vedo_maganyos_farkas').checked) {
-        vedoero *= 1.40;
-    }
-    
-    // Védelem varázslat
+    // 3. Védelem varázslat - dokumentáció szerint harmadik
     if (document.getElementById('vedo_vedelem').checked) {
         vedoero *= 1.30;
     }
     
-    // Kitámadási bónusz (ork)
-    if (document.getElementById('vedo_kitamadasi_bonusz').checked && faj === 'ork') {
-        vedoero *= 1.20;
+    // 4. Magányos farkas bónusza - dokumentáció szerint negyedik
+    if (document.getElementById('vedo_maganyos_farkas').checked) {
+        vedoero *= 1.40;
     }
+    
+    // 5. Őrtornyok területarányos védőértéke - dokumentáció szerint ötödik
+    // Gnóm esetén háromszorosa, egyébként kétszerese, de maximum 30%
+    if (hektar > 0 && ortorony > 0) {
+        const ortoronyArany = (ortorony / hektar) * 100;
+        const multiplier = (faj === 'gnom') ? 3 : 2;
+        const ortoronyVedoBonus = Math.min(ortoronyArany * multiplier, 30) / 100; // Maximum 30%
+        vedoero *= (1 + ortoronyVedoBonus);
+    }
+    
+    // 6. Országod hadügyi fejlettsége (hadi tekercs) - dokumentáció szerint hatodik
+    let tudosSzazalek = parseFloat(document.getElementById('vedo_tudos_szazalek').value) || 0;
+    if (tudosSzazalek > 0) {
+        vedoero *= (1 + tudosSzazalek / 100);
+    }
+    
+    // 7. Faji bónuszok - dokumentáció szerint hetedik (utolsó)
+    const fajBonus = FAJ_BONUSZ[faj] || FAJ_BONUSZ.none;
+    vedoero *= fajBonus.vedo;
+    
+    // További módosítók (dokumentációban nem szerepelnek, de a játékban léteznek):
     
     // Élőhalott szint
     const elohalottSzint = parseInt(document.getElementById('vedo_elohalott_szint').value) || 0;
@@ -378,24 +397,8 @@ function szamolVedoero() {
         vedoero *= (1 + szabadsagon * 0.10);
     }
     
-    // Lakáshelyzeti tekercs (őrtorony kapacitás)
-    const lakashelyzeti = parseFloat(document.getElementById('vedo_lakashelyzeti_tekercs').value) || 0;
-    // Ez a számításban már benne van az őrtorony számításban
-    
-    // Hadi tekercs - a szövegmezőben lévő értékkel mindig számol
-    let tudosSzazalek = parseFloat(document.getElementById('vedo_tudos_szazalek').value) || 0;
-    if (tudosSzazalek > 0) {
-        vedoero *= (1 + tudosSzazalek / 100);
-    }
-    
-    // Őrtorony területarányos védőérték
-    // Gnóm esetén háromszorosa, egyébként kétszerese, de maximum 30%
-    if (hektar > 0 && ortorony > 0) {
-        const ortoronyArany = (ortorony / hektar) * 100;
-        const multiplier = (faj === 'gnom') ? 3 : 2;
-        const ortoronyVedoBonus = Math.min(ortoronyArany * multiplier, 30) / 100; // Maximum 30%
-        vedoero *= (1 + ortoronyVedoBonus);
-    }
+    // Lakáshelyzeti tekercs (őrtorony kapacitás) - ez már benne van az őrtorony számításban
+    // const lakashelyzeti = parseFloat(document.getElementById('vedo_lakashelyzeti_tekercs').value) || 0;
     
     return Math.round(vedoero);
 }
