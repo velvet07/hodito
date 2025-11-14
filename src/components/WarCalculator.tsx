@@ -3,7 +3,7 @@ import { WarSettings, WarResults } from '../types';
 import { WarCalculator } from '../calculations/war-calculator';
 import { formatNumber } from '../utils/formatters';
 import { parseKristalygomb, parseEpuletlistaForWar } from '../utils/war-parsers';
-import { Race, GENERAL_BONUSES, getHadiTekercsMax, getLakashelyzetiTekercsMax } from '../constants';
+import { Race, GENERAL_BONUSES, getHadiTekercsMax, getLakashelyzetiTekercsMax, getEffectiveGeneralMax } from '../constants';
 import { initTheme, setStoredTheme, Theme } from '../utils/theme';
 
 // Segéd komponensek
@@ -125,7 +125,7 @@ const WarCalculatorComponent: React.FC = () => {
     faj: 'none',
     katonai_moral: 75,
     maganyos_farkas: false,
-    verszomj: false,
+    verszomj: true,
     tabornok: 0,
     elohalott_szint: 0,
     tudos_szazalek: 0,
@@ -146,18 +146,53 @@ const WarCalculatorComponent: React.FC = () => {
 
   const handleVedoImport = useCallback(() => {
     const kristalygombData = parseKristalygomb(vedoKristalygomb, 'vedo');
-    const epuletlistaData = parseEpuletlistaForWar(vedoEpuletlista);
+    const hasKristaly = vedoKristalygomb.trim().length > 0;
+    const hasEpuletlista = vedoEpuletlista.trim().length > 0;
+    const epuletlistaData = hasEpuletlista ? parseEpuletlistaForWar(vedoEpuletlista) : {};
     const { barakk, ...rest } = epuletlistaData;
     setVedoBarakkCount(barakk ?? null);
-    updateVedoSettings({ ...kristalygombData, ...rest });
-  }, [vedoKristalygomb, vedoEpuletlista]);
+
+    const derivedData: Partial<WarSettings> = { ...kristalygombData };
+
+    if (hasEpuletlista) {
+      if (rest.ortorony !== undefined) {
+        derivedData.ortorony = rest.ortorony;
+      } else if (!hasKristaly && rest.hektar) {
+        derivedData.ortorony = Math.floor(rest.hektar * 0.1);
+      }
+
+      if (!hasKristaly) {
+        Object.assign(derivedData, rest);
+      }
+    } else {
+      const baseHektar = kristalygombData.hektar ?? vedoSettings.hektar ?? 0;
+      if (baseHektar > 0) {
+        derivedData.ortorony = Math.floor(baseHektar * 0.1);
+      }
+    }
+
+    updateVedoSettings(derivedData);
+  }, [vedoKristalygomb, vedoEpuletlista, vedoSettings.hektar]);
 
   const handleTamadoImport = useCallback(() => {
     const kristalygombData = parseKristalygomb(tamadoKristalygomb, 'tamado');
-    const epuletlistaData = parseEpuletlistaForWar(tamadoEpuletlista);
+    const hasKristaly = tamadoKristalygomb.trim().length > 0;
+    const hasEpuletlista = tamadoEpuletlista.trim().length > 0;
+    const epuletlistaData = hasEpuletlista ? parseEpuletlistaForWar(tamadoEpuletlista) : {};
     const { barakk, ...rest } = epuletlistaData;
     setTamadoBarakkCount(barakk ?? null);
-    updateTamadoSettings({ ...kristalygombData, ...rest });
+
+    const derivedData: Partial<WarSettings> = { ...kristalygombData };
+
+    if (hasEpuletlista) {
+      if (!hasKristaly) {
+        Object.assign(derivedData, rest);
+      } else if (typeof rest.ortorony === 'number') {
+        derivedData.ortorony = rest.ortorony;
+      }
+    }
+
+    updateTamadoSettings(derivedData);
   }, [tamadoKristalygomb, tamadoEpuletlista]);
 
   const handleVedoClear = useCallback(() => {
@@ -200,7 +235,7 @@ const WarCalculatorComponent: React.FC = () => {
       faj: 'none',
       katonai_moral: 75,
       maganyos_farkas: false,
-      verszomj: false,
+      verszomj: true,
       tabornok: 0,
       elohalott_szint: 0,
       tudos_szazalek: 0,
@@ -217,26 +252,26 @@ const WarCalculatorComponent: React.FC = () => {
   useEffect(() => {
     setVedoSettings(prev => {
       if (prev.faj === 'none') return prev;
-      const max = getHadiTekercsMax(prev.faj, prev.tudomany_honapja ?? false, prev.tudos ?? false);
+      const max = getHadiTekercsMax(prev.faj, false, prev.tudos ?? false);
       const current = prev.tudos_szazalek || 0;
       if (current !== 0 && current <= max) {
         return prev;
       }
       return { ...prev, tudos_szazalek: max };
     });
-  }, [vedoSettings.faj, vedoSettings.tudomany_honapja, vedoSettings.tudos]);
+  }, [vedoSettings.faj, vedoSettings.tudos]);
 
   useEffect(() => {
     setTamadoSettings(prev => {
       if (prev.faj === 'none') return prev;
-      const max = getHadiTekercsMax(prev.faj, prev.tudomany_honapja ?? false, prev.tudos ?? false);
+      const max = getHadiTekercsMax(prev.faj, false, prev.tudos ?? false);
       const current = prev.tudos_szazalek || 0;
       if (current !== 0 && current <= max) {
         return prev;
       }
       return { ...prev, tudos_szazalek: max };
     });
-  }, [tamadoSettings.faj, tamadoSettings.tudomany_honapja, tamadoSettings.tudos]);
+  }, [tamadoSettings.faj, tamadoSettings.tudos]);
 
   useEffect(() => {
     setVedoSettings(prev => {
@@ -264,6 +299,7 @@ const WarCalculatorComponent: React.FC = () => {
 
   useEffect(() => {
     if (!vedoBarakkCount || vedoBarakkCount <= 0) return;
+    if (vedoKristalygomb.trim().length > 0) return;
     setVedoSettings(prev => {
       const lakas = prev.lakashelyzeti_tekercs || 0;
       const maxCapacity = Math.floor(vedoBarakkCount * 40 * (1 + lakas / 100));
@@ -274,10 +310,11 @@ const WarCalculatorComponent: React.FC = () => {
       }
       return { ...prev, ijsz: maxCapacity };
     });
-  }, [vedoBarakkCount, vedoSettings.lakashelyzeti_tekercs]);
+  }, [vedoBarakkCount, vedoSettings.lakashelyzeti_tekercs, vedoKristalygomb]);
 
   useEffect(() => {
     if (!tamadoBarakkCount || tamadoBarakkCount <= 0) return;
+    if (tamadoKristalygomb.trim().length > 0) return;
     setTamadoSettings(prev => {
       const lakas = prev.lakashelyzeti_tekercs || 0;
       const maxCapacity = Math.floor(tamadoBarakkCount * 40 * (1 + lakas / 100));
@@ -288,7 +325,17 @@ const WarCalculatorComponent: React.FC = () => {
       }
       return { ...prev, lovas: maxCapacity };
     });
-  }, [tamadoBarakkCount, tamadoSettings.lakashelyzeti_tekercs]);
+  }, [tamadoBarakkCount, tamadoSettings.lakashelyzeti_tekercs, tamadoKristalygomb]);
+
+  useEffect(() => {
+    setTamadoSettings(prev => {
+      const max = getEffectiveGeneralMax(prev.faj, prev.tabornok_szemelyiseg ?? false);
+      if ((prev.tabornok ?? 0) === max) {
+        return prev;
+      }
+      return { ...prev, tabornok: max };
+    });
+  }, [tamadoSettings.faj, tamadoSettings.tabornok_szemelyiseg]);
 
   const updateVedoSettings = useCallback((updates: Partial<WarSettings>) => {
     setVedoSettings(prev => ({ ...prev, ...updates }));
@@ -327,6 +374,14 @@ const WarCalculatorComponent: React.FC = () => {
     );
   const vedoBorderClass = hasVedoData ? (vedoWins ? 'border-success' : 'border-error') : 'border-base-300';
   const tamadoBorderClass = hasTamadoData ? (!vedoWins ? 'border-success' : 'border-error') : 'border-base-300';
+  const tamadoTabornokMax = useMemo(
+    () => getEffectiveGeneralMax(tamadoSettings.faj, tamadoSettings.tabornok_szemelyiseg ?? false),
+    [tamadoSettings.faj, tamadoSettings.tabornok_szemelyiseg]
+  );
+  const tabornokOptions = useMemo(
+    () => Array.from({ length: tamadoTabornokMax + 1 }, (_, index) => index),
+    [tamadoTabornokMax]
+  );
 
   return (
     <div className="min-h-screen bg-base-200">
@@ -728,7 +783,7 @@ const WarCalculatorComponent: React.FC = () => {
                       className="select select-bordered select-sm text-xs"
                       style={{ width: FIELD_WIDTH }}
                     >
-                      {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(num => (
+                      {tabornokOptions.map(num => (
                         <option key={num} value={num}>{num}</option>
                       ))}
                     </select>
