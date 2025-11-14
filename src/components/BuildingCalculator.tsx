@@ -17,6 +17,8 @@ import {
   loadSettings, 
   saveScrolls, 
   loadScrolls,
+  saveBuildingListText,
+  loadBuildingListText,
   clearAllData 
 } from '../utils/storage';
 
@@ -115,7 +117,9 @@ const BuildingCalculatorComponent: React.FC = () => {
     return loaded || defaultScrolls;
   });
 
-  const [buildingListText, setBuildingListText] = useState('');
+  const [buildingListText, setBuildingListText] = useState(() => {
+    return loadBuildingListText();
+  });
 
   // Adatok mentése localStorage-ba változáskor
   useEffect(() => {
@@ -130,14 +134,17 @@ const BuildingCalculatorComponent: React.FC = () => {
     saveScrolls(scrolls);
   }, [scrolls]);
 
+  useEffect(() => {
+    saveBuildingListText(buildingListText);
+  }, [buildingListText]);
+
   // Törlés gomb kezelője
   const handleClearAll = useCallback(() => {
-    if (window.confirm('Biztosan törölni szeretnéd az összes adatot? (Az épületlista beillesztés mező megmarad)')) {
-      setBuildings(defaultBuildings);
-      setSettings(defaultSettings);
-      setScrolls(defaultScrolls);
-      clearAllData();
-    }
+    setBuildings(defaultBuildings);
+    setSettings(defaultSettings);
+    setScrolls(defaultScrolls);
+    setBuildingListText('');
+    clearAllData();
   }, []);
 
   // Max tekercs értékek automatikus kitöltése skip_tekercs bekapcsolásakor
