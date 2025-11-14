@@ -7,6 +7,21 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // Ikonok frissítése
+        function updateThemeIcons(theme) {
+            const lightIcon = document.getElementById('theme-icon-light');
+            const darkIcon = document.getElementById('theme-icon-dark');
+            if (lightIcon && darkIcon) {
+                if (theme === 'dark') {
+                    lightIcon.style.display = 'none';
+                    darkIcon.style.display = 'block';
+                } else {
+                    lightIcon.style.display = 'block';
+                    darkIcon.style.display = 'none';
+                }
+            }
+        }
+        
         // Téma betöltése localStorage-ból
         (function() {
             const storedTheme = localStorage.getItem('hodito-theme') || 'light';
@@ -55,21 +70,6 @@
                 updateThemeIcons(e.detail);
             }
         });
-        
-        // Ikonok frissítése
-        function updateThemeIcons(theme) {
-            const lightIcon = document.getElementById('theme-icon-light');
-            const darkIcon = document.getElementById('theme-icon-dark');
-            if (lightIcon && darkIcon) {
-                if (theme === 'dark') {
-                    lightIcon.style.display = 'none';
-                    darkIcon.style.display = 'block';
-                } else {
-                    lightIcon.style.display = 'block';
-                    darkIcon.style.display = 'none';
-                }
-            }
-        }
     </script>
 </head>
 <body class="min-h-screen bg-base-200">
