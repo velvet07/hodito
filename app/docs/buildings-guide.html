@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Épületlista felhasználói leírás</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen text-gray-800">
+    <header class="bg-white shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between gap-4">
+            <div>
+                <p class="text-xs uppercase tracking-widest text-blue-600 font-semibold">Felhasználói leírás</p>
+                <h1 class="text-2xl font-bold">Épületlista modul</h1>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <a href="../index.html" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">Épületlista</a>
+                <a href="../war.html" class="px-4 py-2 text-sm font-semibold text-blue-600 border border-blue-200 rounded-md hover:bg-blue-50 transition">Háború modul</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+        <section class="bg-white rounded-xl shadow p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-semibold">1</div>
+                <div>
+                    <h2 class="text-xl font-semibold">Kiindulás: Hektár és szabad terület</h2>
+                    <p class="text-sm text-gray-500">Alapadatok megadása a pontos számításhoz.</p>
+                </div>
+            </div>
+            <ul class="list-disc pl-6 space-y-2 text-sm md:text-base">
+                <li><strong>Hektár:</strong> írd be a teljes területedet; a rendszer ehhez igazítja a százalékokat.</li>
+                <li><strong>Szabad terület:</strong> automatikusan frissül, így azonnal látod, mennyi helyed maradt.</li>
+                <li>Ha a hektár értéket módosítod, minden százalékos kijelzés újraszámolódik.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white rounded-xl shadow p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-semibold">2</div>
+                <div>
+                    <h2 class="text-xl font-semibold">Épületek gyors szerkesztése</h2>
+                    <p class="text-sm text-gray-500">Lakóépületek, bányák, lelőhelyek külön blokkokban.</p>
+                </div>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+                <article class="border border-gray-100 rounded-lg p-4">
+                    <h3 class="text-base font-semibold text-gray-700">Lakóépületek</h3>
+                    <p class="text-sm text-gray-600 mt-2">A barakk, ház és támogató épületek azonnal mutatják a darabszám és százalék viszonyát. A százaléksáv segít megállni a kívánt limitnél.</p>
+                </article>
+                <article class="border border-gray-100 rounded-lg p-4">
+                    <h3 class="text-base font-semibold text-gray-700">Bányák és lelőhelyek</h3>
+                    <p class="text-sm text-gray-600 mt-2">A nyersanyag-termeléshez szükséges épületek külön szekcióban szerepelnek, így egyszerre láthatod az erőforrás-szétosztást.</p>
+                </article>
+            </div>
+            <p class="text-sm text-gray-600">Bármely mező módosítására azonnal fut a számítás, nincs mentés gomb.</p>
+        </section>
+
+        <section class="bg-white rounded-xl shadow p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-semibold">3</div>
+                <div>
+                    <h2 class="text-xl font-semibold">Beállítások és bónuszok</h2>
+                    <p class="text-sm text-gray-500">Faj, személyiség, időszakok és tekercsek.</p>
+                </div>
+            </div>
+            <ul class="list-disc pl-6 space-y-2 text-sm md:text-base">
+                <li><strong>Faj:</strong> kiválasztása automatikusan frissíti a számítási limiteket.</li>
+                <li><strong>Személyiségek:</strong> több pipálható; azonnal látszik a hatás a termelésen.</li>
+                <li><strong>Időszakok:</strong> szezonális bónuszok (pl. Bő termés, Tudomány hónapja).</li>
+                <li><strong>Tekercsek:</strong> manuálisan is felülírhatók, ha kikapcsolod a “legmagasabb” opciót.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white rounded-xl shadow p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-semibold">4</div>
+                <div>
+                    <h2 class="text-xl font-semibold">Import és feldolgozás</h2>
+                    <p class="text-sm text-gray-500">Egylépéses import játékbeli listából.</p>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600">Használd a “Beillesztés” textareát: másold be a játékból az épületneveket és darabszámokat a “Épület: darab” formában, majd kattints a “Feldolgoz” gombra. Az összes mező automatikusan kitöltődik.</p>
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-800">
+                Tipp: a feldolgozás után a “Törlés” gombbal visszaállíthatod a mezőket, de a beillesztett listát nem töröljük, így könnyű újra számolni.
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-semibold">5</div>
+                <div>
+                    <h2 class="text-xl font-semibold">Mobil nézet tippek</h2>
+                    <p class="text-sm text-gray-500">Gördítés közbeni gyors használat.</p>
+                </div>
+            </div>
+            <ul class="list-disc pl-6 space-y-2 text-sm md:text-base">
+                <li>A kártyák egymás alatt jelennek meg, így egy kézzel is könnyen pörgethető.</li>
+                <li>A legfontosabb gombok mindig teljes szélességűek (Feldolgoz, Törlés).</li>
+                <li>Ha túl hosszú a lista, érintsd meg a fejlécet – összeomlik/kinyílik a szekció.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="max-w-4xl mx-auto px-4 pb-10 text-center text-xs text-gray-500">
+        Utolsó frissítés: 2025. november 14.
+    </footer>
+</body>
+</html>
+

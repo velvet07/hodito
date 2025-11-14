@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Háború modul felhasználói leírás</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen text-gray-800">
+    <header class="bg-white shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between gap-4">
+            <div>
+                <p class="text-xs uppercase tracking-widest text-rose-600 font-semibold">Felhasználói leírás</p>
+                <h1 class="text-2xl font-bold">Háború modul</h1>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <a href="../war.html" class="px-4 py-2 text-sm font-semibold text-white bg-rose-600 rounded-md hover:bg-rose-700 transition">Háború modul</a>
+                <a href="../index.html" class="px-4 py-2 text-sm font-semibold text-rose-600 border border-rose-200 rounded-md hover:bg-rose-50 transition">Épületlista</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+        <section class="bg-white rounded-xl shadow p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-semibold">1</div>
+                <div>
+                    <h2 class="text-xl font-semibold">Adatbevitel</h2>
+                    <p class="text-sm text-gray-500">Védők és támadók oldalak párhuzamosan működnek.</p>
+                </div>
+            </div>
+            <ul class="list-disc pl-6 space-y-2 text-sm md:text-base">
+                <li>Minden egységtípushoz külön mező tartozik. A módosítások azonnal újraszámolódnak.</li>
+                <li>A katonai morált százalékban add meg (pl. <code>75</code>).</li>
+                <li>Jobb oldalon külön mutatjuk a védő- és támadópontot, valamint a gabonaszükségletet.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white rounded-xl shadow p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-semibold">2</div>
+                <div>
+                    <h2 class="text-xl font-semibold">Fajok és különleges módosítók</h2>
+                    <p class="text-sm text-gray-500">Automatikus tekercs-kitöltés és limitkezelés.</p>
+                </div>
+            </div>
+            <ul class="list-disc pl-6 space-y-2 text-sm md:text-base">
+                <li>Faj kiválasztása után a Hadi és Lakáshelyzeti tekercs mezők automatikusan a maximumra állnak (Tudós/Tudomány hónapja figyelembevételével).</li>
+                <li>A speciális checkboxok (pl. Magányos farkas, Védelem varázslat) közvetlenül szorozzák a pontokat.</li>
+                <li>Élőhalottaknál külön szintrendszer áll rendelkezésre, ami feloldódik, ha ezt a fajt választod.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white rounded-xl shadow p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-semibold">3</div>
+                <div>
+                    <h2 class="text-xl font-semibold">Import mezők</h2>
+                    <p class="text-sm text-gray-500">Kristálygömb és épületlista beolvasása.</p>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600">Másold be a játékbeli jelentést a megfelelő textarea mezőbe, majd kattints a “Feldolgozás” gombra. A rendszer soronként felismeri az egység- és épületneveket.</p>
+            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-sm text-emerald-800">
+                Tipp: ha csak épületlistát illesztesz be, akkor is kiszámoljuk a Lakáshelyzeti tekercs alapján a lovas/íjász maximumot.
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-semibold">4</div>
+                <div>
+                    <h2 class="text-xl font-semibold">Automatikus seregszámítás</h2>
+                    <p class="text-sm text-gray-500">Segítő gombok a jobb oldali panelen.</p>
+                </div>
+            </div>
+            <div class="space-y-3 text-sm md:text-base">
+                <p><strong>Mennyi íjász kell a védéshez:</strong> a jelenlegi támadópont alapján kiszámolja, hány íjászt kell hozzáadni. Az összes többi bevitt egységet és bónuszt figyelembe veszi.</p>
+                <p><strong>Mennyi lovas kell a beütéshez:</strong> a védőpont eléréséhez szükséges lovas (vagy ha minden más egység nulla, akkor elit) mennyiséget határozza meg.</p>
+                <p>Minden számítás bináris kereséssel történik, így nagy hadseregeknél is gyors marad.</p>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center font-semibold">5</div>
+                <div>
+                    <h2 class="text-xl font-semibold">Mobilbarát használat</h2>
+                    <p class="text-sm text-gray-500">Apró képernyőn is jól átlátható kezelőfelület.</p>
+                </div>
+            </div>
+            <ul class="list-disc pl-6 space-y-2 text-sm md:text-base">
+                <li>Az oszlopok egymás alatt jelennek meg, így alulról felfelé gyorsan kitölthető.</li>
+                <li>A fontos számok (védő/támadópont, gabona) nagy betűméretet kaptak.</li>
+                <li>A segítő gombok teljes szélességűek, könnyen eltalálhatók.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="max-w-4xl mx-auto px-4 pb-10 text-center text-xs text-gray-500">
+        Utolsó frissítés: 2025. november 14.
+    </footer>
+</body>
+</html>
+
