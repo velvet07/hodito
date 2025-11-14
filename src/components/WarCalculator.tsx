@@ -483,11 +483,11 @@ const WarCalculatorComponent: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="flex flex-wrap justify-end mt-4 gap-3 w-full">
+                <div className="flex items-center justify-end mt-4 gap-3 w-full">
                   <button
                     onClick={handleVedoClear}
                     className="btn btn-error btn-sm"
-                    style={{ flex: '1 1 25%', minWidth: '100px' }}
+                    style={{ width: '110px' }}
                     type="button"
                   >
                     Törlés
@@ -495,7 +495,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleVedoImport}
                     className="btn btn-primary btn-sm"
-                    style={{ flex: '1 1 65%', minWidth: '180px' }}
+                    style={{ flex: 1, minWidth: '200px' }}
                     type="button"
                   >
                     Feldolgozás
@@ -695,11 +695,11 @@ const WarCalculatorComponent: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="flex flex-wrap justify-end mt-4 gap-3 w-full">
+                <div className="flex items-center justify-end mt-4 gap-3 w-full">
                   <button
                     onClick={handleTamadoClear}
                     className="btn btn-error btn-sm"
-                    style={{ flex: '1 1 25%', minWidth: '100px' }}
+                    style={{ width: '110px' }}
                     type="button"
                   >
                     Törlés
@@ -707,7 +707,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleTamadoImport}
                     className="btn btn-primary btn-sm"
-                    style={{ flex: '1 1 65%', minWidth: '180px' }}
+                    style={{ flex: 1, minWidth: '200px' }}
                     type="button"
                   >
                     Feldolgozás
