@@ -45,6 +45,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/templates/index.html',
       filename: 'index.html',
+      chunks: [],
+      minify: isProduction
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/templates/buildings.html',
+      filename: 'buildings.html',
       chunks: ['main'],
       minify: isProduction
     }),
