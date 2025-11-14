@@ -345,8 +345,8 @@ function runAllTests() {
     console.log('\n' + '='.repeat(50));
     console.log('\n📊 ÖSSZESÍTÉS');
     console.log('---');
-    console.log(`Épületlista számító: ${buildingResults.passed}/${buildingResults.passed + buildingResults.failed} sikeres`);
-    console.log(`Háború számító: ${warResults.passed}/${warResults.passed + warResults.failed} sikeres`);
+    console.log(`Épületlista kalkulátor: ${buildingResults.passed}/${buildingResults.passed + buildingResults.failed} sikeres`);
+    console.log(`Háború kalkulátor: ${warResults.passed}/${warResults.passed + warResults.failed} sikeres`);
     console.log(`\nÖsszesen: ${buildingResults.passed + warResults.passed}/${buildingResults.passed + buildingResults.failed + warResults.passed + warResults.failed} sikeres`);
 }
 

@@ -126,7 +126,7 @@ app/
 
 **Cél**: Biztosítani, hogy az átalakítás után minden működjön ugyanúgy.
 
-#### 0.1 Épületlista számító tesztelés
+#### 0.1 Épületlista kalkulátor tesztelés
 
 **Alapadatok:**
 - [ ] Hektár számítás helyes
@@ -217,7 +217,7 @@ app/
 - [ ] Minden mező nullázása
 - [ ] Számítás újra fut
 
-#### 0.2 Háború számító tesztelés
+#### 0.2 Háború kalkulátor tesztelés
 
 **Védőerő számítás:**
 - [ ] Alapértékek helyesek (katona, védő, támadó, íjász, lovas, elit)

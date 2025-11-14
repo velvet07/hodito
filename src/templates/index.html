@@ -1,98 +1,18 @@
 <!DOCTYPE html>
-<html lang="hu" data-theme="light">
+<html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hódító kalkulátor</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        function updateThemeIcons(theme) {
-            const lightIcon = document.getElementById('theme-icon-light');
-            const darkIcon = document.getElementById('theme-icon-dark');
-            if (lightIcon && darkIcon) {
-                if (theme === 'dark') {
-                    lightIcon.style.display = 'none';
-                    darkIcon.style.display = 'block';
-                } else {
-                    lightIcon.style.display = 'block';
-                    darkIcon.style.display = 'none';
-                }
-            }
-        }
-
         (function() {
             const storedTheme = localStorage.getItem('hodito-theme') || 'light';
             document.documentElement.setAttribute('data-theme', storedTheme);
         })();
-
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('hodito-theme', newTheme);
-            updateThemeIcons(newTheme);
-            window.dispatchEvent(new CustomEvent('themechange', { detail: newTheme }));
-            window.dispatchEvent(new StorageEvent('storage', { key: 'hodito-theme', newValue: newTheme, oldValue: currentTheme }));
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            updateThemeIcons(currentTheme);
-        });
-
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'hodito-theme' && e.newValue) {
-                document.documentElement.setAttribute('data-theme', e.newValue);
-                updateThemeIcons(e.newValue);
-            }
-        });
-
-        window.addEventListener('themechange', (e) => {
-            if (e.detail && (e.detail === 'light' || e.detail === 'dark')) {
-                document.documentElement.setAttribute('data-theme', e.detail);
-                updateThemeIcons(e.detail);
-            }
-        });
     </script>
 </head>
-<body class="min-h-screen bg-base-200 flex items-center justify-center px-4 py-10">
-    <div class="absolute top-4 right-4">
-        <button onclick="toggleTheme()" class="btn btn-ghost btn-sm gap-2" title="Sötét/Világos mód váltása">
-            <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-            </svg>
-            <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4" style="display:none;">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364 6.364l-1.577 1.577M21 12h-2.25m-4.773 4.773l-1.577-1.577M12 18.75V21m-4.773-4.773l-1.577 1.577M3 12h2.25m4.773-4.773L9.18 8.18M12 5.25V3" />
-            </svg>
-        </button>
-    </div>
-    <div class="max-w-3xl w-full text-center space-y-8">
-        <div>
-            <h1 class="text-4xl md:text-5xl font-black text-base-content tracking-wide">HÓDÍTÓ KALKULÁTOR</h1>
-            <p class="text-base-content/70 mt-3 text-sm md:text-base">Válaszd ki, melyik számítót szeretnéd használni.</p>
-        </div>
-        <div class="grid gap-6 md:grid-cols-2">
-            <a href="buildings.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition">
-                <div class="card-body items-center text-center space-y-3">
-                    <div class="w-16 h-16 rounded-full bg-primary text-primary-content flex items-center justify-center text-2xl font-bold">É</div>
-                    <h2 class="card-title text-xl">Épületlista számító</h2>
-                    <p class="text-base-content/70 text-sm">
-                        Férőhely, termelés és tekercsek automatikus kiszámítása.
-                    </p>
-                </div>
-            </a>
-            <a href="war.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition">
-                <div class="card-body items-center text-center space-y-3">
-                    <div class="w-16 h-16 rounded-full bg-secondary text-secondary-content flex items-center justify-center text-2xl font-bold">H</div>
-                    <h2 class="card-title text-xl">Háború számító</h2>
-                    <p class="text-base-content/70 text-sm">
-                        Védő- és támadóerő kalkuláció kristálygömb és épületlista alapján.
-                    </p>
-                </div>
-            </a>
-        </div>
-    </div>
+<body>
+    <div id="root"></div>
 </body>
 </html>
 

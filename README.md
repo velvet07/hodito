@@ -4,8 +4,8 @@ Hódító.hu online stratégia játék számítási eszköze - Modern React + Ty
 
 ## Funkciók
 
-- **Épületlista számító**: Népesség, foglalkoztatottság, termelés, raktár kapacitás számítások
-- **Háború számító**: Védőerő és támadóerő számítások
+- **Épületlista kalkulátor**: Népesség, foglalkoztatottság, termelés, raktár kapacitás számítások
+- **Háború kalkulátor**: Védőerő és támadóerő számítások
 
 ## Tech Stack
 
@@ -68,7 +68,7 @@ src/
 │   ├── index.html
 │   └── war.html
 ├── main.tsx          # Fő belépési pont (épületlista)
-└── war.tsx           # Háború számító belépési pont
+└── war.tsx           # Háború kalkulátor belépési pont
 ```
 
 ## Build output

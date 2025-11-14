@@ -394,7 +394,7 @@ const WarCalculatorComponent: React.FC = () => {
         <header className="mb-6 flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-base-content mb-2">Háború</h1>
-            <p className="text-base-content/70">Hódító.hu online stratégia játék csata számító</p>
+            <p className="text-base-content/70">Hódító.hu online stratégia játék csata kalkulátor</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button

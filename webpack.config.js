@@ -6,6 +6,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
   entry: {
+    landing: './src/landing.tsx',
     main: './src/main.tsx',
     war: './src/war.tsx'
   },
@@ -45,7 +46,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/templates/index.html',
       filename: 'index.html',
-      chunks: [],
+      chunks: ['landing'],
       minify: isProduction
     }),
     new HtmlWebpackPlugin({

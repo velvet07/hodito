@@ -255,10 +255,10 @@ const BuildingCalculatorComponent: React.FC = () => {
         <header className="mb-6 flex items-center justify-between flex-wrap gap-4 max-w-6xl mx-auto">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-base-content mb-2">
-              Épületlista számító
+              Épületlista kalkulátor
             </h1>
             <p className="text-base-content/70">
-              Hódító.hu online stratégia játék épület számítási eszköze
+              Hódító.hu online stratégia játék épület kalkulációs eszköze
             </p>
           </div>
           <div className="flex flex-wrap gap-2">

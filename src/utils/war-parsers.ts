@@ -112,7 +112,7 @@ export function parseKristalygomb(text: string, tipus: 'vedo' | 'tamado'): Parti
   return data;
 }
 
-// Épületlista importálása (háború számítóhoz)
+// Épületlista importálása (háború kalkulátorhoz)
 export function parseEpuletlistaForWar(text: string): { hektar?: number; ortorony?: number; barakk?: number } {
   const data: { hektar?: number; ortorony?: number; barakk?: number } = {};
   

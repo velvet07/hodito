@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Épületlista számító tesztelés
+## 1. Épületlista kalkulátor tesztelés
 
 ### 1.1 Alapadatok
 
@@ -329,7 +329,7 @@
 - **Tolvaj**: Nincs számítási hatás (jelenleg)
 - **Varázsló**: Nincs számítási hatás (jelenleg)
 - **Harcos**: Nincs számítási hatás (jelenleg)
-- **Tábornok**: Csak háború számítóban (war.js)
+- **Tábornok**: Csak háború kalkulátorban (war.js)
 - **Vándor**: Nincs számítási hatás (jelenleg)
 - **Túlélő**: Nincs számítási hatás (jelenleg)
 
@@ -396,7 +396,7 @@
 
 ---
 
-## 2. Háború számító tesztelés
+## 2. Háború kalkulátor tesztelés
 
 ### 2.1 Védőerő számítás
 
@@ -688,7 +688,7 @@
 
 ## 4. Tesztelési eredmények
 
-### 4.1 Épületlista számító
+### 4.1 Épületlista kalkulátor
 
 **Dátum**: _______________
 **Tesztelő**: _______________
@@ -697,7 +697,7 @@
 |------------|---------|------------|
 |            |         |            |
 
-### 4.2 Háború számító
+### 4.2 Háború kalkulátor
 
 **Dátum**: _______________
 **Tesztelő**: _______________
@@ -710,10 +710,10 @@
 
 ## 5. Ismert problémák
 
-### 5.1 Épületlista számító
+### 5.1 Épületlista kalkulátor
 - [ ] Nincs ismert probléma
 
-### 5.2 Háború számító
+### 5.2 Háború kalkulátor
 - [ ] Nincs ismert probléma
 
 ---

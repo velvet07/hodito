@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Épületlista számító (ep.js)
+## 1. Épületlista kalkulátor (ep.js)
 
 ### 1.1 Fő számítási függvény: `szamol()`
 
@@ -391,7 +391,7 @@ $("#ertek").text(Math.round(szabad_terulet * 30 + beepitett * 45 + nepesseg_erte
 
 ---
 
-## 2. Háború számító (war.js)
+## 2. Háború kalkulátor (war.js)
 
 ### 2.1 Fő számítási függvény: `szamol()`
 
