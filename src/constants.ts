@@ -100,7 +100,7 @@ export const PERIODS = {
 } as const;
 
 // Hadi tekercs maximum értékek
-export function getHadiTekercsMax(faj: Race, _hasTudomanyHonapja: boolean = false, hasTudos: boolean = false): number {
+export function getHadiTekercsMax(faj: Race, hasTudomanyHonapja: boolean = false, hasTudos: boolean = false): number {
   // Alapértelmezett: 30%
   // Gnóm: 50% (minden tudományág)
   // Elf: 40% (hadügy és mágia területén)
@@ -119,7 +119,11 @@ export function getHadiTekercsMax(faj: Race, _hasTudomanyHonapja: boolean = fals
     baseMax += 5;
   }
   
-  return baseMax;
+  if (hasTudomanyHonapja) {
+    baseMax += 5;
+  }
+  
+  return Math.min(55, baseMax);
 }
 
 export function getRaceGeneralMax(faj: Race): number {

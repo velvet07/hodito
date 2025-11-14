@@ -157,27 +157,33 @@ const WarCalculatorComponent: React.FC = () => {
     const { barakk, ...rest } = epuletlistaData;
     setVedoBarakkCount(barakk ?? null);
 
-    const derivedData: Partial<WarSettings> = { ...kristalygombData };
+    setVedoSettings(prev => {
+      const next: WarSettings = { ...prev, ...kristalygombData };
 
-    if (hasEpuletlista) {
-      if (rest.ortorony !== undefined) {
-        derivedData.ortorony = rest.ortorony;
-      } else if (!hasKristaly && rest.hektar) {
-        derivedData.ortorony = Math.floor(rest.hektar * 0.1);
+      if (hasEpuletlista) {
+        if (!hasKristaly) {
+          Object.assign(next, rest);
+        } else if (typeof rest.ortorony === 'number') {
+          next.ortorony = rest.ortorony;
+        }
+      } else {
+        const baseHektar = next.hektar ?? 0;
+        if (baseHektar > 0) {
+          next.ortorony = Math.floor(baseHektar * 0.1);
+        }
       }
 
       if (!hasKristaly) {
-        Object.assign(derivedData, rest);
+        const effectiveBarakk = barakk ?? 0;
+        if (effectiveBarakk > 0) {
+          const housing = next.lakashelyzeti_tekercs ?? 0;
+          next.ijsz = Math.floor(effectiveBarakk * 40 * (1 + housing / 100));
+        }
       }
-    } else {
-      const baseHektar = kristalygombData.hektar ?? vedoSettings.hektar ?? 0;
-      if (baseHektar > 0) {
-        derivedData.ortorony = Math.floor(baseHektar * 0.1);
-      }
-    }
 
-    updateVedoSettings(derivedData);
-  }, [vedoKristalygomb, vedoEpuletlista, vedoSettings.hektar]);
+      return next;
+    });
+  }, [vedoKristalygomb, vedoEpuletlista]);
 
   const handleTamadoImport = useCallback(() => {
     const kristalygombData = parseKristalygomb(tamadoKristalygomb, 'tamado');
@@ -187,17 +193,27 @@ const WarCalculatorComponent: React.FC = () => {
     const { barakk, ...rest } = epuletlistaData;
     setTamadoBarakkCount(barakk ?? null);
 
-    const derivedData: Partial<WarSettings> = { ...kristalygombData };
+    setTamadoSettings(prev => {
+      const next: WarSettings = { ...prev, ...kristalygombData };
 
-    if (hasEpuletlista) {
-      if (!hasKristaly) {
-        Object.assign(derivedData, rest);
-      } else if (typeof rest.ortorony === 'number') {
-        derivedData.ortorony = rest.ortorony;
+      if (hasEpuletlista) {
+        if (!hasKristaly) {
+          Object.assign(next, rest);
+        } else if (typeof rest.ortorony === 'number') {
+          next.ortorony = rest.ortorony;
+        }
       }
-    }
 
-    updateTamadoSettings(derivedData);
+      if (!hasKristaly) {
+        const effectiveBarakk = barakk ?? 0;
+        if (effectiveBarakk > 0) {
+          const housing = next.lakashelyzeti_tekercs ?? 0;
+          next.lovas = Math.floor(effectiveBarakk * 40 * (1 + housing / 100));
+        }
+      }
+
+      return next;
+    });
   }, [tamadoKristalygomb, tamadoEpuletlista]);
 
   const handleVedoClear = useCallback(() => {
@@ -257,18 +273,18 @@ const WarCalculatorComponent: React.FC = () => {
   useEffect(() => {
     setVedoSettings(prev => {
       if (prev.faj === 'none') return prev;
-      const max = getHadiTekercsMax(prev.faj, false, prev.tudos ?? false);
+      const max = getHadiTekercsMax(prev.faj, prev.tudomany_honapja ?? false, prev.tudos ?? false);
       return prev.tudos_szazalek === max ? prev : { ...prev, tudos_szazalek: max };
     });
-  }, [vedoSettings.faj, vedoSettings.tudos]);
+  }, [vedoSettings.faj, vedoSettings.tudos, vedoSettings.tudomany_honapja]);
 
   useEffect(() => {
     setTamadoSettings(prev => {
       if (prev.faj === 'none') return prev;
-      const max = getHadiTekercsMax(prev.faj, false, prev.tudos ?? false);
+      const max = getHadiTekercsMax(prev.faj, prev.tudomany_honapja ?? false, prev.tudos ?? false);
       return prev.tudos_szazalek === max ? prev : { ...prev, tudos_szazalek: max };
     });
-  }, [tamadoSettings.faj, tamadoSettings.tudos]);
+  }, [tamadoSettings.faj, tamadoSettings.tudos, tamadoSettings.tudomany_honapja]);
 
   useEffect(() => {
     setVedoSettings(prev => {
@@ -287,7 +303,7 @@ const WarCalculatorComponent: React.FC = () => {
   }, [tamadoSettings.faj, tamadoSettings.tudomany_honapja]);
 
   useEffect(() => {
-    if (!vedoBarakkCount || vedoBarakkCount <= 0) return;
+    if (vedoBarakkCount === null) return;
     if (vedoKristalygomb.trim().length > 0) return;
     setVedoSettings(prev => {
       const lakas = prev.lakashelyzeti_tekercs || 0;
@@ -302,7 +318,7 @@ const WarCalculatorComponent: React.FC = () => {
   }, [vedoBarakkCount, vedoSettings.lakashelyzeti_tekercs, vedoKristalygomb]);
 
   useEffect(() => {
-    if (!tamadoBarakkCount || tamadoBarakkCount <= 0) return;
+    if (tamadoBarakkCount === null) return;
     if (tamadoKristalygomb.trim().length > 0) return;
     setTamadoSettings(prev => {
       const lakas = prev.lakashelyzeti_tekercs || 0;
