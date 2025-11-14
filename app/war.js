@@ -306,7 +306,13 @@ function findRequiredUnitValue(fieldId, targetPoints, calculatorFn) {
 }
 
 // Védőerő számítása
+// Dokumentáció szerinti sorrend:
+// 1. Először: saját sereg védőértéke (őrtornyokkal együtt)
+// 2. Másodszor: hozzáadni a segítő seregek értékét
+// 3. Harmadszor: szorozni a többi tényezővel (ork kitámadási bónusz, katonai morál, stb.)
 function szamolVedoero() {
+    // ===== 1. LÉPÉS: Saját sereg védőértéke (őrtornyokkal együtt) =====
+    
     // Alapértékek
     const katona = parseInt(document.getElementById('vedo_katona').value) || 0;
     const vedo = parseInt(document.getElementById('vedo_vedo').value) || 0;
@@ -323,7 +329,7 @@ function szamolVedoero() {
         lovas * EGYSEG_ERTEK.lovas.vedo +
         elit * EGYSEG_ERTEK.elit.vedo;
     
-    // Őrtorony íjászok
+    // Őrtorony íjászok (csak a saját sereg íjászai vonulnak toronyba)
     // Dokumentáció szerint: alapértelmezetten 1 őrtorony = 40 íjász
     // Lakáshelyzeti tekercs módosítja: 40 * (1 + lakashelyzeti / 100)
     // Elf esetén az őrtoronyban lévő íjászok 8 pontot adnak (helyett 6)
@@ -347,17 +353,24 @@ function szamolVedoero() {
     const ortoronyIjszVedo = (faj === 'elf') ? 16 : 12; // Megduplázódik: elf 8*2=16, egyéb 6*2=12
     alapVedoero += ortoronyIjsz * (ortoronyIjszVedo - alapIjszVedo);
     
-    // Szövetséges íjászok
+    // ===== 2. LÉPÉS: Segítő seregek értékének hozzáadása =====
+    // Dokumentáció szerint: "majd ehhez add hozzá a segítő seregek értékét"
+    // FONTOS: Szövetséges íjászok NEM mennek toronyba, csak normál védőértékkel számolódnak
     const szovetsegesIjsz = parseInt(document.getElementById('vedo_szovetseges_ijaszok').value) || 0;
     alapVedoero += szovetsegesIjsz * EGYSEG_ERTEK.ijsz.vedo;
     
     // Minimális védőerő (hektár)
+    // Dokumentáció szerint: Ha a védelem kisebb mint a minimális védőérték (hektár), 
+    // akkor a minimális védőérték érvényesül.
+    // Példa: 200 hektáros országban 50 katona (50 védőérték) → minimális védőérték 200 érvényesül
     const hektar = parseInt(document.getElementById('vedo_hektar').value) || 0;
     if (alapVedoero < hektar) {
         alapVedoero = hektar;
     }
     
-    // Módosítók - dokumentáció szerinti sorrend: ork kitámadási bónusz, katonai morál, védelem varázslat, 
+    // ===== 3. LÉPÉS: Módosítók alkalmazása (szorzás) =====
+    // Dokumentáció szerint: "A többi tényezőt ezzel szorozd"
+    // Sorrend: ork kitámadási bónusz, katonai morál, védelem varázslat, 
     // magányos farkas bónusza, őrtornyok területarányos védőértéke, országod hadügyi fejlettsége, faji bónuszok
     // Mivel minden szorzás, a sorrend közömbös, de követjük a dokumentáció sorrendjét az átláthatóságért
     let vedoero = alapVedoero;
