@@ -137,6 +137,7 @@ export function getLakashelyzetiTekercsMax(faj: Race, hasTudomanyHonapja: boolea
   // Ork: 30% (csak hadügy és mezőgazdaság 40%)
   // Élőhalott: 30%
   // Ember: 30%
+  // Tudomány hónapja: +5%, de maximum 55% (minden fajra vonatkozik)
   
   let baseMax = 30;
   if (faj === 'gnom') {
@@ -145,9 +146,60 @@ export function getLakashelyzetiTekercsMax(faj: Race, hasTudomanyHonapja: boolea
     baseMax = 40;
   }
   
-  // Tudomány hónapja: +5%
+  // Tudomány hónapja: +5%, de maximum 55% (dokumentáció szerint)
   if (hasTudomanyHonapja) {
+    baseMax = Math.min(55, baseMax + 5);
+  }
+  
+  return baseMax;
+}
+
+// Mezőgazdaság tekercs maximum értékek
+export function getMezogazdasagTekercsMax(faj: Race, hasTudos: boolean = false, hasTudomanyHonapja: boolean = false): number {
+  // Alapértelmezett: 30%
+  // Gnóm: 50% (minden tudományág)
+  // Ork: 40% (hadügy és mezőgazdaság területén)
+  // Tudós személyiség: +5% (kivéve lakáshelyzet)
+  // Tudomány hónapja: +5%, de maximum 55% (minden fajra vonatkozik)
+  
+  let baseMax = 30;
+  if (faj === 'gnom') {
+    baseMax = 50;
+  } else if (faj === 'ork') {
+    baseMax = 40;
+  }
+  
+  if (hasTudos) {
     baseMax += 5;
+  }
+  
+  // Tudomány hónapja: +5%, de maximum 55% (dokumentáció szerint)
+  if (hasTudomanyHonapja) {
+    baseMax = Math.min(55, baseMax + 5);
+  }
+  
+  return baseMax;
+}
+
+// Bányászat tekercs maximum értékek
+export function getBanyaszatTekercsMax(faj: Race, hasTudos: boolean = false, hasTudomanyHonapja: boolean = false): number {
+  // Alapértelmezett: 30%
+  // Gnóm: 50% (minden tudományág)
+  // Tudós személyiség: +5%
+  // Tudomány hónapja: +5%, de maximum 55% (minden fajra vonatkozik)
+  
+  let baseMax = 30;
+  if (faj === 'gnom') {
+    baseMax = 50;
+  }
+  
+  if (hasTudos) {
+    baseMax += 5;
+  }
+  
+  // Tudomány hónapja: +5%, de maximum 55% (dokumentáció szerint)
+  if (hasTudomanyHonapja) {
+    baseMax = Math.min(55, baseMax + 5);
   }
   
   return baseMax;

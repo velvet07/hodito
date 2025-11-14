@@ -33,9 +33,10 @@ export const BuildingInput: React.FC<BuildingInputProps> = ({
             onChange(num);
           }}
           disabled={disabled}
-          className={`input input-bordered input-sm w-full max-w-[6ch] text-xs ${
+          className={`input input-bordered input-sm text-xs ${
             disabled ? 'input-disabled' : ''
           }`}
+          style={{ width: '62px', minWidth: '62px' }}
         />
         <span className="text-xs text-base-content/50 text-right min-w-[3ch]">
           {formatPercent(percent, 100)}

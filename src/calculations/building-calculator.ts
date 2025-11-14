@@ -67,11 +67,25 @@ export class BuildingCalculator {
     const { barakk, templom, kocsma, ortorony } = this.buildings;
     const lakashelyzeti = this.getLakashelyzetiMultiplier();
     
+    // Élőhalott férőhely bónusz (szint alapján)
+    let ferhelyBonus = 1.0;
+    if (this.settings.faj === 'elohalott') {
+      const szint = this.settings.szint || 5;
+      const elohalottFerhelyBonus: Record<number, number> = {
+        5: 1.2,  // +20%
+        4: 1.3,  // +30%
+        3: 1.4,  // +40%
+        2: 1.5,  // +50%
+        1: 1.6   // +60%
+      };
+      ferhelyBonus = elohalottFerhelyBonus[szint] || 1.2;
+    }
+    
     return {
-      barakk: Math.round(barakk * 40 * lakashelyzeti),
-      templom: Math.round(templom * 100 * lakashelyzeti),
-      kocsma: Math.round(kocsma * 40 * lakashelyzeti),
-      ortorony: Math.round(ortorony * 40 * lakashelyzeti)
+      barakk: Math.round(barakk * 40 * lakashelyzeti * ferhelyBonus),
+      templom: Math.round(templom * 100 * lakashelyzeti * ferhelyBonus),
+      kocsma: Math.round(kocsma * 40 * lakashelyzeti * ferhelyBonus),
+      ortorony: Math.round(ortorony * 40 * lakashelyzeti * ferhelyBonus)
     };
   }
 
@@ -280,7 +294,10 @@ export class BuildingCalculator {
     if (this.settings.faj === 'gnom') max = 50;
     else if (this.settings.faj === 'orias' || this.settings.faj === 'felelf') max = 40;
     
-    if (hasTudomanyHonapja) max = Math.min(55, max + 5);
+    // Tudomány hónapja: +5%, de maximum 55% (dokumentáció szerint minden fajra)
+    if (hasTudomanyHonapja) {
+      max = Math.min(55, max + 5);
+    }
     
     return max;
   }
@@ -291,9 +308,17 @@ export class BuildingCalculator {
     const hasTudomanyHonapja = this.settings.idoszakok.includes('tudomany_honapja');
     let max = 30;
     
-    if (this.settings.faj === 'ork') max = 40;
+    if (this.settings.faj === 'gnom') {
+      max = 50;
+    } else if (this.settings.faj === 'ork') {
+      max = 40;
+    }
+    
     if (hasTudos) max += 5;
-    if (hasTudomanyHonapja) max = Math.min(55, max + 5);
+    // Tudomány hónapja: +5%, de maximum 55% (dokumentáció szerint minden fajra)
+    if (hasTudomanyHonapja) {
+      max = Math.min(55, max + 5);
+    }
     
     return max;
   }
@@ -304,8 +329,15 @@ export class BuildingCalculator {
     const hasTudomanyHonapja = this.settings.idoszakok.includes('tudomany_honapja');
     let max = 30;
     
+    if (this.settings.faj === 'gnom') {
+      max = 50;
+    }
+    
     if (hasTudos) max += 5;
-    if (hasTudomanyHonapja) max = Math.min(55, max + 5);
+    // Tudomány hónapja: +5%, de maximum 55% (dokumentáció szerint minden fajra)
+    if (hasTudomanyHonapja) {
+      max = Math.min(55, max + 5);
+    }
     
     return max;
   }

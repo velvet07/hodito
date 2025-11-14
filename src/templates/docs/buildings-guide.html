@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="hu" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Épületlista felhasználói leírás - Hódító</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <div class="container mx-auto px-4 py-6 max-w-5xl">
+        <!-- Header -->
+        <header class="mb-6">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex items-center justify-between flex-wrap gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-widest text-primary font-semibold mb-1">Felhasználói leírás</p>
+                            <h1 class="text-3xl md:text-4xl font-bold text-base-content">Épületlista számító</h1>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <a href="../index.html" class="btn btn-primary btn-sm gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                                </svg>
+                                Épületlista
+                            </a>
+                            <a href="../war.html" class="btn btn-outline btn-sm gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                                </svg>
+                                Háború
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="space-y-6">
+            <!-- 1. Kiindulás -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold text-lg">1</div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-base-content">Kiindulás: Hektár és szabad terület</h2>
+                            <p class="text-sm text-base-content/70">Alapadatok megadása a pontos számításhoz</p>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <ul class="list-disc pl-6 space-y-2 text-sm md:text-base text-base-content">
+                        <li><strong class="text-base-content">Hektár:</strong> írd be a teljes területedet; a rendszer ehhez igazítja a százalékokat.</li>
+                        <li><strong class="text-base-content">Szabad terület:</strong> automatikusan frissül, így azonnal látod, mennyi helyed maradt.</li>
+                        <li>Ha a hektár értéket módosítod, minden százalékos kijelzés újraszámolódik.</li>
+                        <li>A százalékos értékek mindig a teljes hektárhoz viszonyítva jelennek meg.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 2. Épületek -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-success text-success-content flex items-center justify-center font-bold text-lg">2</div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-base-content">Épületek gyors szerkesztése</h2>
+                            <p class="text-sm text-base-content/70">Lakóépületek, bányák, lelőhelyek külön blokkokban</p>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="grid gap-4 md:grid-cols-2 mb-4">
+                        <div class="card bg-base-200 shadow">
+                            <div class="card-body p-4">
+                                <h3 class="card-title text-base text-base-content">Lakóépületek</h3>
+                                <p class="text-sm text-base-content/70 mt-2">A barakk, ház, templom, kocsma és őrtorony azonnal mutatják a darabszám és százalék viszonyát. Minden épületnél láthatod a százalékos értéket, ami segít a terület tervezésében.</p>
+                            </div>
+                        </div>
+                        <div class="card bg-base-200 shadow">
+                            <div class="card-body p-4">
+                                <h3 class="card-title text-base text-base-content">Bányák és lelőhelyek</h3>
+                                <p class="text-sm text-base-content/70 mt-2">A nyersanyag-termeléshez szükséges épületek külön szekcióban szerepelnek. A bányák (fatelep, kőbánya, fémbánya, agyagbánya, drágakőbánya) és lelőhelyek (erdő, kőlelőhely, fémlelőhely, agyaglelőhely, drágakőlelőhely) külön csoportokban jelennek meg.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-sm">Bármely mező módosítására azonnal fut a számítás, nincs mentés gomb szükséges.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Beállítások -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-warning text-warning-content flex items-center justify-center font-bold text-lg">3</div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-base-content">Beállítások és bónuszok</h2>
+                            <p class="text-sm text-base-content/70">Faj, személyiség, időszakok és tekercsek</p>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-base-content mb-2">Faj</h3>
+                            <p class="text-sm text-base-content/70">A faj kiválasztása automatikusan frissíti a számítási limiteket és bónuszokat. Minden fajnak saját speciális tulajdonságai vannak, amelyek befolyásolják a termelést, férőhelyeket és tekercs maximumokat.</p>
+                            <ul class="list-disc pl-6 mt-2 space-y-1 text-sm text-base-content">
+                                <li><strong>Gnóm:</strong> minden tudományágban 50% maximum tekercs</li>
+                                <li><strong>Óriás/Félelf:</strong> lakáshelyzet területén 40% maximum</li>
+                                <li><strong>Ork:</strong> mezőgazdaság és hadügy területén 40% maximum</li>
+                                <li><strong>Törpe:</strong> ipar és hadügy területén 40% maximum</li>
+                                <li><strong>Elf:</strong> hadügy és mágia területén 40% maximum</li>
+                                <li><strong>Élőhalott:</strong> speciális szintrendszerrel, szinttől függő bónuszok</li>
+                            </ul>
+                        </div>
+                        <div class="divider"></div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-base-content mb-2">Személyiségek</h3>
+                            <p class="text-sm text-base-content/70">Több személyiség is kiválasztható egyszerre. Minden személyiség saját bónuszt ad:</p>
+                            <ul class="list-disc pl-6 mt-2 space-y-1 text-sm text-base-content">
+                                <li><strong>Kereskedő:</strong> kereskedelmi bónuszok</li>
+                                <li><strong>Tudós:</strong> +5% tekercs maximum (kivéve lakáshelyzet)</li>
+                                <li><strong>Gazdálkodó:</strong> +10% termelési bónusz</li>
+                                <li><strong>Tábornok:</strong> hadügyi bónuszok</li>
+                                <li>És még sok más...</li>
+                            </ul>
+                        </div>
+                        <div class="divider"></div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-base-content mb-2">Időszakok</h3>
+                            <p class="text-sm text-base-content/70">Szezonális bónuszok és módosítók:</p>
+                            <ul class="list-disc pl-6 mt-2 space-y-1 text-sm text-base-content">
+                                <li><strong>Bő termés:</strong> +20% gabona termelés</li>
+                                <li><strong>Rágcsálók:</strong> -10% gabona termelés</li>
+                                <li><strong>Nyersanyag+:</strong> +20% nyersanyag termelés</li>
+                                <li><strong>Nyersanyag-:</strong> -10% nyersanyag termelés</li>
+                                <li><strong>Tudomány hónapja:</strong> +5% tekercs maximum (max 55%)</li>
+                                <li><strong>Zsugoráru:</strong> 3x raktár kapacitás</li>
+                            </ul>
+                        </div>
+                        <div class="divider"></div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-base-content mb-2">Tekercsek</h3>
+                            <p class="text-sm text-base-content/70">A tekercsek manuálisan is beállíthatók, vagy használhatod a "Számolás az elérhető legmagasabb tekercsszámmal" opciót. Ebben az esetben a rendszer automatikusan kitölti a maximum értékeket a kiválasztott faj, személyiség és időszakok alapján.</p>
+                            <div class="alert alert-warning mt-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                                <span class="text-sm">A "Tudomány hónapja" időszak esetén minden tekercs maximuma 55%-ra korlátozódik, még a Gnóm esetén is.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Import -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-info text-info-content flex items-center justify-center font-bold text-lg">4</div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-base-content">Import és feldolgozás</h2>
+                            <p class="text-sm text-base-content/70">Egylépéses import játékbeli listából</p>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <p class="text-sm text-base-content/70 mb-4">Használd a "Épületlista beillesztése" textareát: másold be a játékból az épületneveket és darabszámokat a következő formában:</p>
+                    <div class="mockup-code mb-4">
+                        <pre data-prefix="$"><code>Szabad terület: 100</code></pre>
+                        <pre data-prefix=""><code>Ház: 50</code></pre>
+                        <pre data-prefix=""><code>Barakk: 20</code></pre>
+                        <pre data-prefix=""><code>Őrtorony: 10</code></pre>
+                        <pre data-prefix=""><code>...</code></pre>
+                    </div>
+                    <p class="text-sm text-base-content/70 mb-4">Majd kattints a <span class="badge badge-primary gap-2"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg> Feldolgoz</span> gombra. Az összes mező automatikusan kitöltődik.</p>
+                    <div class="alert alert-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span class="text-sm">A feldolgozás után az összes épület értéke automatikusan beállításra kerül, és azonnal láthatod az eredményeket.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Eredmények -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-secondary text-secondary-content flex items-center justify-center font-bold text-lg">5</div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-base-content">Eredmények megjelenítése</h2>
+                            <p class="text-sm text-base-content/70">Részletes számítási eredmények</p>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="space-y-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-base-content mb-2">Alapadatok</h3>
+                            <ul class="list-disc pl-6 space-y-1 text-sm text-base-content">
+                                <li><strong>Népesség:</strong> az összes lakóépületből számított népesség</li>
+                                <li><strong>Foglalkoztatottság:</strong> a népesség százalékos kihasználtsága</li>
+                                <li><strong>Érték:</strong> az ország összértéke</li>
+                            </ul>
+                        </div>
+                        <div class="divider"></div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-base-content mb-2">Férőhelyek</h3>
+                            <p class="text-sm text-base-content/70">A barakk, templom, kocsma és őrtorony férőhelyei, figyelembe véve a lakáshelyzeti tekercset, faji bónuszokat és személyiség módosítókat.</p>
+                        </div>
+                        <div class="divider"></div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-base-content mb-2">Raktár kapacitás</h3>
+                            <p class="text-sm text-base-content/70">Minden nyersanyag raktár kapacitása, figyelembe véve a raktár épületeket, faji bónuszokat és időszaki módosítókat (pl. Zsugoráru).</p>
+                        </div>
+                        <div class="divider"></div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-base-content mb-2">Termelés</h3>
+                            <p class="text-sm text-base-content/70">Minden nyersanyag és erőforrás termelése, figyelembe véve a bányákat, lelőhelyeket, tekercseket, faji bónuszokat, személyiségeket és időszaki módosítókat.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Mobil nézet -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-accent text-accent-content flex items-center justify-center font-bold text-lg">6</div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-base-content">Mobil nézet</h2>
+                            <p class="text-sm text-base-content/70">Optimalizált mobilhasználat</p>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <ul class="list-disc pl-6 space-y-2 text-sm md:text-base text-base-content">
+                        <li>A kártyák egymás alatt jelennek meg kisebb képernyőkön, így egy kézzel is könnyen pörgethető.</li>
+                        <li>A legfontosabb gombok (Feldolgoz, navigáció) mindig könnyen elérhetők.</li>
+                        <li>A beviteli mezők és eredmények jól olvashatók mobilon is.</li>
+                        <li>A responsive design biztosítja, hogy minden funkció elérhető legyen bármilyen eszközön.</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-xs text-base-content/50">
+            <p>Utolsó frissítés: 2025. január 8.</p>
+            <p class="mt-1">Hódító.hu online stratégia játék számítási eszköze</p>
+        </footer>
+    </div>
+</body>
+</html>
+

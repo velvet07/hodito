@@ -27,7 +27,10 @@ module.exports = {
         use: {
           loader: 'ts-loader',
           options: {
-            transpileOnly: true
+            transpileOnly: true,
+            compilerOptions: {
+              noEmit: false
+            }
           }
         },
         exclude: /node_modules/
@@ -49,6 +52,12 @@ module.exports = {
       template: './src/templates/war.html',
       filename: 'war.html',
       chunks: ['war'],
+      minify: isProduction
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/templates/docs/buildings-guide.html',
+      filename: 'docs/buildings-guide.html',
+      chunks: [],
       minify: isProduction
     }),
     ...(isProduction ? [
