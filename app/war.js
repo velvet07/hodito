@@ -918,7 +918,22 @@ function importKristalygomb(tipus) {
     if (tipus === 'tamado') {
         const tamadoFaj = document.getElementById('tamado_faj').value;
         const tamadoTabornok = document.getElementById('tamado_tabornok');
-        let hasTabornokSzemelyiseg = szemelyisegek.some(s => s.includes('Tábornok'));
+        const tamadoTabornokSzemelyisegCheckbox = document.getElementById('tamado_tabornok_szemelyiseg');
+        
+        // Ellenőrizzük a checkboxot és a személyiségeket
+        let hasTabornokSzemelyiseg = false;
+        if (tamadoTabornokSzemelyisegCheckbox && tamadoTabornokSzemelyisegCheckbox.checked) {
+            hasTabornokSzemelyiseg = true;
+        } else {
+            hasTabornokSzemelyiseg = szemelyisegek.some(s => s.includes('Tábornok'));
+        }
+        
+        // Ha a kristálygömb-ben van Tábornok személyiség, akkor automatikusan bejelöljük a checkboxot is
+        if (hasTabornokSzemelyiseg && tamadoTabornokSzemelyisegCheckbox && !tamadoTabornokSzemelyisegCheckbox.checked) {
+            if (szemelyisegek.some(s => s.includes('Tábornok'))) {
+                tamadoTabornokSzemelyisegCheckbox.checked = true;
+            }
+        }
         
         // Tábornok maximum értékek:
         // - Gnóm: max 4, ha van Tábornok személyiség: max 5
@@ -1298,15 +1313,36 @@ function updateFieldStates() {
     // Tábornok maximum értékek faj és személyiség alapján
     const tamadoTabornok = document.getElementById('tamado_tabornok');
     const tamadoKristalygomb = document.getElementById('tamado_kristalygomb');
+    const tamadoTabornokSzemelyisegCheckbox = document.getElementById('tamado_tabornok_szemelyiseg');
     let hasTabornokSzemelyiseg = false;
     
-    // Ellenőrizzük, hogy van-e Tábornok személyiség a kristálygömb szövegében
-    if (tamadoKristalygomb && tamadoKristalygomb.value.trim() !== '') {
-        const szemelyisegMatch = tamadoKristalygomb.value.match(/Személyiség:\s*\t+\s*([^\t\n\r]+)/);
-        if (szemelyisegMatch) {
-            const szemelyisegText = szemelyisegMatch[1].trim();
-            const szemelyisegek = szemelyisegText.split(',').map(s => s.trim()).filter(s => s.length > 0);
-            hasTabornokSzemelyiseg = szemelyisegek.some(s => s.includes('Tábornok'));
+    // Először ellenőrizzük a checkboxot (manuális beállítás)
+    if (tamadoTabornokSzemelyisegCheckbox && tamadoTabornokSzemelyisegCheckbox.checked) {
+        hasTabornokSzemelyiseg = true;
+    } else {
+        // Ha nincs bejelölve, akkor ellenőrizzük a kristálygömb szövegét
+        if (tamadoKristalygomb && tamadoKristalygomb.value.trim() !== '') {
+            const szemelyisegMatch = tamadoKristalygomb.value.match(/Személyiség:\s*\t+\s*([^\t\n\r]+)/);
+            if (szemelyisegMatch) {
+                const szemelyisegText = szemelyisegMatch[1].trim();
+                const szemelyisegek = szemelyisegText.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                hasTabornokSzemelyiseg = szemelyisegek.some(s => s.includes('Tábornok'));
+            }
+        }
+    }
+    
+    // Ha a kristálygömb-ben van Tábornok személyiség, akkor automatikusan bejelöljük a checkboxot is
+    if (hasTabornokSzemelyiseg && tamadoTabornokSzemelyisegCheckbox && !tamadoTabornokSzemelyisegCheckbox.checked) {
+        // Csak akkor jelöljük be automatikusan, ha a kristálygömb-ből jött
+        if (tamadoKristalygomb && tamadoKristalygomb.value.trim() !== '') {
+            const szemelyisegMatch = tamadoKristalygomb.value.match(/Személyiség:\s*\t+\s*([^\t\n\r]+)/);
+            if (szemelyisegMatch) {
+                const szemelyisegText = szemelyisegMatch[1].trim();
+                const szemelyisegek = szemelyisegText.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                if (szemelyisegek.some(s => s.includes('Tábornok'))) {
+                    tamadoTabornokSzemelyisegCheckbox.checked = true;
+                }
+            }
         }
     }
     
