@@ -28,33 +28,39 @@ export class BuildingCalculator {
 
   // Foglalkoztatottság számítás
   calculateEmployment(): number {
-    // Az eredeti kód szerint: minden épület * 15, kivéve piac (*50) és bányák (0)
-    // A ciklus i=3-tól epuletek.length-5-ig megy
-    // epuletek = ['hektar','szabad_terulet','haz','barakk','kovacsmuhely','tanya','konyvtar','raktar','banyak','ortorony','kocsma','templom','korhaz','piac','bank','fatelep','kobanya','fembanya','agyagbanya','dragakobanya','erdo','kolelohely','femlelohely','agyaglelohely','dragakolelohely']
-    // i=3: barakk, i=4: kovacsmuhely, i=5: tanya, i=6: konyvtar, i=7: raktar, i=8: banyak (skip), i=9: ortorony, i=10: kocsma, i=11: templom, i=12: korhaz, i=13: piac (*50), i=14: bank
-    // length-5 = 20, szóval i=3-tól i=19-ig (dragakobanya)
-    const { barakk, kovacsmuhely, tanya, konyvtar, raktar, ortorony, kocsma, templom, korhaz, piac, bank } = this.buildings;
     const nepesseg = this.calculatePopulation();
-    
-    // Az eredeti kód szerint: minden épület * 15, kivéve piac (*50) és bányák (skip)
-    let szukseges_lakos = 
-      barakk * 15 +
-      kovacsmuhely * 15 +
-      tanya * 15 +
-      konyvtar * 15 +
-      raktar * 15 +
-      ortorony * 15 +
-      kocsma * 15 +
-      templom * 15 +
-      korhaz * 15 +
-      piac * 50 + // Piac külön: 50 lakos
-      bank * 15;
-    
-    // Bank nélkül
-    const szukseges_lakos2 = szukseges_lakos - bank * 15;
-    
-    if (nepesseg === 0) return 0;
-    // Az eredeti kód szerint: szukseges_lakos / nepesseg * 100 (bankkal együtt)
+    if (nepesseg === 0) {
+      return 0;
+    }
+
+    const skipKeys: (keyof BuildingData)[] = [
+      'hektar',
+      'szabad_terulet',
+      'haz',
+      'banyak', // gyűjtőmező, külön bányák is szerepelnek
+      'erdo',
+      'kolelohely',
+      'femlelohely',
+      'agyaglelohely',
+      'dragakolelohely'
+    ];
+
+    const specialEmployment: Partial<Record<keyof BuildingData, number>> = {
+      piac: 50
+    };
+
+    let szukseges_lakos = 0;
+
+    (Object.keys(this.buildings) as (keyof BuildingData)[]).forEach((key) => {
+      if (skipKeys.includes(key)) {
+        return;
+      }
+
+      const buildingCount = this.buildings[key];
+      const workersPerBuilding = specialEmployment[key] ?? 15;
+      szukseges_lakos += buildingCount * workersPerBuilding;
+    });
+
     return Math.round((szukseges_lakos / nepesseg) * 100);
   }
 
