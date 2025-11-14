@@ -493,7 +493,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleVedoClear}
                     className="btn btn-error btn-sm"
-                    style={{ width: '90px' }}
+                    style={{ width: '30%' }}
                     type="button"
                   >
                     Törlés
@@ -501,7 +501,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleVedoImport}
                     className="btn btn-primary btn-sm"
-                    style={{ flex: '0 0 220px' }}
+                    style={{ width: '65%' }}
                     type="button"
                   >
                     Feldolgozás
@@ -701,7 +701,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleTamadoClear}
                     className="btn btn-error btn-sm"
-                    style={{ width: '90px' }}
+                    style={{ width: '30%' }}
                     type="button"
                   >
                     Törlés
@@ -709,7 +709,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleTamadoImport}
                     className="btn btn-primary btn-sm"
-                    style={{ flex: '0 0 220px' }}
+                    style={{ width: '65%' }}
                     type="button"
                   >
                     Feldolgozás
