@@ -21,6 +21,8 @@ function getTowerCapacityMultiplier(faj: Race, elohalott_szint = 0): number {
 }
 
 export class WarCalculator {
+  private static readonly MAX_UNIT_SEARCH = 10_000_000;
+
   // Védőerő számítás
   static calculateDefense(settings: WarSettings): number {
     const { katona, vedo = 0, tamado, ijsz, lovas, elit, faj, katonai_moral, 
@@ -183,6 +185,90 @@ export class WarCalculator {
       eredmeny,
       gabonaszukseglet
     };
+  }
+
+  static calculateRequiredArchersForDefense(settings: WarSettings, targetAttack: number): number | null {
+    const baseDefense = this.calculateDefense(settings);
+    if (targetAttack <= baseDefense) {
+      return 0;
+    }
+
+    const baseArchers = settings.ijsz || 0;
+    let high = 1;
+
+    const requiredDefense = targetAttack;
+
+    const defenseWith = (additional: number) =>
+      this.calculateDefense({
+        ...settings,
+        ijsz: baseArchers + additional
+      });
+
+    let testDefense = defenseWith(high);
+    while (high <= this.MAX_UNIT_SEARCH && testDefense < requiredDefense) {
+      high *= 2;
+      testDefense = defenseWith(high);
+    }
+
+    if (high > this.MAX_UNIT_SEARCH) {
+      return null;
+    }
+
+    let low = Math.floor(high / 2);
+
+    while (low < high) {
+      const mid = Math.floor((low + high) / 2);
+      const defense = defenseWith(mid);
+      if (defense >= requiredDefense) {
+        high = mid;
+      } else {
+        low = mid + 1;
+      }
+    }
+
+    return low;
+  }
+
+  static calculateRequiredCavalryForAttack(settings: WarSettings, targetDefense: number): number | null {
+    const requiredAttack = targetDefense + 1; // szükséges a védelem áttöréséhez
+    const baseAttack = this.calculateAttack(settings);
+
+    if (baseAttack >= requiredAttack) {
+      return 0;
+    }
+
+    const baseCavalry = settings.lovas || 0;
+    let high = 1;
+
+    const attackWith = (additional: number) =>
+      this.calculateAttack({
+        ...settings,
+        lovas: baseCavalry + additional
+      });
+
+    let testAttack = attackWith(high);
+    while (high <= this.MAX_UNIT_SEARCH && testAttack < requiredAttack) {
+      high *= 2;
+      testAttack = attackWith(high);
+    }
+
+    if (high > this.MAX_UNIT_SEARCH) {
+      return null;
+    }
+
+    let low = Math.floor(high / 2);
+
+    while (low < high) {
+      const mid = Math.floor((low + high) / 2);
+      const attack = attackWith(mid);
+      if (attack >= requiredAttack) {
+        high = mid;
+      } else {
+        low = mid + 1;
+      }
+    }
+
+    return low;
   }
 }
 
