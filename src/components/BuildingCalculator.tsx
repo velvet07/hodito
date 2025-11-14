@@ -148,6 +148,12 @@ const BuildingCalculatorComponent: React.FC = () => {
     // A textarea tartalmát nem töröljük, csak az épületek, beállítások és tekercsek adatait
   }, []);
 
+  // Textarea törlés gomb kezelője
+  const handleClearTextarea = useCallback(() => {
+    setBuildingListText('');
+    saveBuildingListText('');
+  }, []);
+
   // Max tekercs értékek automatikus kitöltése skip_tekercs bekapcsolásakor
   useEffect(() => {
     if (settings.skip_tekercs) {
@@ -285,13 +291,26 @@ const BuildingCalculatorComponent: React.FC = () => {
         <div className="mb-6 card bg-base-100 shadow-xl max-w-6xl mx-auto">
           <div className="card-body">
             <h2 className="card-title">Épületlista beillesztése</h2>
-            <textarea
-              className="textarea textarea-bordered w-full"
-              rows={5}
-              value={buildingListText}
-              onChange={(e) => setBuildingListText(e.target.value)}
-              placeholder="Szabad terület: 100&#10;Ház: 50&#10;Barakk: 20..."
-            />
+            <div className="relative">
+              <textarea
+                className="textarea textarea-bordered w-full"
+                rows={5}
+                value={buildingListText}
+                onChange={(e) => setBuildingListText(e.target.value)}
+                placeholder="Szabad terület: 100&#10;Ház: 50&#10;Barakk: 20..."
+              />
+              {buildingListText && (
+                <button
+                  onClick={handleClearTextarea}
+                  className="btn btn-ghost btn-xs absolute top-2 right-2"
+                  title="Textarea tartalmának törlése"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
                   <div className="card-actions justify-end mt-4 gap-2">
                     <button
                       onClick={handleClearAll}
