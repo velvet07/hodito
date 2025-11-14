@@ -21,17 +21,7 @@
             localStorage.setItem('hodito-theme', newTheme);
             
             // Ikonok frissítése
-            const lightIcon = document.getElementById('theme-icon-light');
-            const darkIcon = document.getElementById('theme-icon-dark');
-            if (lightIcon && darkIcon) {
-                if (newTheme === 'dark') {
-                    lightIcon.style.display = 'none';
-                    darkIcon.style.display = 'block';
-                } else {
-                    lightIcon.style.display = 'block';
-                    darkIcon.style.display = 'none';
-                }
-            }
+            updateThemeIcons(newTheme);
             
             // Custom event küldése React komponenseknek
             window.dispatchEvent(new CustomEvent('themechange', { detail: newTheme }));
@@ -47,10 +37,31 @@
         // Ikonok inicializálása betöltéskor
         document.addEventListener('DOMContentLoaded', function() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
+            updateThemeIcons(currentTheme);
+        });
+        
+        // Hallgatás storage változásokra (más ablakokból)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'hodito-theme' && e.newValue) {
+                document.documentElement.setAttribute('data-theme', e.newValue);
+                updateThemeIcons(e.newValue);
+            }
+        });
+        
+        // Hallgatás custom event változásokra (ugyanabból az ablakból, React komponensekből)
+        window.addEventListener('themechange', function(e) {
+            if (e.detail && (e.detail === 'light' || e.detail === 'dark')) {
+                document.documentElement.setAttribute('data-theme', e.detail);
+                updateThemeIcons(e.detail);
+            }
+        });
+        
+        // Ikonok frissítése
+        function updateThemeIcons(theme) {
             const lightIcon = document.getElementById('theme-icon-light');
             const darkIcon = document.getElementById('theme-icon-dark');
             if (lightIcon && darkIcon) {
-                if (currentTheme === 'dark') {
+                if (theme === 'dark') {
                     lightIcon.style.display = 'none';
                     darkIcon.style.display = 'block';
                 } else {
@@ -58,14 +69,7 @@
                     darkIcon.style.display = 'none';
                 }
             }
-        });
-        
-        // Hallgatás storage változásokra (más oldalakról)
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'hodito-theme' && e.newValue) {
-                document.documentElement.setAttribute('data-theme', e.newValue);
-            }
-        });
+        }
     </script>
 </head>
 <body class="min-h-screen bg-base-200">
