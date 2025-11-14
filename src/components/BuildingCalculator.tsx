@@ -299,10 +299,10 @@ const BuildingCalculatorComponent: React.FC = () => {
                 onChange={(e) => setBuildingListText(e.target.value)}
                 placeholder="Szabad terület: 100&#10;Ház: 50&#10;Barakk: 20..."
               />
-              {buildingListText && (
+              {buildingListText && buildingListText.trim().length > 0 && (
                 <button
                   onClick={handleClearTextarea}
-                  className="btn btn-ghost btn-xs absolute top-2 right-2"
+                  className="btn btn-ghost btn-xs absolute top-2 right-2 z-10"
                   title="Textarea tartalmának törlése"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">

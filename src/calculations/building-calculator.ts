@@ -77,8 +77,9 @@ export class BuildingCalculator {
     const { barakk, templom, kocsma, ortorony } = this.buildings;
     const lakashelyzeti = this.getLakashelyzetiMultiplier();
     
+    // Az eredeti kód szerint: barakk * 40 * lakashelyzeti
+    // A törpe fajnál a lakashelyzeti már tartalmazza a 1.2-es szorzót (20% bónusz)
     // Az élőhalott esetén a lakashelyzeti már tartalmazza a szint alapú bónuszt
-    // Az eredeti kód szerint: barakk * 40 * lakashelyzeti (nincs külön bónusz)
     
     return {
       barakk: Math.round(barakk * 40 * lakashelyzeti),
