@@ -311,7 +311,6 @@ const WarCalculatorComponent: React.FC = () => {
                 <div className="space-y-1.5">
                   <UnitInput label="Katona" value={vedoSettings.katona} onChange={(v) => updateVedoSettings({ katona: v })} id="vedo_katona" />
                   <UnitInput label="Védő" value={vedoSettings.vedo || 0} onChange={(v) => updateVedoSettings({ vedo: v })} id="vedo_vedo" />
-                  <UnitInput label="Támadó" value={vedoSettings.tamado} onChange={(v) => updateVedoSettings({ tamado: v })} id="vedo_tamado" />
                   <UnitInput label="Íjász" value={vedoSettings.ijsz} onChange={(v) => updateVedoSettings({ ijsz: v })} id="vedo_ijsz" />
                   <UnitInput label="Lovas" value={vedoSettings.lovas} onChange={(v) => updateVedoSettings({ lovas: v })} id="vedo_lovas" />
                   <UnitInput label="Elit" value={vedoSettings.elit} onChange={(v) => updateVedoSettings({ elit: v })} id="vedo_elit" />
@@ -345,8 +344,7 @@ const WarCalculatorComponent: React.FC = () => {
                 <select
                   value={vedoSettings.faj}
                   onChange={(e) => updateVedoSettings({ faj: e.target.value as Race })}
-                  className="select select-bordered select-sm text-xs"
-                  style={{ width: FIELD_WIDTH }}
+                  className="select select-bordered select-sm w-full text-xs"
                 >
                   <option value="none">válassz</option>
                   <option value="elf">Elf</option>
@@ -588,43 +586,77 @@ const WarCalculatorComponent: React.FC = () => {
               <div className="pt-2">
                 <div className="divider"></div>
                 <h3 className="text-sm font-semibold text-base-content mb-2">Speciális képességek</h3>
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <label className="flex items-center gap-2 text-xs cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary"
-                        style={{ width: '14px', height: '14px' }}
-                        checked={tamadoSettings.tudos || false}
-                        onChange={(e) => updateTamadoSettings({ tudos: e.target.checked })}
-                      />
-                      <span>Tudós (Hadi tekercs)</span>
-                    </label>
-                    <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
-                      <input
-                        type="text"
-                        value={tamadoSettings.tudos_szazalek}
-                        onChange={(e) => updateTamadoSettings({ tudos_szazalek: parseInt(e.target.value) || 0 })}
-                        className="input input-bordered input-sm w-full text-xs"
-                      />
-                      <span className="text-xs text-base-content/50">%</span>
+                <div className="space-y-2">
+                  <div className="space-y-1.5">
+                    <CheckboxInput
+                      label="Tudós (Hadi tekercs)"
+                      checked={tamadoSettings.tudos || false}
+                      onChange={(checked) => updateTamadoSettings({ tudos: checked })}
+                    />
+                    <CheckboxInput
+                      label="Tudomány hónapja"
+                      checked={tamadoSettings.tudomany_honapja || false}
+                      onChange={(checked) => updateTamadoSettings({ tudomany_honapja: checked })}
+                    />
+                    <div className="flex items-center justify-between gap-1.5">
+                      <label className="text-xs font-medium label-text whitespace-nowrap">Hadi tekercs:</label>
+                      <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
+                        <input
+                          type="text"
+                          value={tamadoSettings.tudos_szazalek}
+                          onChange={(e) => updateTamadoSettings({ tudos_szazalek: parseInt(e.target.value) || 0 })}
+                          className="input input-bordered input-sm w-full text-xs"
+                        />
+                        <span className="text-xs text-base-content/50">%</span>
+                      </div>
                     </div>
                   </div>
+                  <div className="space-y-1.5">
+                    <CheckboxInput
+                      label="Magányos farkas"
+                      checked={tamadoSettings.maganyos_farkas}
+                      onChange={(checked) => updateTamadoSettings({ maganyos_farkas: checked })}
+                    />
+                    <CheckboxInput
+                      label="Vérszomj varázslat"
+                      checked={tamadoSettings.verszomj || false}
+                      onChange={(checked) => updateTamadoSettings({ verszomj: checked })}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Támadó specialitások */}
+              <div className="pt-2">
+                <div className="divider"></div>
+                <h3 className="text-sm font-semibold text-base-content mb-2">Támadó specialitások</h3>
+                <div className="space-y-1.5">
                   <CheckboxInput
-                    label="Tudomány hónapja"
-                    checked={tamadoSettings.tudomany_honapja || false}
-                    onChange={(checked) => updateTamadoSettings({ tudomany_honapja: checked })}
+                    label="Tábornok személyiség (+1 tábornok)"
+                    checked={tamadoSettings.tabornok_szemelyiseg || false}
+                    onChange={(checked) => updateTamadoSettings({ tabornok_szemelyiseg: checked })}
                   />
-                  <CheckboxInput
-                    label="Magányos farkas"
-                    checked={tamadoSettings.maganyos_farkas}
-                    onChange={(checked) => updateTamadoSettings({ maganyos_farkas: checked })}
-                  />
-                  <CheckboxInput
-                    label="Vérszomj"
-                    checked={tamadoSettings.verszomj || false}
-                    onChange={(checked) => updateTamadoSettings({ verszomj: checked })}
-                  />
+                  <div className="flex items-center justify-between gap-1.5">
+                    <label className="text-xs font-medium label-text whitespace-nowrap">Tábornok:</label>
+                    <select
+                      value={tamadoSettings.tabornok || 0}
+                      onChange={(e) => updateTamadoSettings({ tabornok: parseInt(e.target.value) })}
+                      className="select select-bordered select-sm text-xs"
+                      style={{ width: FIELD_WIDTH }}
+                    >
+                      {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(num => (
+                        <option key={num} value={num}>{num}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Támadó beállítások */}
+              <div className="pt-2">
+                <div className="divider"></div>
+                <h3 className="text-sm font-semibold text-base-content mb-2">Támadó beállítások</h3>
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between gap-1.5">
                     <label className="text-xs font-medium label-text whitespace-nowrap">Kör:</label>
                     <input
@@ -635,7 +667,7 @@ const WarCalculatorComponent: React.FC = () => {
                       style={{ width: FIELD_WIDTH }}
                     />
                   </div>
-                  <div className="pt-2">
+                  <div>
                     <label className="label">
                       <span className="label-text text-xs">Irány:</span>
                     </label>
@@ -665,32 +697,6 @@ const WarCalculatorComponent: React.FC = () => {
                         <span>Lefele (kisebb értékű ország)</span>
                       </label>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Támadó specialitások */}
-              <div className="pt-2">
-                <div className="divider"></div>
-                <h3 className="text-sm font-semibold text-base-content mb-2">Támadó specialitások</h3>
-                <div className="space-y-1.5">
-                  <CheckboxInput
-                    label="Tábornok személyiség (+1 tábornok)"
-                    checked={tamadoSettings.tabornok_szemelyiseg || false}
-                    onChange={(checked) => updateTamadoSettings({ tabornok_szemelyiseg: checked })}
-                  />
-                  <div className="flex items-center justify-between gap-1.5">
-                    <label className="text-xs font-medium label-text whitespace-nowrap">Tábornok:</label>
-                    <select
-                      value={tamadoSettings.tabornok || 0}
-                      onChange={(e) => updateTamadoSettings({ tabornok: parseInt(e.target.value) })}
-                      className="select select-bordered select-sm text-xs"
-                      style={{ width: FIELD_WIDTH }}
-                    >
-                      {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(num => (
-                        <option key={num} value={num}>{num}</option>
-                      ))}
-                    </select>
                   </div>
                 </div>
               </div>
