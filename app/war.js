@@ -327,11 +327,13 @@ function szamolVedoero() {
     // Dokumentáció szerint: alapértelmezetten 1 őrtorony = 40 íjász
     // Lakáshelyzeti tekercs módosítja: 40 * (1 + lakashelyzeti / 100)
     // Elf esetén az őrtoronyban lévő íjászok 8 pontot adnak (helyett 6)
+    // FONTOS: Minden őrtornyot úgy kezelünk, hogy 100%-ban működik (teljes foglalkoztatottság)
     const ortorony = parseInt(document.getElementById('vedo_ortorony').value) || 0;
     const faj = document.getElementById('vedo_faj').value;
     const lakashelyzeti = parseFloat(document.getElementById('vedo_lakashelyzeti_tekercs').value) || 0;
     
     // Alap kapacitás: 40 íjász/őrtorony, módosítva lakáshelyzeti tekercssel
+    // Minden őrtorony 100%-ban működik (nincs működési százalék számítás)
     const ortoronyKapacitas = Math.round(40 * (1 + lakashelyzeti / 100));
     const maxOrtoronyIjsz = ortorony * ortoronyKapacitas;
     const ortoronyIjsz = Math.min(ijsz, maxOrtoronyIjsz);
