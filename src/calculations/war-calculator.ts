@@ -111,8 +111,8 @@ export class WarCalculator {
   // Támadóerő számítás
   static calculateAttack(settings: WarSettings): number {
     const { katona, tamado, ijsz, lovas, elit, faj, katonai_moral,
-            maganyos_farkas, verszomj, tabornok = 0, elohalott_szint = 0,
-            tudos_szazalek, irany } = settings;
+            maganyos_farkas, verszomj, tabornok = 0, tabornok_szemelyiseg = false,
+            elohalott_szint = 0, tudos_szazalek, irany } = settings;
 
     let alapTamadoero = 
       katona * UNIT_VALUES.katona.tamado +
@@ -140,8 +140,9 @@ export class WarCalculator {
       tamadoero *= 1.30;
     }
 
-    // Tábornok bónusz
-    tamadoero *= (1 + (GENERAL_BONUSES[tabornok] || 0));
+    // Tábornok bónusz (személyiség +1 tábornok)
+    const effectiveTabornok = Math.min(8, tabornok + (tabornok_szemelyiseg ? 1 : 0));
+    tamadoero *= (1 + (GENERAL_BONUSES[effectiveTabornok] || 0));
 
     // Élőhalott szint
     if (faj === 'elohalott') {
