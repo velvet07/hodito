@@ -483,11 +483,11 @@ const WarCalculatorComponent: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="flex flex-wrap justify-end mt-4 gap-3">
+                <div className="flex flex-wrap justify-end mt-4 gap-3 w-full">
                   <button
                     onClick={handleVedoClear}
                     className="btn btn-error btn-sm"
-                    style={{ flexBasis: '25%', minWidth: '110px' }}
+                    style={{ flex: '1 1 25%', minWidth: '100px' }}
                     type="button"
                   >
                     Törlés
@@ -495,7 +495,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleVedoImport}
                     className="btn btn-primary btn-sm"
-                    style={{ flexBasis: '65%', minWidth: '200px' }}
+                    style={{ flex: '1 1 65%', minWidth: '180px' }}
                     type="button"
                   >
                     Feldolgozás
@@ -516,6 +516,13 @@ const WarCalculatorComponent: React.FC = () => {
             
             <div className="space-y-3">
               {/* Támadóerő */}
+              <div className="bg-base-200/70 rounded-lg p-3">
+                <p className="text-xs font-semibold text-base-content/70 uppercase tracking-wide">Gabonaszükséglet</p>
+                <p className="text-sm text-base-content mt-1">
+                  {formatNumber(tamadoResults.gabonaszukseglet)} bála szükséges a kiküldött sereghez.
+                </p>
+              </div>
+
               <div className="pb-2">
                 <div className="divider"></div>
                 <div className="flex justify-between items-center">
@@ -524,13 +531,6 @@ const WarCalculatorComponent: React.FC = () => {
                     {formatNumber(tamadoResults.tamadoero)}
                   </span>
                 </div>
-              </div>
-
-              <div className="bg-base-200/70 rounded-lg p-3">
-                <p className="text-xs font-semibold text-base-content/70 uppercase tracking-wide">Gabonaszükséglet</p>
-                <p className="text-sm text-base-content mt-1">
-                  {formatNumber(tamadoResults.gabonaszukseglet)} bála szükséges a kiküldött sereghez.
-                </p>
               </div>
 
               {/* Katonai egységek */}
@@ -695,11 +695,11 @@ const WarCalculatorComponent: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="flex flex-wrap justify-end mt-4 gap-3">
+                <div className="flex flex-wrap justify-end mt-4 gap-3 w-full">
                   <button
                     onClick={handleTamadoClear}
                     className="btn btn-error btn-sm"
-                    style={{ flexBasis: '25%', minWidth: '110px' }}
+                    style={{ flex: '1 1 25%', minWidth: '100px' }}
                     type="button"
                   >
                     Törlés
@@ -707,7 +707,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleTamadoImport}
                     className="btn btn-primary btn-sm"
-                    style={{ flexBasis: '65%', minWidth: '200px' }}
+                    style={{ flex: '1 1 65%', minWidth: '180px' }}
                     type="button"
                   >
                     Feldolgozás
