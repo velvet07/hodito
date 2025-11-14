@@ -242,6 +242,69 @@ function szamol() {
     updateFieldStates();
 }
 
+function findRequiredUnitValue(fieldId, targetPoints, calculatorFn) {
+    const field = document.getElementById(fieldId);
+    if (!field) {
+        return null;
+    }
+    
+    const originalValue = parseInt(field.value) || 0;
+    const basePoints = calculatorFn();
+    if (basePoints >= targetPoints) {
+        return {
+            finalValue: originalValue,
+            added: 0
+        };
+    }
+    
+    const MAX_UNITS = 2000000;
+    
+    const simulatePoints = (value) => {
+        const previous = field.value;
+        field.value = value.toString();
+        const points = calculatorFn();
+        field.value = previous;
+        return points;
+    };
+    
+    let high = originalValue;
+    let highPoints = basePoints;
+    let iterations = 0;
+    
+    while (highPoints < targetPoints && high < MAX_UNITS && iterations < 60) {
+        if (high === 0) {
+            high = 1;
+        } else {
+            high = Math.min(MAX_UNITS, high * 2);
+        }
+        highPoints = simulatePoints(high);
+        iterations++;
+    }
+    
+    if (highPoints < targetPoints) {
+        return null;
+    }
+    
+    let low = originalValue;
+    let result = high;
+    
+    while (low < high) {
+        const mid = Math.floor((low + high) / 2);
+        const midPoints = simulatePoints(mid);
+        if (midPoints >= targetPoints) {
+            result = mid;
+            high = mid;
+        } else {
+            low = mid + 1;
+        }
+    }
+    
+    return {
+        finalValue: result,
+        added: result - originalValue
+    };
+}
+
 // Védőerő számítása
 function szamolVedoero() {
     // Alapértékek
@@ -426,24 +489,25 @@ function szamolIjaszVedohoz() {
     }
     
     // Szükséges védőerő különbség
-    const szuksegesVedoero = tamadoPont - jelenlegiVedoPont;
+    const celVedoero = tamadoPont;
+    const eredmeny = findRequiredUnitValue('vedo_ijasz', celVedoero, szamolVedoero);
     
-    // Íjász védőértéke (faj alapján)
-    const faj = document.getElementById('vedo_faj').value;
-    const ortoronyBonus = (faj === 'elf') ? 8 : 6;
+    if (!eredmeny) {
+        alert('A beállított feltételek mellett nem lehet elegendő íjászt számolni a védéshez.');
+        return;
+    }
     
-    // Szükséges íjászok száma
-    const szuksegesIjsz = Math.ceil(szuksegesVedoero / ortoronyBonus);
+    if (eredmeny.added === 0) {
+        alert('A védőerő már elég magas, nincs szükség további íjászokra.');
+        return;
+    }
     
-    // Beállítjuk az íjászok számát
     const ijszField = document.getElementById('vedo_ijasz');
-    const jelenlegiIjsz = parseInt(ijszField.value) || 0;
-    ijszField.value = jelenlegiIjsz + szuksegesIjsz;
+    ijszField.value = eredmeny.finalValue;
     
-    // Újraszámolás
     szamol();
     
-    alert(`Szükséges ${formatNumber(szuksegesIjsz)} további íjász a védéshez.`);
+    alert(`Szükséges ${formatNumber(eredmeny.added)} további íjász a védéshez.`);
 }
 
 // Mennyi lovas kell a beütéshez - számítja, hogy mennyi lovas kell, hogy a támadóerő elérje a védőerőt
@@ -458,32 +522,37 @@ function szamolLovasTamadashoz() {
     }
     
     // Szükséges támadóerő különbség
-    const szuksegesTamadoero = vedoPont - jelenlegiTamadoPont;
+    const celTamadoero = vedoPont;
     
-    // Lovas támadóértéke
-    const lovasTamadoErtek = EGYSEG_ERTEK.lovas.tamado;
+    const tamadoKatona = parseInt(document.getElementById('tamado_katona').value) || 0;
+    const tamadoTamado = parseInt(document.getElementById('tamado_tamado').value) || 0;
+    const tamadoIjasz = parseInt(document.getElementById('tamado_ijasz').value) || 0;
+    const tamadoLovas = parseInt(document.getElementById('tamado_lovas').value) || 0;
     
-    // Faji bónusz
-    const faj = document.getElementById('tamado_faj').value;
-    const fajBonus = FAJ_BONUSZ[faj] || FAJ_BONUSZ.none;
-    const lovasTamadoErtekBonusszal = lovasTamadoErtek * fajBonus.tamado;
+    const kellElitreValtani = (tamadoKatona + tamadoTamado + tamadoIjasz + tamadoLovas) === 0;
+    const celMezoId = kellElitreValtani ? 'tamado_elit' : 'tamado_lovas';
+    const eredmeny = findRequiredUnitValue(celMezoId, celTamadoero, szamolTamadoero);
     
-    // Katonai morál
-    const moral = parseFloat(document.getElementById('tamado_katonai_moral').value) || 75;
-    const lovasTamadoErtekMoralral = lovasTamadoErtekBonusszal * (moral / 100);
+    if (!eredmeny) {
+        alert('A beállított feltételek mellett nem lehet elegendő sereget számolni a támadáshoz.');
+        return;
+    }
     
-    // Szükséges lovasok száma
-    const szuksegesLovas = Math.ceil(szuksegesTamadoero / lovasTamadoErtekMoralral);
+    if (eredmeny.added === 0) {
+        alert('A támadóerő már elég magas, nincs szükség további egységekre.');
+        return;
+    }
     
-    // Beállítjuk a lovasok számát
-    const lovasField = document.getElementById('tamado_lovas');
-    const jelenlegiLovas = parseInt(lovasField.value) || 0;
-    lovasField.value = jelenlegiLovas + szuksegesLovas;
+    const celMezo = document.getElementById(celMezoId);
+    celMezo.value = eredmeny.finalValue;
     
-    // Újraszámolás
     szamol();
     
-    alert(`Szükséges ${formatNumber(szuksegesLovas)} további lovas a beütéshez.`);
+    if (kellElitreValtani) {
+        alert(`Szükséges ${formatNumber(eredmeny.added)} további elit a beütéshez.`);
+    } else {
+        alert(`Szükséges ${formatNumber(eredmeny.added)} további lovas a beütéshez.`);
+    }
 }
 
 // Szám formázása
@@ -1186,17 +1255,6 @@ function updateFieldStates() {
     if (currentValue > maxTabornok) {
         tamadoTabornok.value = maxTabornok;
     }
-}
-
-// Segítő számítások
-function szamolIjaszVedohoz() {
-    // Ez a funkció még fejlesztés alatt áll.
-    // TODO: Implementálni textarea mezővel
-}
-
-function szamolLovasTamadashoz() {
-    // Ez a funkció még fejlesztés alatt áll.
-    // TODO: Implementálni textarea mezővel
 }
 
 // Oldal betöltésekor számolás
