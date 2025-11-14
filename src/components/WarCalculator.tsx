@@ -14,6 +14,8 @@ interface UnitInputProps {
   id: string;
 }
 
+const FIELD_WIDTH = '72px';
+
 const UnitInput: React.FC<UnitInputProps> = ({ label, value, onChange, id }) => {
   return (
     <div className="flex items-center justify-between gap-1.5">
@@ -29,7 +31,7 @@ const UnitInput: React.FC<UnitInputProps> = ({ label, value, onChange, id }) => 
           onChange(num);
         }}
         className="input input-bordered input-sm text-xs"
-        style={{ width: '62px', minWidth: '62px' }}
+        style={{ width: FIELD_WIDTH }}
       />
     </div>
   );
@@ -321,12 +323,13 @@ const WarCalculatorComponent: React.FC = () => {
                 <div className="divider"></div>
                 <div className="flex items-center justify-between gap-1.5">
                   <label className="text-xs font-medium label-text whitespace-nowrap">Katonai morál:</label>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
                     <input
                       type="text"
                       value={vedoSettings.katonai_moral}
                       onChange={(e) => updateVedoSettings({ katonai_moral: parseInt(e.target.value) || 75 })}
-                      className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
+                      className="input input-bordered input-sm w-full text-xs"
+                      style={{ width: '100%' }}
                     />
                     <span className="text-xs text-base-content/50">%</span>
                   </div>
@@ -342,7 +345,8 @@ const WarCalculatorComponent: React.FC = () => {
                 <select
                   value={vedoSettings.faj}
                   onChange={(e) => updateVedoSettings({ faj: e.target.value as Race })}
-                  className="select select-bordered select-sm w-full text-xs"
+                  className="select select-bordered select-sm text-xs"
+                  style={{ width: FIELD_WIDTH }}
                 >
                   <option value="none">válassz</option>
                   <option value="elf">Elf</option>
@@ -373,12 +377,12 @@ const WarCalculatorComponent: React.FC = () => {
                   />
                   <div className="flex items-center justify-between gap-1.5">
                     <label className="text-xs font-medium label-text whitespace-nowrap">Hadi tekercs:</label>
-                    <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
                       <input
                         type="text"
                         value={vedoSettings.tudos_szazalek}
                         onChange={(e) => updateVedoSettings({ tudos_szazalek: parseInt(e.target.value) || 0 })}
-                        className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
+                      className="input input-bordered input-sm w-full text-xs"
                       />
                       <span className="text-xs text-base-content/50">%</span>
                     </div>
@@ -416,7 +420,8 @@ const WarCalculatorComponent: React.FC = () => {
                       value={vedoSettings.elohalott_szint || 5}
                       onChange={(e) => updateVedoSettings({ elohalott_szint: parseInt(e.target.value) })}
                       disabled={vedoSettings.faj !== 'elohalott'}
-                      className="select select-bordered select-sm w-full max-w-[8ch] text-xs"
+                    className="select select-bordered select-sm text-xs"
+                    style={{ width: FIELD_WIDTH }}
                     >
                       <option value="0">0</option>
                       <option value="1">1.</option>
@@ -432,7 +437,8 @@ const WarCalculatorComponent: React.FC = () => {
                       value={vedoSettings.szabadsagon_szovetsegesek || 0}
                       onChange={(e) => updateVedoSettings({ szabadsagon_szovetsegesek: parseInt(e.target.value) })}
                       disabled={vedoSettings.maganyos_farkas}
-                      className="select select-bordered select-sm w-full max-w-[8ch] text-xs"
+                    className="select select-bordered select-sm text-xs"
+                    style={{ width: FIELD_WIDTH }}
                     >
                       <option value="0">0</option>
                       <option value="1">1</option>
@@ -442,12 +448,12 @@ const WarCalculatorComponent: React.FC = () => {
                   </div>
                   <div className="flex items-center justify-between gap-1.5">
                     <label className="text-xs font-medium label-text whitespace-nowrap">Lakáshelyzeti tekercs:</label>
-                    <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
                       <input
                         type="text"
                         value={vedoSettings.lakashelyzeti_tekercs}
                         onChange={(e) => updateVedoSettings({ lakashelyzeti_tekercs: parseInt(e.target.value) || 0 })}
-                        className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
+                      className="input input-bordered input-sm w-full text-xs"
                       />
                       <span className="text-xs text-base-content/50">%</span>
                     </div>
@@ -564,7 +570,8 @@ const WarCalculatorComponent: React.FC = () => {
                 <select
                   value={tamadoSettings.faj}
                   onChange={(e) => updateTamadoSettings({ faj: e.target.value as Race })}
-                  className="select select-bordered select-sm w-full text-xs"
+                  className="select select-bordered select-sm text-xs"
+                  style={{ width: FIELD_WIDTH }}
                 >
                   <option value="none">válassz</option>
                   <option value="elf">Elf</option>
@@ -598,7 +605,8 @@ const WarCalculatorComponent: React.FC = () => {
                     <select
                       value={tamadoSettings.tabornok || 0}
                       onChange={(e) => updateTamadoSettings({ tabornok: parseInt(e.target.value) })}
-                      className="select select-bordered select-sm w-full max-w-[8ch] text-xs"
+                      className="select select-bordered select-sm text-xs"
+                      style={{ width: FIELD_WIDTH }}
                     >
                       {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(num => (
                         <option key={num} value={num}>{num}</option>
@@ -607,12 +615,12 @@ const WarCalculatorComponent: React.FC = () => {
                   </div>
                   <div className="flex items-center justify-between gap-1.5">
                     <label className="text-xs font-medium label-text whitespace-nowrap">Hadi tekercs:</label>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
                       <input
                         type="text"
                         value={tamadoSettings.tudos_szazalek}
                         onChange={(e) => updateTamadoSettings({ tudos_szazalek: parseInt(e.target.value) || 0 })}
-                        className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
+                        className="input input-bordered input-sm w-full text-xs"
                       />
                       <span className="text-xs text-base-content/50">%</span>
                     </div>
@@ -623,7 +631,8 @@ const WarCalculatorComponent: React.FC = () => {
                       type="text"
                       value={tamadoSettings.kor || 2}
                       onChange={(e) => updateTamadoSettings({ kor: parseInt(e.target.value) || 2 })}
-                      className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
+                      className="input input-bordered input-sm text-xs"
+                      style={{ width: FIELD_WIDTH }}
                     />
                   </div>
                   <div className="pt-2">
