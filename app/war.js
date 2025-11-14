@@ -323,11 +323,21 @@ function szamolVedoero() {
         lovas * EGYSEG_ERTEK.lovas.vedo +
         elit * EGYSEG_ERTEK.elit.vedo;
     
-    // Őrtorony íjászok (8 pont helyett 6, de elf esetén 8)
+    // Őrtorony íjászok
+    // Dokumentáció szerint: alapértelmezetten 1 őrtorony = 40 íjász
+    // Lakáshelyzeti tekercs módosítja: 40 * (1 + lakashelyzeti / 100)
+    // Elf esetén az őrtoronyban lévő íjászok 8 pontot adnak (helyett 6)
     const ortorony = parseInt(document.getElementById('vedo_ortorony').value) || 0;
     const faj = document.getElementById('vedo_faj').value;
+    const lakashelyzeti = parseFloat(document.getElementById('vedo_lakashelyzeti_tekercs').value) || 0;
+    
+    // Alap kapacitás: 40 íjász/őrtorony, módosítva lakáshelyzeti tekercssel
+    const ortoronyKapacitas = Math.round(40 * (1 + lakashelyzeti / 100));
+    const maxOrtoronyIjsz = ortorony * ortoronyKapacitas;
+    const ortoronyIjsz = Math.min(ijsz, maxOrtoronyIjsz);
+    
+    // Elf esetén 8 pont, egyébként 6 pont (az alapérték 6)
     const ortoronyBonus = (faj === 'elf') ? 8 : 6;
-    const ortoronyIjsz = Math.min(ijsz, ortorony * 100); // 1 őrtorony = 100 íjász
     alapVedoero += ortoronyIjsz * (ortoronyBonus - EGYSEG_ERTEK.ijsz.vedo);
     
     // Szövetséges íjászok
@@ -397,8 +407,7 @@ function szamolVedoero() {
         vedoero *= (1 + szabadsagon * 0.10);
     }
     
-    // Lakáshelyzeti tekercs (őrtorony kapacitás) - ez már benne van az őrtorony számításban
-    // const lakashelyzeti = parseFloat(document.getElementById('vedo_lakashelyzeti_tekercs').value) || 0;
+    // Lakáshelyzeti tekercs (őrtorony kapacitás) - már benne van az őrtorony számításban fentebb
     
     return Math.round(vedoero);
 }
