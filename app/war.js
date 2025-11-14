@@ -894,6 +894,21 @@ function importKristalygomb(tipus) {
         if (hektarField && (!hektarField.value || parseInt(hektarField.value) === 0)) {
             hektarField.value = data.hektar;
         }
+        
+        // Automatikus őrtorony számítás: összterület 10%-a
+        // De csak akkor, ha nincs épületlista adat vagy az őrtorony mező üres
+        const epuletlistaTextarea = document.getElementById('vedo_epuletlista');
+        const hasEpuletlista = epuletlistaTextarea && epuletlistaTextarea.value.trim() !== '';
+        const ortoronyField = document.getElementById('vedo_ortorony');
+        
+        if (ortoronyField && (!ortoronyField.value || parseInt(ortoronyField.value) === 0)) {
+            // Ha nincs épületlista, akkor számoljuk ki: hektár * 0.1 (10%)
+            if (!hasEpuletlista) {
+                const ortoronySzam = Math.round(data.hektar * 0.1);
+                ortoronyField.value = ortoronySzam;
+            }
+            // Ha van épületlista, akkor az importEpuletlista függvény fogja beállítani
+        }
     }
     
     // Mezők állapotának frissítése
@@ -964,10 +979,10 @@ function importEpuletlista(tipus) {
             data.ortorony = extractNumber(ortoronyMatch[1]);
         }
         
-        // Értékek beállítása - csak akkor írjuk felül, ha az adott mező 0 vagy üres
+        // Értékek beállítása - ha van őrtorony az épületlistában, mindig azt használjuk
         if (data.ortorony !== undefined) {
             const ortoronyField = document.getElementById('vedo_ortorony');
-            if (ortoronyField && (!ortoronyField.value || parseInt(ortoronyField.value) === 0)) {
+            if (ortoronyField) {
                 ortoronyField.value = data.ortorony;
             }
         }
@@ -1031,8 +1046,20 @@ function importEpuletlista(tipus) {
         // Őrtorony beállítása
         if (data.ortorony !== undefined) {
             const ortoronyField = document.getElementById('vedo_ortorony');
-            if (ortoronyField && (!ortoronyField.value || parseInt(ortoronyField.value) === 0)) {
+            if (ortoronyField) {
+                // Ha van őrtorony az épületlistában, mindig azt használjuk
                 ortoronyField.value = data.ortorony;
+            }
+        } else {
+            // Ha nincs őrtorony az épületlistában, de van hektár adat, számoljuk ki: hektár * 0.1 (10%)
+            const hektarField = document.getElementById('vedo_hektar');
+            const ortoronyField = document.getElementById('vedo_ortorony');
+            if (hektarField && ortoronyField) {
+                const hektar = parseInt(hektarField.value) || 0;
+                if (hektar > 0 && (!ortoronyField.value || parseInt(ortoronyField.value) === 0)) {
+                    const ortoronySzam = Math.round(hektar * 0.1);
+                    ortoronyField.value = ortoronySzam;
+                }
             }
         }
         
