@@ -122,7 +122,9 @@ module.exports = {
     compress: true,
     port: 3000,
     hot: true,
-    open: true,
+    open: {
+      target: ['index.html']
+    },
     historyApiFallback: true
   },
   optimization: {
