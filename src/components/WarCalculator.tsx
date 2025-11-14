@@ -216,6 +216,31 @@ const WarCalculatorComponent: React.FC = () => {
   const tamadoResults = useMemo(() => WarCalculator.calculate(tamadoSettings), [tamadoSettings]);
 
   const vedoWins = vedoResults.vedoero >= tamadoResults.tamadoero;
+  const hasVedoData =
+    Boolean(
+      vedoSettings.katona ||
+        vedoSettings.vedo ||
+        vedoSettings.tamado ||
+        vedoSettings.ijsz ||
+        vedoSettings.lovas ||
+        vedoSettings.elit ||
+        vedoSettings.hektar ||
+        vedoSettings.ortorony ||
+        vedoKristalygomb.trim().length ||
+        vedoEpuletlista.trim().length
+    );
+  const hasTamadoData =
+    Boolean(
+      tamadoSettings.katona ||
+        tamadoSettings.tamado ||
+        tamadoSettings.ijsz ||
+        tamadoSettings.lovas ||
+        tamadoSettings.elit ||
+        tamadoKristalygomb.trim().length ||
+        tamadoEpuletlista.trim().length
+    );
+  const vedoBorderClass = hasVedoData ? (vedoWins ? 'border-success' : 'border-error') : 'border-base-300';
+  const tamadoBorderClass = hasTamadoData ? (!vedoWins ? 'border-success' : 'border-error') : 'border-base-300';
 
   return (
     <div className="min-h-screen bg-base-200">
@@ -259,7 +284,7 @@ const WarCalculatorComponent: React.FC = () => {
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
           {/* Védő oszlop */}
-          <div className={`card bg-base-100 shadow-xl ${vedoWins ? 'border-4 border-success' : 'border-4 border-error'}`}>
+          <div className={`card bg-base-100 shadow-xl border-2 ${vedoBorderClass}`}>
             <div className="card-body">
               <h2 className="card-title text-xl">
                 Védők
@@ -458,11 +483,11 @@ const WarCalculatorComponent: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="flex justify-end mt-4 gap-3">
+                <div className="flex flex-wrap justify-end mt-4 gap-3">
                   <button
                     onClick={handleVedoClear}
                     className="btn btn-error btn-sm"
-                    style={{ width: '100px' }}
+                    style={{ flexBasis: '25%', minWidth: '110px' }}
                     type="button"
                   >
                     Törlés
@@ -470,7 +495,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleVedoImport}
                     className="btn btn-primary btn-sm"
-                    style={{ width: '250px' }}
+                    style={{ flexBasis: '65%', minWidth: '200px' }}
                     type="button"
                   >
                     Feldolgozás
@@ -482,7 +507,7 @@ const WarCalculatorComponent: React.FC = () => {
           </div>
 
           {/* Támadó oszlop */}
-          <div className={`card bg-base-100 shadow-xl ${!vedoWins ? 'border-4 border-success' : 'border-4 border-error'}`}>
+          <div className={`card bg-base-100 shadow-xl border-2 ${tamadoBorderClass}`}>
             <div className="card-body">
               <h2 className="card-title text-xl">
                 Támadók
@@ -499,6 +524,13 @@ const WarCalculatorComponent: React.FC = () => {
                     {formatNumber(tamadoResults.tamadoero)}
                   </span>
                 </div>
+              </div>
+
+              <div className="bg-base-200/70 rounded-lg p-3">
+                <p className="text-xs font-semibold text-base-content/70 uppercase tracking-wide">Gabonaszükséglet</p>
+                <p className="text-sm text-base-content mt-1">
+                  {formatNumber(tamadoResults.gabonaszukseglet)} bála szükséges a kiküldött sereghez.
+                </p>
               </div>
 
               {/* Katonai egységek */}
@@ -606,8 +638,7 @@ const WarCalculatorComponent: React.FC = () => {
                       <span className="label-text text-xs">Irány:</span>
                     </label>
                     <div className="space-y-1">
-                      <label className="label cursor-pointer">
-                        <span className="label-text text-xs">Felfele (nagyobb értékű ország)</span>
+                      <label className="flex items-center gap-2 text-xs cursor-pointer">
                         <input
                           type="radio"
                           name="tamado_irany"
@@ -615,10 +646,11 @@ const WarCalculatorComponent: React.FC = () => {
                           checked={tamadoSettings.irany === 'felfele'}
                           onChange={() => updateTamadoSettings({ irany: 'felfele' })}
                           className="radio radio-primary"
+                          style={{ width: '14px', height: '14px' }}
                         />
+                        <span>Felfele (nagyobb értékű ország)</span>
                       </label>
-                      <label className="label cursor-pointer">
-                        <span className="label-text text-xs">Lefele (kisebb értékű ország)</span>
+                      <label className="flex items-center gap-2 text-xs cursor-pointer">
                         <input
                           type="radio"
                           name="tamado_irany"
@@ -626,7 +658,9 @@ const WarCalculatorComponent: React.FC = () => {
                           checked={tamadoSettings.irany === 'lefele'}
                           onChange={() => updateTamadoSettings({ irany: 'lefele' })}
                           className="radio radio-primary"
+                          style={{ width: '14px', height: '14px' }}
                         />
+                        <span>Lefele (kisebb értékű ország)</span>
                       </label>
                     </div>
                   </div>
@@ -661,11 +695,11 @@ const WarCalculatorComponent: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="flex justify-end mt-4 gap-3">
+                <div className="flex flex-wrap justify-end mt-4 gap-3">
                   <button
                     onClick={handleTamadoClear}
                     className="btn btn-error btn-sm"
-                    style={{ width: '100px' }}
+                    style={{ flexBasis: '25%', minWidth: '110px' }}
                     type="button"
                   >
                     Törlés
@@ -673,7 +707,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleTamadoImport}
                     className="btn btn-primary btn-sm"
-                    style={{ width: '250px' }}
+                    style={{ flexBasis: '65%', minWidth: '200px' }}
                     type="button"
                   >
                     Feldolgozás
@@ -693,11 +727,13 @@ const WarCalculatorComponent: React.FC = () => {
               <div className="divider"></div>
             
             <div className="space-y-4">
-              <div className="text-center">
-                <div className={`alert ${vedoWins ? 'alert-success' : 'alert-error'}`}>
-                  <span className="text-2xl font-bold">
-                    {vedoWins ? 'A támadás sikertelen' : 'A támadás sikeres'}
-                  </span>
+              <div className="flex justify-center">
+                <div
+                  className={`inline-flex items-center justify-center rounded-2xl px-6 py-3 text-sm font-semibold tracking-wide ${
+                    vedoWins ? 'bg-success/20 text-success' : 'bg-error/20 text-error'
+                  }`}
+                >
+                  {vedoWins ? 'A támadás sikertelen' : 'A támadás sikeres'}
                 </div>
               </div>
 
@@ -716,15 +752,6 @@ const WarCalculatorComponent: React.FC = () => {
                   </p>
                 </div>
 
-                <div>
-                  <h3 className="text-sm font-semibold text-base-content mb-2">Gabonaszükséglet</h3>
-                  <p className="text-lg">
-                    Védő: <span className="font-semibold">{formatNumber(vedoResults.gabonaszukseglet)} bála</span>
-                  </p>
-                  <p className="text-lg">
-                    Támadó: <span className="font-semibold">{formatNumber(tamadoResults.gabonaszukseglet)} bála</span>
-                  </p>
-                </div>
               </div>
             </div>
             </div>
