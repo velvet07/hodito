@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { WarSettings, WarResults } from '../types';
 import { WarCalculator } from '../calculations/war-calculator';
 import { formatNumber } from '../utils/formatters';
 import { parseKristalygomb, parseEpuletlistaForWar } from '../utils/war-parsers';
 import { Race, GENERAL_BONUSES, getHadiTekercsMax, getLakashelyzetiTekercsMax } from '../constants';
+import { initTheme, setStoredTheme, Theme } from '../utils/theme';
 
 // Segéd komponensek
 interface UnitInputProps {
@@ -27,7 +28,8 @@ const UnitInput: React.FC<UnitInputProps> = ({ label, value, onChange, id }) => 
           const num = parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0;
           onChange(num);
         }}
-        className="input input-bordered input-sm w-full max-w-[8ch] text-xs"
+        className="input input-bordered input-sm text-xs"
+        style={{ width: '62px', minWidth: '62px' }}
       />
     </div>
   );
@@ -42,22 +44,53 @@ interface CheckboxInputProps {
 
 const CheckboxInput: React.FC<CheckboxInputProps> = ({ label, checked, onChange, disabled = false }) => {
   return (
-    <label className="label cursor-pointer">
-      <span className={`label-text text-xs ${disabled ? 'text-base-content/50' : ''}`}>
-        {label}
-      </span>
+    <label
+      className={`flex items-center gap-2 text-xs cursor-pointer ${
+        disabled ? 'text-base-content/40 cursor-not-allowed' : 'text-base-content'
+      }`}
+    >
       <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
         disabled={disabled}
-        className={`checkbox checkbox-primary checkbox-sm ${disabled ? 'checkbox-disabled' : ''}`}
+        className="checkbox checkbox-primary"
+        style={{ height: '14px', width: '14px' }}
       />
+      <span>{label}</span>
     </label>
   );
 };
 
 const WarCalculatorComponent: React.FC = () => {
+  const [theme, setTheme] = useState<Theme>(() => initTheme());
+
+  useEffect(() => {
+    setStoredTheme(theme);
+  }, [theme]);
+
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent | CustomEvent) => {
+      if (e instanceof StorageEvent) {
+        if (e.key === 'hodito-theme' && e.newValue) {
+          setTheme(e.newValue as Theme);
+        }
+      } else if (e instanceof CustomEvent) {
+        if (e.detail && (e.detail === 'light' || e.detail === 'dark')) {
+          setTheme(e.detail as Theme);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange as EventListener);
+    window.addEventListener('themechange', handleStorageChange as EventListener);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange as EventListener);
+      window.removeEventListener('themechange', handleStorageChange as EventListener);
+    };
+  }, []);
+
   const [vedoSettings, setVedoSettings] = useState<WarSettings>({
     katona: 0,
     vedo: 0,
@@ -186,25 +219,45 @@ const WarCalculatorComponent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
-        <header className="mb-6">
-          <div className="flex items-center justify-between mb-2 gap-3 flex-wrap">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-base-content mb-2">Háború</h1>
-              <p className="text-base-content/70">Hódító.hu online stratégia játék csata számító</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <a href="docs/war-guide.html" className="btn btn-ghost">
-                Leírás
-              </a>
-              <a href="index.html" className="btn btn-primary">
-                Épületek
-              </a>
-            </div>
+      <div className="container mx-auto px-4 py-6 max-w-6xl">
+        <header className="mb-6 flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-base-content mb-2">Háború</h1>
+            <p className="text-base-content/70">Hódító.hu online stratégia játék csata számító</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              className="btn btn-ghost btn-sm gap-2"
+              title={theme === 'light' ? 'Sötét mód' : 'Világos mód'}
+              type="button"
+            >
+              {theme === 'light' ? (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364 6.364l-1.577 1.577M21 12h-2.25m-4.773 4.773l-1.577-1.577M12 18.75V21m-4.773-4.773l-1.577 1.577M3 12h2.25m4.773-4.773L9.18 8.18M12 5.25V3" />
+                </svg>
+              )}
+            </button>
+            <a href="docs/war-guide.html" className="btn btn-outline btn-sm gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              </svg>
+              Leírás
+            </a>
+            <a href="index.html" className="btn btn-primary btn-sm gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+              </svg>
+              Épületek
+            </a>
           </div>
         </header>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
           {/* Védő oszlop */}
           <div className={`card bg-base-100 shadow-xl ${vedoWins ? 'border-4 border-success' : 'border-4 border-error'}`}>
             <div className="card-body">
@@ -387,7 +440,7 @@ const WarCalculatorComponent: React.FC = () => {
                       <span className="label-text text-xs">Kristálygömb:</span>
                     </label>
                     <textarea
-                      rows={10}
+                      rows={5}
                       value={vedoKristalygomb}
                       onChange={(e) => setVedoKristalygomb(e.target.value)}
                       className="textarea textarea-bordered textarea-sm w-full text-xs font-mono"
@@ -398,25 +451,29 @@ const WarCalculatorComponent: React.FC = () => {
                       <span className="label-text text-xs">Épületlista:</span>
                     </label>
                     <textarea
-                      rows={10}
+                      rows={5}
                       value={vedoEpuletlista}
                       onChange={(e) => setVedoEpuletlista(e.target.value)}
                       className="textarea textarea-bordered textarea-sm w-full text-xs font-mono"
                     />
                   </div>
                 </div>
-                <div className="card-actions justify-end mt-3">
-                  <button
-                    onClick={handleVedoImport}
-                    className="btn btn-success btn-sm"
-                  >
-                    Feldolgozás
-                  </button>
+                <div className="flex justify-end mt-4 gap-3">
                   <button
                     onClick={handleVedoClear}
                     className="btn btn-error btn-sm"
+                    style={{ width: '100px' }}
+                    type="button"
                   >
                     Törlés
+                  </button>
+                  <button
+                    onClick={handleVedoImport}
+                    className="btn btn-primary btn-sm"
+                    style={{ width: '250px' }}
+                    type="button"
+                  >
+                    Feldolgozás
                   </button>
                 </div>
               </div>
@@ -586,7 +643,7 @@ const WarCalculatorComponent: React.FC = () => {
                       <span className="label-text text-xs">Kristálygömb:</span>
                     </label>
                     <textarea
-                      rows={10}
+                      rows={5}
                       value={tamadoKristalygomb}
                       onChange={(e) => setTamadoKristalygomb(e.target.value)}
                       className="textarea textarea-bordered textarea-sm w-full text-xs font-mono"
@@ -597,25 +654,29 @@ const WarCalculatorComponent: React.FC = () => {
                       <span className="label-text text-xs">Épületlista:</span>
                     </label>
                     <textarea
-                      rows={10}
+                      rows={5}
                       value={tamadoEpuletlista}
                       onChange={(e) => setTamadoEpuletlista(e.target.value)}
                       className="textarea textarea-bordered textarea-sm w-full text-xs font-mono"
                     />
                   </div>
                 </div>
-                <div className="card-actions justify-end mt-3">
-                  <button
-                    onClick={handleTamadoImport}
-                    className="btn btn-success btn-sm"
-                  >
-                    Feldolgozás
-                  </button>
+                <div className="flex justify-end mt-4 gap-3">
                   <button
                     onClick={handleTamadoClear}
                     className="btn btn-error btn-sm"
+                    style={{ width: '100px' }}
+                    type="button"
                   >
                     Törlés
+                  </button>
+                  <button
+                    onClick={handleTamadoImport}
+                    className="btn btn-primary btn-sm"
+                    style={{ width: '250px' }}
+                    type="button"
+                  >
+                    Feldolgozás
                   </button>
                 </div>
               </div>

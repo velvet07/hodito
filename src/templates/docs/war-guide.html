@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="hu" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Háború számító leírás - Hódító</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function updateThemeIcons(theme) {
+            const lightIcon = document.getElementById('theme-icon-light');
+            const darkIcon = document.getElementById('theme-icon-dark');
+            if (lightIcon && darkIcon) {
+                if (theme === 'dark') {
+                    lightIcon.style.display = 'none';
+                    darkIcon.style.display = 'block';
+                } else {
+                    lightIcon.style.display = 'block';
+                    darkIcon.style.display = 'none';
+                }
+            }
+        }
+
+        (function() {
+            const storedTheme = localStorage.getItem('hodito-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', storedTheme);
+        })();
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('hodito-theme', newTheme);
+            updateThemeIcons(newTheme);
+            window.dispatchEvent(new CustomEvent('themechange', { detail: newTheme }));
+            window.dispatchEvent(new StorageEvent('storage', { key: 'hodito-theme', newValue: newTheme, oldValue: currentTheme }));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            updateThemeIcons(currentTheme);
+        });
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'hodito-theme' && e.newValue) {
+                document.documentElement.setAttribute('data-theme', e.newValue);
+                updateThemeIcons(e.newValue);
+            }
+        });
+
+        window.addEventListener('themechange', (e) => {
+            if (e.detail && (e.detail === 'light' || e.detail === 'dark')) {
+                document.documentElement.setAttribute('data-theme', e.detail);
+                updateThemeIcons(e.detail);
+            }
+        });
+    </script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <div class="container mx-auto px-4 py-6 max-w-6xl">
+        <header class="mb-6 flex items-center justify-between flex-wrap gap-4">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-base-content mb-2">Háború számító</h1>
+                <p class="text-base-content/70">A csata előtti gyors kalkulációkhoz</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="toggleTheme()" class="btn btn-ghost btn-sm gap-2" title="Sötét/Világos mód váltása">
+                    <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                    </svg>
+                    <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4" style="display:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364 6.364l-1.577 1.577M21 12h-2.25m-4.773 4.773l-1.577-1.577M12 18.75V21m-4.773-4.773l-1.577 1.577M3 12h2.25m4.773-4.773L9.18 8.18M12 5.25V3" />
+                    </svg>
+                </button>
+                <a href="../war.html" class="btn btn-primary btn-sm gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                    Vissza a kalkulátorhoz
+                </a>
+                <a href="../index.html" class="btn btn-outline btn-sm gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                    </svg>
+                    Épületlista
+                </a>
+            </div>
+        </header>
+
+        <main class="space-y-6">
+            <section class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl">1. Adatok begyűjtése</h2>
+                    <div class="divider"></div>
+                    <p class="text-sm text-base-content/70">A legjobb eredményhez két forrásból érdemes dolgozni:</p>
+                    <ul class="list-disc pl-6 space-y-2 text-sm text-base-content">
+                        <li><strong>Kristálygömb:</strong> pontosan mutatja a célpont aktuális egységeit. Illeszd be a teljes jelentést, a kalkulátor felismeri a számokat.</li>
+                        <li><strong>Épületlista:</strong> a védő ország tereit is be kell olvasni, hogy az őrtornyok és hektárral arányos bónuszok érvényesüljenek.</li>
+                        <li>Mindkét mezőben használhatsz egyszerű másolás/beillesztést. A feldolgozás gomb egyszerre értelmezi a beillesztett adatokat.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl">2. Védők beállítása</h2>
+                    <div class="divider"></div>
+                    <p class="text-sm text-base-content/70 mb-4">A védő oszlop minden mezője közvetlenül befolyásolja a számított védőerőt.</p>
+                    <ul class="list-disc pl-6 space-y-2 text-sm text-base-content">
+                        <li><strong>Őrtornyok kapacitása:</strong> alapesetben 40 íjász/torony. Lakáshelyzeti tekercs növeli, törpénél további +20%, élőhalottnál a szint bónusza érvényesül.</li>
+                        <li><strong>Szövetséges íjászok:</strong> normál védelemhez adódnak, de nem kerülnek toronyba.</li>
+                        <li><strong>Védelem varázslat / magányos farkas:</strong> a megfelelő jelölőnégyzetekkel aktiválhatók.</li>
+                        <li><strong>Hadi tekercs %:</strong> automatikusan a faj maximumához igazodik (lásd: <a class="link" href="../../docs/war.md">war dokumentáció</a>).</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl">3. Támadók beállítása</h2>
+                    <div class="divider"></div>
+                    <p class="text-sm text-base-content/70 mb-4">A támadó oszlop a kiküldött sereget modellezi.</p>
+                    <ul class="list-disc pl-6 space-y-2 text-sm text-base-content">
+                        <li><strong>Verszomj:</strong> élőhalott sajátosság, +10% támadás az adott körre.</li>
+                        <li><strong>Távolság / Kör:</strong> a támadás iránya (felfelé/lefelé) és a távolság határozza meg az érkezést.</li>
+                        <li><strong>Tábornokok:</strong> a `GENERAL_BONUSES` táblázatnak megfelelően erősítik a támadást.</li>
+                        <li><strong>Kristálygömb import:</strong> csupán a kiküldött seregre vonatkozik; a védő mezőkbe ne illeszd be.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl">4. Eredmények értelmezése</h2>
+                    <div class="divider"></div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm text-base-content">
+                        <div class="bg-base-200 rounded-xl p-4">
+                            <h3 class="text-lg font-semibold mb-2">Védőerő</h3>
+                            <p>A számított védőerő tartalmazza az őrtornyok extra íjászait, az őrtornyok területarányos bónuszát, az állandó mágikus hatásokat és a minimum hektár alapú védelmet.</p>
+                        </div>
+                        <div class="bg-base-200 rounded-xl p-4">
+                            <h3 class="text-lg font-semibold mb-2">Támadóerő</h3>
+                            <p>A támadóerő a kiküldött egységekre épül, majd erre kerülnek rá a verszomj/tábornok/magányos farkas bónuszok. A kalkulátor a <strong>WarCalculator</strong> osztály logikáját követi, amely a dokumentáció szerinti sorrendben szorozza a módosítókat.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
+

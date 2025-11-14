@@ -60,6 +60,12 @@ module.exports = {
       chunks: [],
       minify: isProduction
     }),
+    new HtmlWebpackPlugin({
+      template: './src/templates/docs/war-guide.html',
+      filename: 'docs/war-guide.html',
+      chunks: [],
+      minify: isProduction
+    }),
     ...(isProduction ? [
       new WebpackObfuscator({
         rotateStringArray: true,
