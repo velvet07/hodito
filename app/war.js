@@ -389,9 +389,11 @@ function szamolVedoero() {
     }
     
     // Őrtorony területarányos védőérték
+    // Gnóm esetén háromszorosa, egyébként kétszerese, de maximum 30%
     if (hektar > 0 && ortorony > 0) {
         const ortoronyArany = (ortorony / hektar) * 100;
-        const ortoronyVedoBonus = Math.min(ortoronyArany * 2, 30) / 100; // Maximum 30%
+        const multiplier = (faj === 'gnom') ? 3 : 2;
+        const ortoronyVedoBonus = Math.min(ortoronyArany * multiplier, 30) / 100; // Maximum 30%
         vedoero *= (1 + ortoronyVedoBonus);
     }
     
@@ -570,7 +572,19 @@ function extractNumber(text) {
 
 // Hadi tekercs maximum értékek faj, tudós és tudomány hónapja alapján
 function getHadiTekercsMax(faj, hasTudomanyHonapja, hasTudos) {
-    let baseMax = (faj === 'gnom') ? 50 : 30;
+    // Alapértelmezett: 30%
+    // Gnóm: 50% (minden tudományág)
+    // Elf: 40% (hadügy és mágia területén)
+    // Ork: 40% (hadügy és mezőgazdaság területén)
+    // Törpe: 40% (ipar és hadügy területén)
+    // Egyéb fajok: 30%
+    
+    let baseMax = 30;
+    if (faj === 'gnom') {
+        baseMax = 50;
+    } else if (faj === 'elf' || faj === 'ork' || faj === 'torpe') {
+        baseMax = 40;
+    }
     
     if (hasTudos) {
         baseMax += 5;
@@ -731,14 +745,28 @@ function importKristalygomb(tipus) {
         data.elit = extractNumber(elitValue);
     }
     
-    // Katonai morál
-    const moralValue = extractValue('Katonai morál');
-    if (moralValue) {
-        // Eltávolítjuk a % jelet, ha van
-        const moralNum = moralValue.replace(/%/g, '').trim();
-        if (moralNum) {
-            data.katonai_moral = extractNumber(moralNum);
+    // Katonai morál - javított regex tab karakterekkel is
+    // Több formátum támogatása: "Katonai morál:\t94 %" vagy "Katonai morál: 94 %"
+    let moralValue = null;
+    // Először próbáljuk meg az eredeti szöveggel (tab karakterekkel)
+    const moralRegexTab = /Katonai morál\s*:\s*(\d+)\s*%/i;
+    const moralMatchTab = textarea.value.match(moralRegexTab);
+    if (moralMatchTab) {
+        moralValue = moralMatchTab[1];
+    } else {
+        // Ha nem található, próbáljuk meg az extractValue függvénnyel (normalizált szöveggel)
+        moralValue = extractValue('Katonai morál');
+        if (moralValue) {
+            // Eltávolítjuk a % jelet, ha van
+            const moralNum = moralValue.replace(/%/g, '').trim();
+            if (moralNum) {
+                moralValue = extractNumber(moralNum).toString();
+            }
         }
+    }
+    
+    if (moralValue) {
+        data.katonai_moral = parseInt(moralValue) || 0;
     }
     
     // Szövetség
@@ -837,7 +865,8 @@ function importKristalygomb(tipus) {
     }
     if (data.katonai_moral !== undefined) {
         const moralField = document.getElementById(tipus + '_katonai_moral');
-        if (moralField && (!moralField.value || parseInt(moralField.value) === 0)) {
+        if (moralField) {
+            // Mindig felülírjuk az értéket, ha van a kristálygömb-ben
             moralField.value = data.katonai_moral;
         }
     }
