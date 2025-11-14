@@ -570,8 +570,7 @@ const WarCalculatorComponent: React.FC = () => {
                 <select
                   value={tamadoSettings.faj}
                   onChange={(e) => updateTamadoSettings({ faj: e.target.value as Race })}
-                  className="select select-bordered select-sm text-xs"
-                  style={{ width: FIELD_WIDTH }}
+                  className="select select-bordered select-sm w-full text-xs"
                 >
                   <option value="none">válassz</option>
                   <option value="elf">Elf</option>
