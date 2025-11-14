@@ -1202,6 +1202,19 @@ function updateFieldStates() {
         vedoSzabadsagon.classList.remove('bg-gray-100');
     }
     
+    // Szövetséges íjászok csak ha nem magányos farkas
+    const vedoSzovetsegesIjszok = document.getElementById('vedo_szovetseges_ijaszok');
+    if (vedoSzovetsegesIjszok) {
+        if (vedoMaganyosFarkas) {
+            vedoSzovetsegesIjszok.disabled = true;
+            vedoSzovetsegesIjszok.classList.add('bg-gray-100');
+            vedoSzovetsegesIjszok.value = '0';
+        } else {
+            vedoSzovetsegesIjszok.disabled = false;
+            vedoSzovetsegesIjszok.classList.remove('bg-gray-100');
+        }
+    }
+    
     // Lakáshelyzeti tekercs max beállítása
     if (vedoFaj !== 'none') {
         const hasTudomanyHonapja = document.getElementById('vedo_tudomany_honapja') && document.getElementById('vedo_tudomany_honapja').checked;
