@@ -21,6 +21,9 @@ export function setStoredTheme(theme: Theme): void {
   
   localStorage.setItem(THEME_STORAGE_KEY, theme);
   applyTheme(theme);
+  
+  // Custom event küldése ugyanabban az ablakban (React komponenseknek)
+  window.dispatchEvent(new CustomEvent('themechange', { detail: theme }));
 }
 
 export function applyTheme(theme: Theme): void {

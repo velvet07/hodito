@@ -33,7 +33,10 @@
                 }
             }
             
-            // Storage event küldése más oldalaknak (ha ugyanabban a böngészőben vannak)
+            // Custom event küldése React komponenseknek
+            window.dispatchEvent(new CustomEvent('themechange', { detail: newTheme }));
+            
+            // Storage event küldése más ablakoknak
             window.dispatchEvent(new StorageEvent('storage', {
                 key: 'hodito-theme',
                 newValue: newTheme,

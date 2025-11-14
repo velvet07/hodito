@@ -22,15 +22,30 @@ const BuildingCalculatorComponent: React.FC = () => {
   
   // Hallgatás más oldalak változásaira (pl. storage event)
   useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'hodito-theme' && e.newValue) {
-        const newTheme = e.newValue as Theme;
-        setTheme(newTheme);
+    const handleStorageChange = (e: StorageEvent | CustomEvent) => {
+      if (e instanceof StorageEvent) {
+        // Más ablakból érkező változás
+        if (e.key === 'hodito-theme' && e.newValue) {
+          const newTheme = e.newValue as Theme;
+          setTheme(newTheme);
+        }
+      } else if (e instanceof CustomEvent) {
+        // Ugyanabból az ablakból érkező változás (custom event)
+        if (e.detail && (e.detail === 'light' || e.detail === 'dark')) {
+          setTheme(e.detail as Theme);
+        }
       }
     };
     
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    // Storage event (más ablakokból)
+    window.addEventListener('storage', handleStorageChange as EventListener);
+    // Custom event (ugyanabból az ablakból)
+    window.addEventListener('themechange', handleStorageChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange as EventListener);
+      window.removeEventListener('themechange', handleStorageChange as EventListener);
+    };
   }, []);
 
   const [buildings, setBuildings] = useState<BuildingData>({
