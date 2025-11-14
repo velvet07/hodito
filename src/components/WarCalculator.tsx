@@ -144,6 +144,11 @@ const WarCalculatorComponent: React.FC = () => {
   const [vedoBarakkCount, setVedoBarakkCount] = useState<number | null>(null);
   const [tamadoBarakkCount, setTamadoBarakkCount] = useState<number | null>(null);
 
+  const handleTudomanyHonapjaToggle = useCallback((value: boolean) => {
+    setVedoSettings(prev => (prev.tudomany_honapja === value ? prev : { ...prev, tudomany_honapja: value }));
+    setTamadoSettings(prev => (prev.tudomany_honapja === value ? prev : { ...prev, tudomany_honapja: value }));
+  }, []);
+
   const handleVedoImport = useCallback(() => {
     const kristalygombData = parseKristalygomb(vedoKristalygomb, 'vedo');
     const hasKristaly = vedoKristalygomb.trim().length > 0;
@@ -253,11 +258,7 @@ const WarCalculatorComponent: React.FC = () => {
     setVedoSettings(prev => {
       if (prev.faj === 'none') return prev;
       const max = getHadiTekercsMax(prev.faj, false, prev.tudos ?? false);
-      const current = prev.tudos_szazalek || 0;
-      if (current !== 0 && current <= max) {
-        return prev;
-      }
-      return { ...prev, tudos_szazalek: max };
+      return prev.tudos_szazalek === max ? prev : { ...prev, tudos_szazalek: max };
     });
   }, [vedoSettings.faj, vedoSettings.tudos]);
 
@@ -265,11 +266,7 @@ const WarCalculatorComponent: React.FC = () => {
     setTamadoSettings(prev => {
       if (prev.faj === 'none') return prev;
       const max = getHadiTekercsMax(prev.faj, false, prev.tudos ?? false);
-      const current = prev.tudos_szazalek || 0;
-      if (current !== 0 && current <= max) {
-        return prev;
-      }
-      return { ...prev, tudos_szazalek: max };
+      return prev.tudos_szazalek === max ? prev : { ...prev, tudos_szazalek: max };
     });
   }, [tamadoSettings.faj, tamadoSettings.tudos]);
 
@@ -277,11 +274,7 @@ const WarCalculatorComponent: React.FC = () => {
     setVedoSettings(prev => {
       if (prev.faj === 'none') return prev;
       const max = getLakashelyzetiTekercsMax(prev.faj, prev.tudomany_honapja ?? false);
-      const current = prev.lakashelyzeti_tekercs || 0;
-      if (current !== 0 && current <= max) {
-        return prev;
-      }
-      return { ...prev, lakashelyzeti_tekercs: max };
+      return prev.lakashelyzeti_tekercs === max ? prev : { ...prev, lakashelyzeti_tekercs: max };
     });
   }, [vedoSettings.faj, vedoSettings.tudomany_honapja]);
 
@@ -289,11 +282,7 @@ const WarCalculatorComponent: React.FC = () => {
     setTamadoSettings(prev => {
       if (prev.faj === 'none') return prev;
       const max = getLakashelyzetiTekercsMax(prev.faj, prev.tudomany_honapja ?? false);
-      const current = prev.lakashelyzeti_tekercs || 0;
-      if (current !== 0 && current <= max) {
-        return prev;
-      }
-      return { ...prev, lakashelyzeti_tekercs: max };
+      return prev.lakashelyzeti_tekercs === max ? prev : { ...prev, lakashelyzeti_tekercs: max };
     });
   }, [tamadoSettings.faj, tamadoSettings.tudomany_honapja]);
 
@@ -510,7 +499,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <CheckboxInput
                     label="Tudomány hónapja"
                     checked={vedoSettings.tudomany_honapja || false}
-                    onChange={(checked) => updateVedoSettings({ tudomany_honapja: checked })}
+                    onChange={handleTudomanyHonapjaToggle}
                   />
                   <div className="flex items-center justify-between gap-1.5">
                     <label className="text-xs font-medium label-text whitespace-nowrap">Hadi tekercs:</label>
@@ -732,11 +721,11 @@ const WarCalculatorComponent: React.FC = () => {
                       checked={tamadoSettings.tudos || false}
                       onChange={(checked) => updateTamadoSettings({ tudos: checked })}
                     />
-                    <CheckboxInput
-                      label="Tudomány hónapja"
-                      checked={tamadoSettings.tudomany_honapja || false}
-                      onChange={(checked) => updateTamadoSettings({ tudomany_honapja: checked })}
-                    />
+                  <CheckboxInput
+                    label="Tudomány hónapja"
+                    checked={tamadoSettings.tudomany_honapja || false}
+                    onChange={handleTudomanyHonapjaToggle}
+                  />
                     <div className="flex items-center justify-between gap-1.5">
                       <label className="text-xs font-medium label-text whitespace-nowrap">Hadi tekercs:</label>
                       <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
