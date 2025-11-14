@@ -68,11 +68,14 @@ function feldolgozas(tipus) {
     if (tipus === 'tamado') {
         const tamadoFaj = document.getElementById('tamado_faj').value;
         if (tamadoFaj !== 'none') {
+            const tamadoLakashelyzetiField = document.getElementById('tamado_lakashelyzeti_tekercs');
             const hasTudomanyHonapja = document.getElementById('tamado_tudomany_honapja') && document.getElementById('tamado_tudomany_honapja').checked;
             const maxLakashelyzeti = getLakashelyzetiTekercsMax(tamadoFaj, hasTudomanyHonapja);
-            const tamadoLakashelyzetiField = document.getElementById('tamado_lakashelyzeti_tekercs');
             if (tamadoLakashelyzetiField) {
-                tamadoLakashelyzetiField.value = maxLakashelyzeti;
+                const currentValue = parseInt(tamadoLakashelyzetiField.value) || 0;
+                if (currentValue === 0 || currentValue > maxLakashelyzeti) {
+                    tamadoLakashelyzetiField.value = maxLakashelyzeti;
+                }
             }
             
             // Lovasok max számának számítása barakkok és lakáshelyzet alapján
@@ -496,14 +499,22 @@ function extractNumber(text) {
     return parseInt(text.replace(/[.,\s]/g, '')) || 0;
 }
 
-// Hadi tekercs maximum értékek faj alapján (tudós személyiség nem ad extra százalékot)
-function getHadiTekercsMax(faj, hasTudos) {
-    // Gnóm: 50%, más fajok: 30%
-    // A tudós személyiség nem ad hozzá extra százalékot a hadi tekercshez
-    return (faj === 'gnom') ? 50 : 30;
+// Hadi tekercs maximum értékek faj, tudós és tudomány hónapja alapján
+function getHadiTekercsMax(faj, hasTudomanyHonapja, hasTudos) {
+    let baseMax = (faj === 'gnom') ? 50 : 30;
+    
+    if (hasTudos) {
+        baseMax += 5;
+    }
+    
+    if (hasTudomanyHonapja) {
+        baseMax += 5;
+    }
+    
+    return baseMax;
 }
 
-// Hadi tekercs értékének beállítása faj és checkboxok alapján
+// Hadi tekercs értékének beállítása faj és tudomány hónapja alapján
 function updateHadiTekercs(tipus) {
     const fajField = document.getElementById(tipus + '_faj');
     const faj = fajField ? fajField.value : 'none';
@@ -519,22 +530,8 @@ function updateHadiTekercs(tipus) {
     const hasTudos = tudosCheckbox && tudosCheckbox.checked;
     const hasTudomanyHonapja = tudomanyHonapjaCheckbox && tudomanyHonapjaCheckbox.checked;
     
-    // Fajra jellemző alapértelmezett max (Gnóm: 50%, mások: 30%)
-    const baseMax = (faj === 'gnom') ? 50 : 30;
-    
-    // Ha tudós be van kapcsolva
-    if (hasTudos) {
-        // Ha tudomány hónapja is be van kapcsolva: max + 5%
-        if (hasTudomanyHonapja) {
-            tudosSzazalekField.value = baseMax + 5;
-        } else {
-            // Ha csak tudós: fajra jellemző max
-            tudosSzazalekField.value = baseMax;
-        }
-    } else {
-        // Ha tudós nincs bekapcsolva, nem írunk felül semmit
-        // (a felhasználó által beírt érték marad)
-    }
+    const maxHadiTekercs = getHadiTekercsMax(faj, hasTudomanyHonapja, hasTudos);
+    tudosSzazalekField.value = maxHadiTekercs;
 }
 
 // Lakáshelyzeti tekercs maximum értékek faj és tudomány hónapja alapján
@@ -718,9 +715,10 @@ function importKristalygomb(tipus) {
         }
     }
     
-    // Hadi tekercs automatikus beállítása faj és tudós személyiség alapján
-    if (hasTudos && selectedFaj !== 'none') {
-        const maxTekercs = getHadiTekercsMax(selectedFaj, hasTudos);
+    // Hadi tekercs automatikus beállítása faj alapján
+    if (selectedFaj !== 'none') {
+        const hasTudomanyHonapja = document.getElementById(tipus + '_tudomany_honapja') && document.getElementById(tipus + '_tudomany_honapja').checked;
+        const maxTekercs = getHadiTekercsMax(selectedFaj, hasTudomanyHonapja, hasTudos);
         document.getElementById(tipus + '_tudos_szazalek').value = maxTekercs;
     }
     
@@ -993,11 +991,13 @@ function importEpuletlista(tipus) {
         const fajField = document.getElementById('tamado_faj');
         if (fajField && fajField.value !== 'none') {
             const hasTudomanyHonapja = document.getElementById('tamado_tudomany_honapja') && document.getElementById('tamado_tudomany_honapja').checked;
-            const maxLakashelyzeti = getLakashelyzetiTekercsMax(fajField.value, hasTudomanyHonapja);
             const lakashelyzetiField = document.getElementById('tamado_lakashelyzeti_tekercs');
+            const maxLakashelyzeti = getLakashelyzetiTekercsMax(fajField.value, hasTudomanyHonapja);
             if (lakashelyzetiField) {
-                // Támadóknál mindig max lakáshelyzeti tekercssel számolunk
-                lakashelyzetiField.value = maxLakashelyzeti;
+                const currentValue = parseInt(lakashelyzetiField.value) || 0;
+                if (currentValue === 0 || currentValue > maxLakashelyzeti) {
+                    lakashelyzetiField.value = maxLakashelyzeti;
+                }
             }
             
             // Lovasok max számának számítása barakkok és lakáshelyzet alapján
