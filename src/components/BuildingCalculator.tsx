@@ -143,8 +143,9 @@ const BuildingCalculatorComponent: React.FC = () => {
     setBuildings(defaultBuildings);
     setSettings(defaultSettings);
     setScrolls(defaultScrolls);
-    setBuildingListText('');
+    // A textarea tartalma megmarad
     clearAllData();
+    // A textarea tartalmát nem töröljük, csak az épületek, beállítások és tekercsek adatait
   }, []);
 
   // Max tekercs értékek automatikus kitöltése skip_tekercs bekapcsolásakor

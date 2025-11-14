@@ -99,7 +99,7 @@ export function clearAllData(): void {
     localStorage.removeItem(STORAGE_KEY_BUILDINGS);
     localStorage.removeItem(STORAGE_KEY_SETTINGS);
     localStorage.removeItem(STORAGE_KEY_SCROLLS);
-    localStorage.removeItem(STORAGE_KEY_BUILDING_LIST_TEXT);
+    // A textarea tartalma megmarad (STORAGE_KEY_BUILDING_LIST_TEXT nem törlődik)
   } catch (e) {
     console.error('Failed to clear data from localStorage', e);
   }
