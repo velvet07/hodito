@@ -487,7 +487,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleVedoClear}
                     className="btn btn-error btn-sm"
-                    style={{ width: '110px' }}
+                    style={{ width: '90px' }}
                     type="button"
                   >
                     Törlés
@@ -495,7 +495,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleVedoImport}
                     className="btn btn-primary btn-sm"
-                    style={{ flex: 1, minWidth: '200px' }}
+                    style={{ flex: '0 0 220px' }}
                     type="button"
                   >
                     Feldolgozás
@@ -516,13 +516,6 @@ const WarCalculatorComponent: React.FC = () => {
             
             <div className="space-y-3">
               {/* Támadóerő */}
-              <div className="bg-base-200/70 rounded-lg p-3">
-                <p className="text-xs font-semibold text-base-content/70 uppercase tracking-wide">Gabonaszükséglet</p>
-                <p className="text-sm text-base-content mt-1">
-                  {formatNumber(tamadoResults.gabonaszukseglet)} bála szükséges a kiküldött sereghez.
-                </p>
-              </div>
-
               <div className="pb-2">
                 <div className="divider"></div>
                 <div className="flex justify-between items-center">
@@ -699,7 +692,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleTamadoClear}
                     className="btn btn-error btn-sm"
-                    style={{ width: '110px' }}
+                    style={{ width: '90px' }}
                     type="button"
                   >
                     Törlés
@@ -707,7 +700,7 @@ const WarCalculatorComponent: React.FC = () => {
                   <button
                     onClick={handleTamadoImport}
                     className="btn btn-primary btn-sm"
-                    style={{ flex: 1, minWidth: '200px' }}
+                    style={{ flex: '0 0 220px' }}
                     type="button"
                   >
                     Feldolgozás
@@ -749,6 +742,16 @@ const WarCalculatorComponent: React.FC = () => {
                   <h3 className="text-sm font-semibold text-base-content mb-2">Támadóerő</h3>
                   <p className={`text-xl font-bold ${!vedoWins ? 'text-success' : 'text-error'}`}>
                     {formatNumber(tamadoResults.tamadoero)}
+                  </p>
+                </div>
+
+                <div className="bg-base-200/70 rounded-lg p-3">
+                  <p className="text-xs font-semibold text-base-content/70 uppercase tracking-wide">Gabonaszükséglet</p>
+                  <p className="text-sm text-base-content mt-1">
+                    Védő: <span className="font-semibold">{formatNumber(vedoResults.gabonaszukseglet)} bála</span>
+                  </p>
+                  <p className="text-sm text-base-content">
+                    Támadó: <span className="font-semibold">{formatNumber(tamadoResults.gabonaszukseglet)} bála</span>
                   </p>
                 </div>
 
