@@ -141,17 +141,23 @@ const WarCalculatorComponent: React.FC = () => {
   const [vedoEpuletlista, setVedoEpuletlista] = useState('');
   const [tamadoKristalygomb, setTamadoKristalygomb] = useState('');
   const [tamadoEpuletlista, setTamadoEpuletlista] = useState('');
+  const [vedoBarakkCount, setVedoBarakkCount] = useState<number | null>(null);
+  const [tamadoBarakkCount, setTamadoBarakkCount] = useState<number | null>(null);
 
   const handleVedoImport = useCallback(() => {
     const kristalygombData = parseKristalygomb(vedoKristalygomb, 'vedo');
     const epuletlistaData = parseEpuletlistaForWar(vedoEpuletlista);
-    updateVedoSettings({ ...kristalygombData, ...epuletlistaData });
+    const { barakk, ...rest } = epuletlistaData;
+    setVedoBarakkCount(barakk ?? null);
+    updateVedoSettings({ ...kristalygombData, ...rest });
   }, [vedoKristalygomb, vedoEpuletlista]);
 
   const handleTamadoImport = useCallback(() => {
     const kristalygombData = parseKristalygomb(tamadoKristalygomb, 'tamado');
     const epuletlistaData = parseEpuletlistaForWar(tamadoEpuletlista);
-    updateTamadoSettings({ ...kristalygombData, ...epuletlistaData });
+    const { barakk, ...rest } = epuletlistaData;
+    setTamadoBarakkCount(barakk ?? null);
+    updateTamadoSettings({ ...kristalygombData, ...rest });
   }, [tamadoKristalygomb, tamadoEpuletlista]);
 
   const handleVedoClear = useCallback(() => {
@@ -179,6 +185,7 @@ const WarCalculatorComponent: React.FC = () => {
       tudos: false,
       tudomany_honapja: false
     });
+    setVedoBarakkCount(null);
   }, []);
 
   const handleTamadoClear = useCallback(() => {
@@ -204,7 +211,84 @@ const WarCalculatorComponent: React.FC = () => {
       tabornok_szemelyiseg: false,
       lakashelyzeti_tekercs: 0
     });
+    setTamadoBarakkCount(null);
   }, []);
+
+  useEffect(() => {
+    setVedoSettings(prev => {
+      if (prev.faj === 'none') return prev;
+      const max = getHadiTekercsMax(prev.faj, prev.tudomany_honapja ?? false, prev.tudos ?? false);
+      const current = prev.tudos_szazalek || 0;
+      if (current !== 0 && current <= max) {
+        return prev;
+      }
+      return { ...prev, tudos_szazalek: max };
+    });
+  }, [vedoSettings.faj, vedoSettings.tudomany_honapja, vedoSettings.tudos]);
+
+  useEffect(() => {
+    setTamadoSettings(prev => {
+      if (prev.faj === 'none') return prev;
+      const max = getHadiTekercsMax(prev.faj, prev.tudomany_honapja ?? false, prev.tudos ?? false);
+      const current = prev.tudos_szazalek || 0;
+      if (current !== 0 && current <= max) {
+        return prev;
+      }
+      return { ...prev, tudos_szazalek: max };
+    });
+  }, [tamadoSettings.faj, tamadoSettings.tudomany_honapja, tamadoSettings.tudos]);
+
+  useEffect(() => {
+    setVedoSettings(prev => {
+      if (prev.faj === 'none') return prev;
+      const max = getLakashelyzetiTekercsMax(prev.faj, prev.tudomany_honapja ?? false);
+      const current = prev.lakashelyzeti_tekercs || 0;
+      if (current !== 0 && current <= max) {
+        return prev;
+      }
+      return { ...prev, lakashelyzeti_tekercs: max };
+    });
+  }, [vedoSettings.faj, vedoSettings.tudomany_honapja]);
+
+  useEffect(() => {
+    setTamadoSettings(prev => {
+      if (prev.faj === 'none') return prev;
+      const max = getLakashelyzetiTekercsMax(prev.faj, prev.tudomany_honapja ?? false);
+      const current = prev.lakashelyzeti_tekercs || 0;
+      if (current !== 0 && current <= max) {
+        return prev;
+      }
+      return { ...prev, lakashelyzeti_tekercs: max };
+    });
+  }, [tamadoSettings.faj, tamadoSettings.tudomany_honapja]);
+
+  useEffect(() => {
+    if (!vedoBarakkCount || vedoBarakkCount <= 0) return;
+    setVedoSettings(prev => {
+      const lakas = prev.lakashelyzeti_tekercs || 0;
+      const maxCapacity = Math.floor(vedoBarakkCount * 40 * (1 + lakas / 100));
+      if (maxCapacity <= 0) return prev;
+      const current = prev.ijsz || 0;
+      if (current !== 0 && current <= maxCapacity) {
+        return prev;
+      }
+      return { ...prev, ijsz: maxCapacity };
+    });
+  }, [vedoBarakkCount, vedoSettings.lakashelyzeti_tekercs]);
+
+  useEffect(() => {
+    if (!tamadoBarakkCount || tamadoBarakkCount <= 0) return;
+    setTamadoSettings(prev => {
+      const lakas = prev.lakashelyzeti_tekercs || 0;
+      const maxCapacity = Math.floor(tamadoBarakkCount * 40 * (1 + lakas / 100));
+      if (maxCapacity <= 0) return prev;
+      const current = prev.lovas || 0;
+      if (current !== 0 && current <= maxCapacity) {
+        return prev;
+      }
+      return { ...prev, lovas: maxCapacity };
+    });
+  }, [tamadoBarakkCount, tamadoSettings.lakashelyzeti_tekercs]);
 
   const updateVedoSettings = useCallback((updates: Partial<WarSettings>) => {
     setVedoSettings(prev => ({ ...prev, ...updates }));
