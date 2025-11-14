@@ -6,6 +6,64 @@
     <title>Épületlista felhasználói leírás - Hódító</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Téma betöltése localStorage-ból
+        (function() {
+            const storedTheme = localStorage.getItem('hodito-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', storedTheme);
+        })();
+        
+        // Téma váltás funkció
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('hodito-theme', newTheme);
+            
+            // Ikonok frissítése
+            const lightIcon = document.getElementById('theme-icon-light');
+            const darkIcon = document.getElementById('theme-icon-dark');
+            if (lightIcon && darkIcon) {
+                if (newTheme === 'dark') {
+                    lightIcon.style.display = 'none';
+                    darkIcon.style.display = 'block';
+                } else {
+                    lightIcon.style.display = 'block';
+                    darkIcon.style.display = 'none';
+                }
+            }
+            
+            // Storage event küldése más oldalaknak (ha ugyanabban a böngészőben vannak)
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: 'hodito-theme',
+                newValue: newTheme,
+                oldValue: currentTheme
+            }));
+        }
+        
+        // Ikonok inicializálása betöltéskor
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const lightIcon = document.getElementById('theme-icon-light');
+            const darkIcon = document.getElementById('theme-icon-dark');
+            if (lightIcon && darkIcon) {
+                if (currentTheme === 'dark') {
+                    lightIcon.style.display = 'none';
+                    darkIcon.style.display = 'block';
+                } else {
+                    lightIcon.style.display = 'block';
+                    darkIcon.style.display = 'none';
+                }
+            }
+        });
+        
+        // Hallgatás storage változásokra (más oldalakról)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'hodito-theme' && e.newValue) {
+                document.documentElement.setAttribute('data-theme', e.newValue);
+            }
+        });
+    </script>
 </head>
 <body class="min-h-screen bg-base-200">
     <div class="container mx-auto px-4 py-6 max-w-5xl">
@@ -19,6 +77,14 @@
                             <h1 class="text-3xl md:text-4xl font-bold text-base-content">Épületlista számító</h1>
                         </div>
                         <div class="flex flex-wrap gap-2">
+                            <button onclick="toggleTheme()" class="btn btn-ghost btn-sm gap-2" title="Sötét/Világos mód váltása">
+                                <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                                </svg>
+                                <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4" style="display: none;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364 6.364l-1.577 1.577M21 12h-2.25m-4.773 4.773l-1.577-1.577M12 18.75V21m-4.773-4.773l-1.577 1.577M3 12h2.25m4.773-4.773L9.18 8.18M12 5.25V3" />
+                                </svg>
+                            </button>
                             <a href="../index.html" class="btn btn-primary btn-sm gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />

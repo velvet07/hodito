@@ -72,6 +72,9 @@ export interface CalculationResults {
   fegyver_t: number;
   dragako_t: number;
   gabonaszukseglet: number;
+  gabonaszukseglet_n: number; // Sereg nélkül
+  gabona_kor_re_elég: number | null; // Körre elég (teljes), ha negatív a különbség
+  gabona_kor_re_elég_n: number | null; // Körre elég (sereg nélkül), ha negatív a különbség
   penz_lop: string;
   kamat: string;
 }

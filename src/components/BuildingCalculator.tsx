@@ -9,8 +9,30 @@ import {
   getMezogazdasagTekercsMax, 
   getBanyaszatTekercsMax 
 } from '../constants';
+import { initTheme, setStoredTheme, getStoredTheme, Theme } from '../utils/theme';
 
 const BuildingCalculatorComponent: React.FC = () => {
+  // Sötét/világos mód kezelése localStorage-ral
+  const [theme, setTheme] = useState<Theme>(() => initTheme());
+  
+  useEffect(() => {
+    // Téma változásakor mentés és alkalmazás
+    setStoredTheme(theme);
+  }, [theme]);
+  
+  // Hallgatás más oldalak változásaira (pl. storage event)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'hodito-theme' && e.newValue) {
+        const newTheme = e.newValue as Theme;
+        setTheme(newTheme);
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const [buildings, setBuildings] = useState<BuildingData>({
     hektar: 0,
     szabad_terulet: 0,
@@ -154,6 +176,24 @@ const BuildingCalculatorComponent: React.FC = () => {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => {
+                      const newTheme = theme === 'light' ? 'dark' : 'light';
+                      setTheme(newTheme);
+                    }}
+                    className="btn btn-ghost btn-sm gap-2"
+                    title={theme === 'light' ? 'Sötét mód' : 'Világos mód'}
+                  >
+              {theme === 'light' ? (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364 6.364l-1.577 1.577M21 12h-2.25m-4.773 4.773l-1.577-1.577M12 18.75V21m-4.773-4.773l-1.577 1.577M3 12h2.25m4.773-4.773L9.18 8.18M12 5.25V3" />
+                </svg>
+              )}
+            </button>
             <a href="docs/buildings-guide.html" target="_blank" className="btn btn-outline btn-sm gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -397,14 +437,60 @@ const BuildingCalculatorComponent: React.FC = () => {
 
               <div className="divider my-2"></div>
 
+              {/* Gabona */}
+              <div>
+                <h3 className="text-sm font-semibold text-base-content mb-2">Gabona</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex justify-between">
+                      <span className="text-base-content/70">Szükséglet (teljes):</span>
+                      <span className={`font-semibold ${results.gabona_t - results.gabonaszukseglet >= 0 ? 'text-success' : 'text-error'}`}>
+                        {formatNumber(results.gabonaszukseglet)} bála
+                        {results.gabona_t - results.gabonaszukseglet >= 0 ? (
+                          <span className="ml-2 text-success">+{formatNumber(results.gabona_t - results.gabonaszukseglet)}</span>
+                        ) : (
+                          <span className="ml-2 text-error">{formatNumber(results.gabona_t - results.gabonaszukseglet)}</span>
+                        )}
+                      </span>
+                    </div>
+                    {results.gabona_kor_re_elég !== null && (
+                      <div className="text-xs text-base-content/50 ml-auto">
+                        ({formatNumber(results.gabona_kor_re_elég)} körre elég)
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex justify-between">
+                      <span className="text-base-content/70">Szükséglet (sereg nélkül):</span>
+                      <span className={`font-semibold ${results.gabona_t - results.gabonaszukseglet_n >= 0 ? 'text-success' : 'text-error'}`}>
+                        {formatNumber(results.gabonaszukseglet_n)} bála
+                        {results.gabona_t - results.gabonaszukseglet_n >= 0 ? (
+                          <span className="ml-2 text-success">+{formatNumber(results.gabona_t - results.gabonaszukseglet_n)}</span>
+                        ) : (
+                          <span className="ml-2 text-error">{formatNumber(results.gabona_t - results.gabonaszukseglet_n)}</span>
+                        )}
+                      </span>
+                    </div>
+                    {results.gabona_kor_re_elég_n !== null && (
+                      <div className="text-xs text-base-content/50 ml-auto">
+                        ({formatNumber(results.gabona_kor_re_elég_n)} körre elég)
+                      </div>
+                    )}
+                  </div>
+                  <div className="divider my-1"></div>
+                  <div className="flex justify-between">
+                    <span className="text-base-content/70">Termelés:</span>
+                    <span className="font-semibold">{formatNumber(results.gabona_t)} bála/kör</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="divider my-2"></div>
+
               {/* Egyéb */}
               <div>
                 <h3 className="text-sm font-semibold text-base-content mb-2">Egyéb</h3>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-base-content/70">Gabonaszükséglet:</span>
-                    <span className="font-semibold">{formatNumber(results.gabonaszukseglet)} bála</span>
-                  </div>
                   <div className="flex justify-between">
                     <span className="text-base-content/70">Ellopható pénz:</span>
                     <span className="font-semibold">{results.penz_lop}</span>

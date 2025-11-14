@@ -97,13 +97,20 @@ module.exports = {
     ] : [])
   ],
   devServer: {
-    static: {
-      directory: path.join(__dirname, 'dist')
-    },
+    static: [
+      {
+        directory: path.join(__dirname, 'dist')
+      },
+      {
+        directory: path.join(__dirname, 'src/templates/docs'),
+        publicPath: '/docs'
+      }
+    ],
     compress: true,
     port: 3000,
     hot: true,
-    open: true
+    open: true,
+    historyApiFallback: true
   },
   optimization: {
     splitChunks: {

@@ -17,12 +17,13 @@ export class BuildingCalculator {
     const { haz, szabad_terulet, erdo, kolelohely, femlelohely, agyaglelohely, dragakolelohely } = this.buildings;
     const lakashelyzeti = this.getLakashelyzetiMultiplier();
     
-    const lakashelyzeti2 = this.settings.faj === 'elohalott' ? 0 : 1;
+    // Az eredeti kód szerint: haz * 50 * lakashelyzeti + (szabad_terulet + erdo + ...) * 8 * lakashelyzeti
+    // Az élőhalott esetén is számolódik a népesség (nincs lakashelyzeti2 szorzó a népesség számításnál)
     
     const hazNepesseg = haz * 50 * lakashelyzeti;
     const teruletNepesseg = (szabad_terulet + erdo + kolelohely + femlelohely + agyaglelohely + dragakolelohely) * 8 * lakashelyzeti;
     
-    return Math.round((hazNepesseg + teruletNepesseg) * lakashelyzeti2);
+    return Math.round(hazNepesseg + teruletNepesseg);
   }
 
   // Foglalkoztatottság számítás
@@ -67,25 +68,14 @@ export class BuildingCalculator {
     const { barakk, templom, kocsma, ortorony } = this.buildings;
     const lakashelyzeti = this.getLakashelyzetiMultiplier();
     
-    // Élőhalott férőhely bónusz (szint alapján)
-    let ferhelyBonus = 1.0;
-    if (this.settings.faj === 'elohalott') {
-      const szint = this.settings.szint || 5;
-      const elohalottFerhelyBonus: Record<number, number> = {
-        5: 1.2,  // +20%
-        4: 1.3,  // +30%
-        3: 1.4,  // +40%
-        2: 1.5,  // +50%
-        1: 1.6   // +60%
-      };
-      ferhelyBonus = elohalottFerhelyBonus[szint] || 1.2;
-    }
+    // Az élőhalott esetén a lakashelyzeti már tartalmazza a szint alapú bónuszt
+    // Az eredeti kód szerint: barakk * 40 * lakashelyzeti (nincs külön bónusz)
     
     return {
-      barakk: Math.round(barakk * 40 * lakashelyzeti * ferhelyBonus),
-      templom: Math.round(templom * 100 * lakashelyzeti * ferhelyBonus),
-      kocsma: Math.round(kocsma * 40 * lakashelyzeti * ferhelyBonus),
-      ortorony: Math.round(ortorony * 40 * lakashelyzeti * ferhelyBonus)
+      barakk: Math.round(barakk * 40 * lakashelyzeti),
+      templom: Math.round(templom * 100 * lakashelyzeti),
+      kocsma: Math.round(kocsma * 40 * lakashelyzeti),
+      ortorony: Math.round(ortorony * 40 * lakashelyzeti)
     };
   }
 
@@ -110,21 +100,23 @@ export class BuildingCalculator {
     const { tanya, agyagbanya, fatelep, kobanya, fembanya, kovacsmuhely, dragakobanya } = this.buildings;
     
     const gabonamodosito = this.getGabonaModosito();
+    const gabonamodosito2 = this.getGabonaModosito2();
     const nyersanyagmodosito = this.getNyersanyagModosito();
+    const nyersanyagmodosito2 = this.getNyersanyagModosito2();
     const fegyvermodosito = this.getFegyverModosito();
     
     return {
-      gabona: Math.round(tanya * 50 * gabonamodosito),
-      agyag: Math.round(agyagbanya * 7 * nyersanyagmodosito),
-      fa: Math.round(fatelep * 7 * nyersanyagmodosito),
-      ko: Math.round(kobanya * 7 * nyersanyagmodosito),
-      fem: Math.round(fembanya * 7 * nyersanyagmodosito),
+      gabona: Math.round(tanya * 50 * gabonamodosito * gabonamodosito2),
+      agyag: Math.round(agyagbanya * 7 * nyersanyagmodosito * nyersanyagmodosito2),
+      fa: Math.round(fatelep * 7 * nyersanyagmodosito * nyersanyagmodosito2),
+      ko: Math.round(kobanya * 7 * nyersanyagmodosito * nyersanyagmodosito2),
+      fem: Math.round(fembanya * 7 * nyersanyagmodosito * nyersanyagmodosito2),
       fegyver: Math.round(kovacsmuhely * 3 * fegyvermodosito),
-      dragako: Math.round(dragakobanya * 7 * nyersanyagmodosito)
+      dragako: Math.round(dragakobanya * 7 * nyersanyagmodosito * nyersanyagmodosito2)
     };
   }
 
-  // Gabonaszükséglet számítás
+  // Gabonaszükséglet számítás (teljes)
   calculateGrainRequirement(): number {
     const { barakk, templom, kocsma } = this.buildings;
     const lakashelyzeti = this.getLakashelyzetiMultiplier();
@@ -138,6 +130,22 @@ export class BuildingCalculator {
       (barakk * 40 * lakashelyzeti * multiplier +
        templom * 100 * lakashelyzeti * multiplier +
        kocsma * 40 * lakashelyzeti * multiplier +
+       nepesseg) / 5
+    ) * lakashelyzeti2;
+    
+    return szukseges;
+  }
+
+  // Gabonaszükséglet számítás (sereg nélkül - csak templom, kocsma, népesség)
+  calculateGrainRequirementNoMilitary(): number {
+    const { templom, kocsma } = this.buildings;
+    const lakashelyzeti = this.getLakashelyzetiMultiplier();
+    const lakashelyzeti2 = this.settings.faj === 'elohalott' ? 0 : 1;
+    const nepesseg = this.calculatePopulation();
+    
+    const szukseges = Math.round(
+      (templom * 100 * lakashelyzeti +
+       kocsma * 40 * lakashelyzeti +
        nepesseg) / 5
     ) * lakashelyzeti2;
     
@@ -196,7 +204,7 @@ export class BuildingCalculator {
     return value / 100 + 1;
   }
 
-  // Gabona módosító
+  // Gabona módosító (tekercs + személyiség)
   private getGabonaModosito(): number {
     // Élőhalott esetén mindig 1.0
     if (this.settings.faj === 'elohalott') {
@@ -205,8 +213,6 @@ export class BuildingCalculator {
     
     const raceBonus = RACE_BONUSES[this.settings.faj].gabona;
     const hasGazdalkodo = this.settings.szemelyisegek.includes('gazdalkodo');
-    const hasBoTermes = this.settings.idoszakok.includes('bo_termes');
-    const hasRagcsalok = this.settings.idoszakok.includes('ragcsalok');
     
     let modosito = 1.0;
     
@@ -221,10 +227,52 @@ export class BuildingCalculator {
     modosito *= raceBonus;
     
     if (hasGazdalkodo) modosito *= 1.1;
-    if (hasBoTermes) modosito *= 1.2;
-    if (hasRagcsalok) modosito *= 0.9;
     
     return modosito;
+  }
+
+  // Gabona módosító 2 (faji alapérték + időszaki módosítók)
+  private getGabonaModosito2(): number {
+    let modosito2 = 1.0;
+    
+    // Faji alapértékek
+    if (this.settings.faj === 'orias') {
+      modosito2 = 1.2;
+    } else if (this.settings.faj === 'ember' || this.settings.faj === 'elf') {
+      modosito2 = 1.3;
+    } else if (this.settings.faj === 'elohalott' || this.settings.faj === 'felelf') {
+      modosito2 = 0.9;
+    }
+    
+    // Időszaki módosítók
+    const hasBoTermes = this.settings.idoszakok.includes('bo_termes');
+    const hasRagcsalok = this.settings.idoszakok.includes('ragcsalok');
+    
+    if (hasBoTermes) modosito2 *= 1.2; // +20%
+    if (hasRagcsalok) modosito2 *= 0.9; // -10%
+    
+    return modosito2;
+  }
+
+  // Nyersanyag módosító 2 (faji alapérték + időszaki módosítók)
+  private getNyersanyagModosito2(): number {
+    let modosito2 = 1.0;
+    
+    // Faji alapértékek
+    if (this.settings.faj === 'elf') {
+      modosito2 = 0.7;
+    } else if (this.settings.faj === 'torpe') {
+      modosito2 = 3.0;
+    }
+    
+    // Időszaki módosítók
+    const hasNyersanyagPlus = this.settings.idoszakok.includes('nyersanyag_plus');
+    const hasNyersanyagMinus = this.settings.idoszakok.includes('nyersanyag_minus');
+    
+    if (hasNyersanyagPlus) modosito2 *= 1.2; // +20%
+    if (hasNyersanyagMinus) modosito2 *= 0.9; // -10%
+    
+    return modosito2;
   }
 
   // Nyersanyag módosító
@@ -349,6 +397,28 @@ export class BuildingCalculator {
     const production = this.calculateProduction();
     const bankData = this.calculateBankData();
     
+    const gabonaszukseglet = this.calculateGrainRequirement();
+    const gabonaszukseglet_n = this.calculateGrainRequirementNoMilitary();
+    const gabonatermeles = production.gabona;
+    const gabonaRaktarKapacitas = storage.gabona;
+    
+    // Körre elég számítás (ha negatív a különbség)
+    let gabona_kor_re_elég: number | null = null;
+    if (gabonatermeles - gabonaszukseglet < 0) {
+      const fogyasztas = gabonaszukseglet - gabonatermeles;
+      if (fogyasztas > 0) {
+        gabona_kor_re_elég = Math.floor(gabonaRaktarKapacitas / fogyasztas);
+      }
+    }
+    
+    let gabona_kor_re_elég_n: number | null = null;
+    if (gabonatermeles - gabonaszukseglet_n < 0) {
+      const fogyasztas_n = gabonaszukseglet_n - gabonatermeles;
+      if (fogyasztas_n > 0) {
+        gabona_kor_re_elég_n = Math.floor(gabonaRaktarKapacitas / fogyasztas_n);
+      }
+    }
+    
     return {
       nepesseg: this.calculatePopulation(),
       foglalkoztatottsag: this.calculateEmployment(),
@@ -371,7 +441,10 @@ export class BuildingCalculator {
       fem_t: production.fem,
       fegyver_t: production.fegyver,
       dragako_t: production.dragako,
-      gabonaszukseglet: this.calculateGrainRequirement(),
+      gabonaszukseglet,
+      gabonaszukseglet_n,
+      gabona_kor_re_elég,
+      gabona_kor_re_elég_n,
       penz_lop: bankData.penz_lop,
       kamat: bankData.kamat
     };
