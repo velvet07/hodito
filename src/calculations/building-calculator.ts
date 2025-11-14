@@ -28,25 +28,34 @@ export class BuildingCalculator {
 
   // Foglalkoztatottság számítás
   calculateEmployment(): number {
-    const { konyvtar, raktar, kovacsmuhely, tanya, kocsma, templom, korhaz, piac, bank, ortorony } = this.buildings;
+    // Az eredeti kód szerint: minden épület * 15, kivéve piac (*50) és bányák (0)
+    // A ciklus i=3-tól epuletek.length-5-ig megy
+    // epuletek = ['hektar','szabad_terulet','haz','barakk','kovacsmuhely','tanya','konyvtar','raktar','banyak','ortorony','kocsma','templom','korhaz','piac','bank','fatelep','kobanya','fembanya','agyagbanya','dragakobanya','erdo','kolelohely','femlelohely','agyaglelohely','dragakolelohely']
+    // i=3: barakk, i=4: kovacsmuhely, i=5: tanya, i=6: konyvtar, i=7: raktar, i=8: banyak (skip), i=9: ortorony, i=10: kocsma, i=11: templom, i=12: korhaz, i=13: piac (*50), i=14: bank
+    // length-5 = 20, szóval i=3-tól i=19-ig (dragakobanya)
+    const { barakk, kovacsmuhely, tanya, konyvtar, raktar, ortorony, kocsma, templom, korhaz, piac, bank } = this.buildings;
     const nepesseg = this.calculatePopulation();
     
+    // Az eredeti kód szerint: minden épület * 15, kivéve piac (*50) és bányák (skip)
     let szukseges_lakos = 
-      konyvtar * 15 +
-      raktar * 15 +
+      barakk * 15 +
       kovacsmuhely * 15 +
       tanya * 15 +
+      konyvtar * 15 +
+      raktar * 15 +
+      ortorony * 15 +
       kocsma * 15 +
       templom * 15 +
       korhaz * 15 +
-      bank * 15 +
-      ortorony * 15 +
-      piac * 50; // Piac külön: 50 lakos
+      piac * 50 + // Piac külön: 50 lakos
+      bank * 15;
     
+    // Bank nélkül
     const szukseges_lakos2 = szukseges_lakos - bank * 15;
     
     if (nepesseg === 0) return 0;
-    return Math.round((szukseges_lakos2 / nepesseg) * 100);
+    // Az eredeti kód szerint: szukseges_lakos / nepesseg * 100 (bankkal együtt)
+    return Math.round((szukseges_lakos / nepesseg) * 100);
   }
 
   // Érték számítás
@@ -99,11 +108,18 @@ export class BuildingCalculator {
   calculateProduction(): { gabona: number; agyag: number; fa: number; ko: number; fem: number; fegyver: number; dragako: number } {
     const { tanya, agyagbanya, fatelep, kobanya, fembanya, kovacsmuhely, dragakobanya } = this.buildings;
     
-    const gabonamodosito = this.getGabonaModosito();
+    let gabonamodosito = this.getGabonaModosito();
     const gabonamodosito2 = this.getGabonaModosito2();
-    const nyersanyagmodosito = this.getNyersanyagModosito();
+    let nyersanyagmodosito = this.getNyersanyagModosito();
     const nyersanyagmodosito2 = this.getNyersanyagModosito2();
     const fegyvermodosito = this.getFegyverModosito();
+    
+    // Gazdálkodó személyiség hatása (az eredeti kód szerint itt alkalmazódik)
+    const hasGazdalkodo = this.settings.szemelyisegek.includes('gazdalkodo');
+    if (hasGazdalkodo) {
+      gabonamodosito *= 1.1;
+      nyersanyagmodosito *= 1.1;
+    }
     
     return {
       gabona: Math.round(tanya * 50 * gabonamodosito * gabonamodosito2),
@@ -204,7 +220,8 @@ export class BuildingCalculator {
     return value / 100 + 1;
   }
 
-  // Gabona módosító (tekercs + személyiség)
+  // Gabona módosító (tekercs + faji bónusz)
+  // FONTOS: A gazdálkodó személyiség itt NEM számolódik, hanem később alkalmazódik!
   private getGabonaModosito(): number {
     // Élőhalott esetén mindig 1.0
     if (this.settings.faj === 'elohalott') {
@@ -212,7 +229,6 @@ export class BuildingCalculator {
     }
     
     const raceBonus = RACE_BONUSES[this.settings.faj].gabona;
-    const hasGazdalkodo = this.settings.szemelyisegek.includes('gazdalkodo');
     
     let modosito = 1.0;
     
@@ -224,9 +240,10 @@ export class BuildingCalculator {
       modosito = value / 100 + 1;
     }
     
+    // Faji bónusz alkalmazása
     modosito *= raceBonus;
     
-    if (hasGazdalkodo) modosito *= 1.1;
+    // FONTOS: A gazdálkodó személyiség NEM itt számolódik, hanem a calculateProduction-ban!
     
     return modosito;
   }
@@ -275,7 +292,8 @@ export class BuildingCalculator {
     return modosito2;
   }
 
-  // Nyersanyag módosító
+  // Nyersanyag módosító (tekercs + faji bónusz)
+  // FONTOS: A gazdálkodó személyiség és időszaki módosítók NEM itt számolódnak!
   private getNyersanyagModosito(): number {
     // Élőhalott esetén mindig 1.0
     if (this.settings.faj === 'elohalott') {
@@ -283,9 +301,6 @@ export class BuildingCalculator {
     }
     
     const raceBonus = RACE_BONUSES[this.settings.faj].nyersanyag;
-    const hasGazdalkodo = this.settings.szemelyisegek.includes('gazdalkodo');
-    const hasNyersanyagPlus = this.settings.idoszakok.includes('nyersanyag_plus');
-    const hasNyersanyagMinus = this.settings.idoszakok.includes('nyersanyag_minus');
     
     let modosito = 1.0;
     
@@ -297,15 +312,15 @@ export class BuildingCalculator {
       modosito = value / 100 + 1;
     }
     
+    // Faji bónusz alkalmazása
     if (this.settings.faj === 'torpe') {
       modosito *= 3;
     } else {
       modosito *= raceBonus;
     }
     
-    if (hasGazdalkodo) modosito *= 1.1;
-    if (hasNyersanyagPlus) modosito *= 1.2;
-    if (hasNyersanyagMinus) modosito *= 0.9;
+    // FONTOS: A gazdálkodó személyiség és időszaki módosítók NEM itt számolódnak!
+    // Ezek a calculateProduction-ban alkalmazódnak
     
     return modosito;
   }
