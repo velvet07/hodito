@@ -226,15 +226,15 @@ export class BuildingCalculator {
     return value / 100 + 1;
   }
 
-  // Gabona módosító (tekercs + faji bónusz)
-  // FONTOS: A gazdálkodó személyiség itt NEM számolódik, hanem később alkalmazódik!
+  // Gabona módosító (csak tekercs érték, NEM tartalmazza a faji bónuszt!)
+  // FONTOS: Az eredeti kódban a gabonamodosito CSAK a tekercs értéket tartalmazza!
+  // A faji bónusz külön van (gabonamodosito2-ben vagy nincs)
+  // A gazdálkodó személyiség itt NEM számolódik, hanem később alkalmazódik!
   private getGabonaModosito(): number {
     // Élőhalott esetén mindig 1.0
     if (this.settings.faj === 'elohalott') {
       return 1.0;
     }
-    
-    const raceBonus = RACE_BONUSES[this.settings.faj].gabona;
     
     let modosito = 1.0;
     
@@ -246,10 +246,9 @@ export class BuildingCalculator {
       modosito = value / 100 + 1;
     }
     
-    // Faji bónusz alkalmazása
-    modosito *= raceBonus;
-    
-    // FONTOS: A gazdálkodó személyiség NEM itt számolódik, hanem a calculateProduction-ban!
+    // FONTOS: A faji bónusz NEM itt számolódik! Az eredeti kódban a gabonamodosito CSAK a tekercs értéket tartalmazza.
+    // A faji bónusz külön van (gabonamodosito2-ben vagy nincs)
+    // A gazdálkodó személyiség NEM itt számolódik, hanem a calculateProduction-ban!
     
     return modosito;
   }
