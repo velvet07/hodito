@@ -109,9 +109,9 @@ export class BuildingCalculator {
     const { tanya, agyagbanya, fatelep, kobanya, fembanya, kovacsmuhely, dragakobanya } = this.buildings;
     
     let gabonamodosito = this.getGabonaModosito();
-    const gabonamodosito2 = this.getGabonaModosito2();
+    let gabonamodosito2 = this.getGabonaModosito2();
     let nyersanyagmodosito = this.getNyersanyagModosito();
-    const nyersanyagmodosito2 = this.getNyersanyagModosito2();
+    let nyersanyagmodosito2 = this.getNyersanyagModosito2();
     const fegyvermodosito = this.getFegyverModosito();
     
     // Gazdálkodó személyiség hatása (az eredeti kód szerint itt alkalmazódik)
@@ -120,6 +120,12 @@ export class BuildingCalculator {
       gabonamodosito *= 1.1;
       nyersanyagmodosito *= 1.1;
     }
+    
+    // Időszaki módosítók (az eredeti kód szerint itt alkalmazódnak)
+    const hasNyersanyagPlus = this.settings.idoszakok.includes('nyersanyag_plus');
+    const hasNyersanyagMinus = this.settings.idoszakok.includes('nyersanyag_minus');
+    if (hasNyersanyagPlus) nyersanyagmodosito *= 1.2; // +20%
+    if (hasNyersanyagMinus) nyersanyagmodosito *= 0.9; // -10%
     
     return {
       gabona: Math.round(tanya * 50 * gabonamodosito * gabonamodosito2),
@@ -271,7 +277,8 @@ export class BuildingCalculator {
     return modosito2;
   }
 
-  // Nyersanyag módosító 2 (faji alapérték + időszaki módosítók)
+  // Nyersanyag módosító 2 (faji alapérték)
+  // FONTOS: Az időszaki módosítók NEM itt számolódnak, hanem a calculateProduction-ban!
   private getNyersanyagModosito2(): number {
     let modosito2 = 1.0;
     
@@ -282,12 +289,8 @@ export class BuildingCalculator {
       modosito2 = 3.0;
     }
     
-    // Időszaki módosítók
-    const hasNyersanyagPlus = this.settings.idoszakok.includes('nyersanyag_plus');
-    const hasNyersanyagMinus = this.settings.idoszakok.includes('nyersanyag_minus');
-    
-    if (hasNyersanyagPlus) modosito2 *= 1.2; // +20%
-    if (hasNyersanyagMinus) modosito2 *= 0.9; // -10%
+    // FONTOS: Az időszaki módosítók (nyersanyag_plus, nyersanyag_minus) NEM itt számolódnak!
+    // Ezek a calculateProduction-ban alkalmazódnak a nyersanyagmodosito-ra
     
     return modosito2;
   }
