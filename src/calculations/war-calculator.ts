@@ -1,6 +1,25 @@
 import { WarSettings, WarResults } from '../types';
 import { UNIT_VALUES, RACE_BONUSES, GENERAL_BONUSES, UNDEAD_LEVEL_BONUSES, Race } from '../constants';
 
+const UNDEAD_HOUSING_MULTIPLIERS: Record<number, number> = {
+  0: 1.2,
+  1: 1.6,
+  2: 1.5,
+  3: 1.4,
+  4: 1.3,
+  5: 1.2
+};
+
+function getTowerCapacityMultiplier(faj: Race, elohalott_szint = 0): number {
+  if (faj === 'torpe') {
+    return 1.2;
+  }
+  if (faj === 'elohalott') {
+    return UNDEAD_HOUSING_MULTIPLIERS[elohalott_szint] ?? 1.2;
+  }
+  return 1;
+}
+
 export class WarCalculator {
   // Védőerő számítás
   static calculateDefense(settings: WarSettings): number {
@@ -19,7 +38,8 @@ export class WarCalculator {
       elit * UNIT_VALUES.elit.vedo;
 
     // Őrtorony íjászok (csak a saját sereg íjászai vonulnak toronyba)
-    const ortoronyKapacitas = Math.round(40 * (1 + lakashelyzeti_tekercs / 100));
+    const ortoronyMultiplier = getTowerCapacityMultiplier(faj as Race, elohalott_szint);
+    const ortoronyKapacitas = Math.round(40 * (1 + (lakashelyzeti_tekercs || 0) / 100) * ortoronyMultiplier);
     const maxOrtoronyIjsz = ortorony * ortoronyKapacitas;
     const ortoronyIjsz = Math.min(ijsz, maxOrtoronyIjsz);
 

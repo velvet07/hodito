@@ -64,6 +64,20 @@ const defaultScrolls: Scrolls = {
   banyaszat: 0
 };
 
+const PERSONALITY_OPTIONS = [
+  { key: 'tudos', label: 'Tudós', description: '+5% tekercs maximum (lakás kivételével)' },
+  { key: 'gazdalkodo', label: 'Gazdálkodó', description: '+10% tanya és bánya termelés' }
+] as const;
+
+const allowedPersonalityKeys = PERSONALITY_OPTIONS.map(option => option.key);
+
+const normalizeSettings = (base: CalculationSettings): CalculationSettings => ({
+  ...base,
+  szemelyisegek: base.szemelyisegek
+    ? base.szemelyisegek.filter(personality => allowedPersonalityKeys.includes(personality))
+    : []
+});
+
 const BuildingCalculatorComponent: React.FC = () => {
   // Sötét/világos mód kezelése localStorage-ral
   const [theme, setTheme] = useState<Theme>(() => initTheme());
@@ -109,7 +123,7 @@ const BuildingCalculatorComponent: React.FC = () => {
 
   const [settings, setSettings] = useState<CalculationSettings>(() => {
     const loaded = loadSettings();
-    return loaded || defaultSettings;
+    return normalizeSettings(loaded || defaultSettings);
   });
 
   const [scrolls, setScrolls] = useState<Scrolls>(() => {
@@ -142,7 +156,7 @@ const BuildingCalculatorComponent: React.FC = () => {
   // Törlés gomb kezelője
   const handleClearAll = useCallback(() => {
     setBuildings(defaultBuildings);
-    setSettings(defaultSettings);
+    setSettings(normalizeSettings(defaultSettings));
     setScrolls(defaultScrolls);
     // A textarea tartalma megmarad
     clearAllData();
@@ -230,17 +244,10 @@ const BuildingCalculatorComponent: React.FC = () => {
     return updatedBuildings.hektar > 0 ? (value / updatedBuildings.hektar) * 100 : 0;
   };
 
-  const personalityLabels: Record<string, string> = {
-    kereskedo: 'Kereskedő',
-    tolvaj: 'Tolvaj',
-    varazslo: 'Varázsló',
-    harcos: 'Harcos',
-    tabornok: 'Tábornok',
-    vandor: 'Vándor',
-    tudos: 'Tudós',
-    gazdalkodo: 'Gazdálkodó',
-    tulelo: 'Túlélő'
-  };
+  const personalityLabels = PERSONALITY_OPTIONS.reduce<Record<string, string>>((acc, option) => {
+    acc[option.key] = option.label;
+    return acc;
+  }, {});
 
   return (
     <div className="min-h-screen bg-base-200">
@@ -638,21 +645,26 @@ const BuildingCalculatorComponent: React.FC = () => {
               {/* Személyiség és Időszakok - két oszlopban */}
               <div className="grid grid-cols-2 gap-x-4">
                 {/* Személyiségek */}
-                <div>
+                         <div>
                   <label className="block text-xs font-medium text-base-content mb-2">Személyiség(ek):</label>
                   <div className="space-y-1.5">
-                    {['kereskedo', 'tolvaj', 'varazslo', 'harcos', 'tabornok', 'vandor', 'tudos', 'gazdalkodo', 'tulelo'].map(personality => (
-                      <label key={personality} className="flex items-center cursor-pointer">
+                             {PERSONALITY_OPTIONS.map(({ key, label, description }) => (
+                               <label key={key} className="flex items-center cursor-pointer">
                         <input
-                          type="checkbox"
-                          id={`szemelyiseg_${personality}`}
-                          checked={settings.szemelyisegek.includes(personality)}
-                          onChange={() => handlePersonalityToggle(personality)}
-                          className="checkbox checkbox-primary"
-                          style={{ height: '14px', width: '14px' }}
+                                   type="checkbox"
+                                   id={`szemelyiseg_${key}`}
+                                   checked={settings.szemelyisegek.includes(key)}
+                                   onChange={() => handlePersonalityToggle(key)}
+                                   className="checkbox checkbox-primary"
+                                   style={{ height: '14px', width: '14px' }}
                         />
-                        <span className="ml-2 text-xs text-base-content">
-                          {personalityLabels[personality]}
+                                 <span className="ml-2 text-xs text-base-content">
+                                   {label}
+                                   {description && (
+                                     <span className="block text-[11px] text-base-content/50">
+                                       {description}
+                                     </span>
+                                   )}
                         </span>
                       </label>
                     ))}

@@ -1,4 +1,5 @@
 import { BuildingData, CalculationSettings, CalculationResults, Scrolls } from '../types';
+import { RACE_BONUSES } from '../constants';
 
 export class BuildingCalculator {
   private buildings: BuildingData;
@@ -253,16 +254,8 @@ export class BuildingCalculator {
 
   // Gabona módosító 2 (faji alapérték + időszaki módosítók)
   private getGabonaModosito2(): number {
-    let modosito2 = 1.0;
-    
-    // Faji alapértékek az eredeti logika szerint
-    if (this.settings.faj === 'elf') {
-      modosito2 = 1.3;
-    } else if (this.settings.faj === 'felelf') {
-      modosito2 = 0.9;
-    } else if (this.settings.faj === 'orias') {
-      modosito2 = 1.2;
-    }
+    const raceBonus = RACE_BONUSES[this.settings.faj]?.gabona ?? 1.0;
+    let modosito2 = raceBonus;
     
     // Időszaki módosítók
     const hasBoTermes = this.settings.idoszakok.includes('bo_termes');
@@ -276,14 +269,8 @@ export class BuildingCalculator {
 
   // Nyersanyag módosító 2 (faji alapérték + időszaki módosítók)
   private getNyersanyagModosito2(): number {
-    let modosito2 = 1.0;
-    
-    // Faji alapértékek
-    if (this.settings.faj === 'elf') {
-      modosito2 = 0.7;
-    } else if (this.settings.faj === 'torpe') {
-      modosito2 = 3.0;
-    }
+    const raceBonus = RACE_BONUSES[this.settings.faj]?.nyersanyag ?? 1.0;
+    let modosito2 = raceBonus;
     
     const hasNyersanyagPlus = this.settings.idoszakok.includes('nyersanyag_plus');
     const hasNyersanyagMinus = this.settings.idoszakok.includes('nyersanyag_minus');
