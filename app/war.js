@@ -338,9 +338,14 @@ function szamolVedoero() {
     const maxOrtoronyIjsz = ortorony * ortoronyKapacitas;
     const ortoronyIjsz = Math.min(ijsz, maxOrtoronyIjsz);
     
-    // Elf esetén 8 pont, egyébként 6 pont (az alapérték 6)
-    const ortoronyBonus = (faj === 'elf') ? 8 : 6;
-    alapVedoero += ortoronyIjsz * (ortoronyBonus - EGYSEG_ERTEK.ijsz.vedo);
+    // Dokumentáció szerint: az őrtoronyban lévő íjászok védőereje megduplázódik
+    // Normál íjász védőérték: 6
+    // Őrtoronyban íjász védőérték: 6 * 2 = 12
+    // Elf esetén: az őrtornyokban lévő íjászoknak az őrtorony 8 pontot ad (nem 6)
+    // Szóval elf esetén: 8 * 2 = 16 pont
+    const alapIjszVedo = EGYSEG_ERTEK.ijsz.vedo; // 6
+    const ortoronyIjszVedo = (faj === 'elf') ? 16 : 12; // Megduplázódik: elf 8*2=16, egyéb 6*2=12
+    alapVedoero += ortoronyIjsz * (ortoronyIjszVedo - alapIjszVedo);
     
     // Szövetséges íjászok
     const szovetsegesIjsz = parseInt(document.getElementById('vedo_szovetseges_ijaszok').value) || 0;
