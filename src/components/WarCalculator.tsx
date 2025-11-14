@@ -932,9 +932,6 @@ const WarCalculatorComponent: React.FC = () => {
 
                 <div className="bg-base-200/70 rounded-lg p-3">
                   <p className="text-xs font-semibold text-base-content/70 uppercase tracking-wide">Gabonaszükséglet</p>
-                  <p className="text-sm text-base-content mt-1">
-                    Védő: <span className="font-semibold">{formatNumber(vedoResults.gabonaszukseglet)} bála</span>
-                  </p>
                   <p className="text-sm text-base-content">
                     Támadó: <span className="font-semibold">{formatNumber(tamadoResults.gabonaszukseglet)} bála</span>
                   </p>
