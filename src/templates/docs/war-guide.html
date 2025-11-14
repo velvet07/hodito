@@ -89,60 +89,110 @@
 
         <main class="space-y-6">
             <section class="card bg-base-100 shadow-xl">
-                <div class="card-body">
-                    <h2 class="card-title text-2xl">1. Adatok begyűjtése</h2>
+                <div class="card-body space-y-3 text-sm">
+                    <h2 class="card-title text-2xl">1. Összefoglaló</h2>
                     <div class="divider"></div>
-                    <p class="text-sm text-base-content/70">A legjobb eredményhez két forrásból érdemes dolgozni:</p>
-                    <ul class="list-disc pl-6 space-y-2 text-sm text-base-content">
-                        <li><strong>Kristálygömb:</strong> pontosan mutatja a célpont aktuális egységeit. Illeszd be a teljes jelentést, a kalkulátor felismeri a számokat.</li>
-                        <li><strong>Épületlista:</strong> a védő ország tereit is be kell olvasni, hogy az őrtornyok és hektárral arányos bónuszok érvényesüljenek.</li>
-                        <li>Mindkét mezőben használhatsz egyszerű másolás/beillesztést. A feldolgozás gomb egyszerre értelmezi a beillesztett adatokat.</li>
-                    </ul>
+                    <p class="text-base-content/70">A háború kalkulátor minden <em>Feldolgozás</em> gombnyomáskor ugyanazt a sorrendet követi, mint a játék dokumentációja:</p>
+                    <ol class="list-decimal pl-6 space-y-2 text-base-content">
+                        <li><strong>Kristálygömb feldolgozás</strong> – a teljes jelentésből kiolvassa az egységeket, morált, fajt és személyiségeket.</li>
+                        <li><strong>Épületlista feldolgozás</strong> – hektár, őrtorony, barakk, stb. Ha csak épületlista van, a hektár 10%-a automatikusan őrtorony lesz.</li>
+                        <li><strong>Hiányzó adatok pótlása</strong> – barakk × 40 × lakáshelyzet alapján kiszámítja a maximális íjász/lovas férőhelyet, és kristálygömb hiányában kitölti a mezőket.</li>
+                        <li><strong>Tekercsek frissítése</strong> – faj + Tudós + Tudomány hónapja alapján kiszámítja a hadi/lakáshelyzet maximumot (max 55%) és beírja a mezőkbe.</li>
+                        <li><strong>WarCalculator</strong> – meghatározza a védő/támadóerőt, gabonaszükségletet és az eredményt.</li>
+                    </ol>
+                    <p class="text-base-content/70">Ha csak az egyik adatforrás áll rendelkezésre, a kalkulátor az ismert képletek szerint pótolja a hiányzó értékeket (hektár → őrtorony, barakk → egység férőhely).</p>
                 </div>
             </section>
 
             <section class="card bg-base-100 shadow-xl">
-                <div class="card-body">
-                    <h2 class="card-title text-2xl">2. Védők beállítása</h2>
+                <div class="card-body space-y-4 text-sm">
+                    <h2 class="card-title text-2xl">2. Importálás és automatikák</h2>
                     <div class="divider"></div>
-                    <p class="text-sm text-base-content/70 mb-4">A védő oszlop minden mezője közvetlenül befolyásolja a számított védőerőt.</p>
-                    <ul class="list-disc pl-6 space-y-2 text-sm text-base-content">
-                        <li><strong>Őrtornyok kapacitása:</strong> alapesetben 40 íjász/torony. Lakáshelyzeti tekercs növeli, törpénél további +20%, élőhalottnál a szint bónusza érvényesül.</li>
-                        <li><strong>Szövetséges íjászok:</strong> normál védelemhez adódnak, de nem kerülnek toronyba.</li>
-                        <li><strong>Védelem varázslat / magányos farkas:</strong> a megfelelő jelölőnégyzetekkel aktiválhatók.</li>
-                        <li><strong>Hadi tekercs %:</strong> automatikusan a faj maximumához igazodik (lásd: <a class="link" href="../../docs/war.md">war dokumentáció</a>).</li>
-                    </ul>
-                </div>
-            </section>
-
-            <section class="card bg-base-100 shadow-xl">
-                <div class="card-body">
-                    <h2 class="card-title text-2xl">3. Támadók beállítása</h2>
-                    <div class="divider"></div>
-                    <p class="text-sm text-base-content/70 mb-4">A támadó oszlop a kiküldött sereget modellezi.</p>
-                    <ul class="list-disc pl-6 space-y-2 text-sm text-base-content">
-                        <li><strong>Verszomj:</strong> élőhalott sajátosság, +10% támadás az adott körre.</li>
-                        <li><strong>Távolság / Kör:</strong> a támadás iránya (felfelé/lefelé) és a távolság határozza meg az érkezést.</li>
-                        <li><strong>Tábornokok:</strong> a `GENERAL_BONUSES` táblázatnak megfelelően erősítik a támadást.</li>
-                        <li><strong>Kristálygömb import:</strong> csupán a kiküldött seregre vonatkozik; a védő mezőkbe ne illeszd be.</li>
-                    </ul>
-                </div>
-            </section>
-
-            <section class="card bg-base-100 shadow-xl">
-                <div class="card-body">
-                    <h2 class="card-title text-2xl">4. Eredmények értelmezése</h2>
-                    <div class="divider"></div>
-                    <div class="grid md:grid-cols-2 gap-4 text-sm text-base-content">
-                        <div class="bg-base-200 rounded-xl p-4">
-                            <h3 class="text-lg font-semibold mb-2">Védőerő</h3>
-                            <p>A számított védőerő tartalmazza az őrtornyok extra íjászait, az őrtornyok területarányos bónuszát, az állandó mágikus hatásokat és a minimum hektár alapú védelmet.</p>
-                        </div>
-                        <div class="bg-base-200 rounded-xl p-4">
-                            <h3 class="text-lg font-semibold mb-2">Támadóerő</h3>
-                            <p>A támadóerő a kiküldött egységekre épül, majd erre kerülnek rá a verszomj/tábornok/magányos farkas bónuszok. A kalkulátor a <strong>WarCalculator</strong> osztály logikáját követi, amely a dokumentáció szerinti sorrendben szorozza a módosítókat.</p>
-                        </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-base-content mb-2">Kristálygömb</h3>
+                        <ul class="list-disc pl-6 space-y-1 text-base-content">
+                            <li>Minden egységmezőt, morált, faj- és személyiség beállítást kitölt.</li>
+                            <li>Ha épületlista is van, csak az őrtornyok számát vesszük át, hogy a kristálygömbben lévő seregadatok érintetlenek maradjanak.</li>
+                        </ul>
                     </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-base-content mb-2">Épületlista</h3>
+                        <ul class="list-disc pl-6 space-y-1 text-base-content">
+                            <li>Mindkét oldalon kiolvassa a hektár- és barakkszámot.</li>
+                            <li>Kristálygömb hiányában a barakk × 40 × lakáshelyzeti szorzó alapján automatikusan kitölti a védő íjász és támadó lovas mezőket.</li>
+                            <li>Ha nincs őrtorony adat, a hektár 10%-a lesz az alapértelmezett.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card bg-base-100 shadow-xl">
+                <div class="card-body space-y-4 text-sm">
+                    <h2 class="card-title text-2xl">3. Alapbeállítások és kapcsolók</h2>
+                    <div class="divider"></div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-base-content mb-2">Buffok</h3>
+                        <ul class="list-disc pl-6 space-y-1 text-base-content">
+                            <li><strong>Védelem varázslat</strong> – alapból aktív.</li>
+                            <li><strong>Vérszomj</strong> – támadóknál alapból aktív.</li>
+                            <li><strong>Tudomány hónapja</strong> – a két oszlop között össze van kötve; bármelyik kapcsolása mindkét oldalt érinti.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-base-content mb-2">Tekercs maximumok</h3>
+                        <ul class="list-disc pl-6 space-y-1 text-base-content">
+                            <li><strong>Hadi tekercs</strong>: alap 30%, Gnóm 50%, Elf/Ork/Törpe 40%; Tudós +5%, Tudomány hónapja +5%, max 55%.</li>
+                            <li><strong>Lakáshelyzet</strong>: alap 30%, Gnóm 50%, Óriás/Félelf 40%; Tudomány hónapja +5%, max 55%.</li>
+                            <li>Kapcsoláskor mindig a fenti plafon íródik a mezőbe.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-base-content mb-2">Tábornokok</h3>
+                        <ul class="list-disc pl-6 space-y-1 text-base-content">
+                            <li><strong>Faji max</strong>: Gnóm 4, Ork 6, minden más 5.</li>
+                            <li><strong>Tábornok személyiség</strong>: +1 tábornok (legfeljebb 8). Kikapcsoláskor visszaáll a faji plafonra.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card bg-base-100 shadow-xl">
+                <div class="card-body space-y-4 text-sm">
+                    <h2 class="card-title text-2xl">4. Számítási sorrend</h2>
+                    <div class="divider"></div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-base-content mb-2">Védőerő</h3>
+                        <ol class="list-decimal pl-6 space-y-1 text-base-content">
+                            <li><strong>Saját sereg</strong>: egységértékek + toronyba kerülő íjászok (40 íjász/torony × lakáshelyzet × faji bónusz).</li>
+                            <li><strong>Szövetséges íjászok hozzáadása.</strong></li>
+                            <li><strong>Minimum védelem</strong>: ha kisebb, mint a hektár, a hektár számít.</li>
+                            <li><strong>Multiplikátorok</strong>: ork kitámadás → morál → védelem varázslat → magányos farkas → torony területarányos bónusz (max 30%, Gnóm ×3, más ×2) → hadi tekercs → faji bónusz → élőhalott szint → szabadságon lévő szövetségesek.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-base-content mb-2">Támadóerő</h3>
+                        <ol class="list-decimal pl-6 space-y-1 text-base-content">
+                            <li><strong>Seregösszetétel</strong> – alap egységértékek.</li>
+                            <li><strong>Faji bónusz + katonai morál.</strong></li>
+                            <li><strong>Magányos farkas + Vérszomj.</strong></li>
+                            <li><strong>Tábornok bónusz</strong> – a faj és személyiség által meghatározott maxig állítható.</li>
+                            <li><strong>Élőhalott szint, hadi tekercs, irány bónusz</strong> (felfelé támadás +10%).</li>
+                        </ol>
+                        <p class="text-base-content/70 mt-2">A gabonaszükséglet csak a támadókra vonatkozik; védőknél nincs fogyasztás.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card bg-base-100 shadow-xl">
+                <div class="card-body space-y-3 text-sm">
+                    <h2 class="card-title text-2xl">5. Tippek</h2>
+                    <div class="divider"></div>
+                    <ul class="list-disc pl-6 space-y-2 text-base-content">
+                        <li><strong>Mindkét adatforrást használd.</strong> A kristálygömb és az épületlista együtt ad teljes képet.</li>
+                        <li><strong>A Tudomány hónapja globális.</strong> Ha az egyik oszlopban váltasz, a másik is átáll.</li>
+                        <li><strong>Törlés után mindig újra feldolgozás.</strong> A textarea tartalma megmarad, de a mezők alaphelyzetbe kerülnek.</li>
+                        <li><strong>Őrtornyokban lévő íjászok.</strong> 40 íjász/torony alap, amit a lakáshelyzeti tekercs és a faji bónusz módosít. Csak a saját íjászok vonulnak toronyba.</li>
+                    </ul>
                 </div>
             </section>
         </main>
