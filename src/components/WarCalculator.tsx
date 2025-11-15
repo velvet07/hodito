@@ -551,13 +551,12 @@ const WarCalculatorComponent: React.FC = () => {
                 <div className="divider"></div>
                 <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <label className="text-xs font-medium label-text">Katonai morál:</label>
-                  <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
+                  <div className="flex items-center gap-1.5">
                     <input
                       type="text"
                       value={vedoSettings.katonai_moral}
                       onChange={(e) => updateVedoSettings({ katonai_moral: parseInt(e.target.value) || 75 })}
-                      className="input input-bordered input-sm w-full text-xs"
-                      style={{ width: '100%' }}
+                      className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
                     />
                     <span className="text-xs text-base-content/50">%</span>
                   </div>
