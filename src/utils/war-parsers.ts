@@ -113,8 +113,8 @@ export function parseKristalygomb(text: string, tipus: 'vedo' | 'tamado'): Parti
 }
 
 // Épületlista importálása (háború kalkulátorhoz)
-export function parseEpuletlistaForWar(text: string): { hektar?: number; ortorony?: number; barakk?: number } {
-  const data: { hektar?: number; ortorony?: number; barakk?: number } = {};
+export function parseEpuletlistaForWar(text: string): { hektar?: number; ortorony?: number; barakk?: number; tanya?: number } {
+  const data: { hektar?: number; ortorony?: number; barakk?: number; tanya?: number } = {};
   
   const lines = text.split('\n');
   let totalHektar = 0;
@@ -148,6 +148,10 @@ export function parseEpuletlistaForWar(text: string): { hektar?: number; ortoron
 
         if (epuletNev.includes('Barakk')) {
           data.barakk = epuletSzam;
+        }
+
+        if (epuletNev.includes('Tanya')) {
+          data.tanya = epuletSzam;
         }
       }
     }

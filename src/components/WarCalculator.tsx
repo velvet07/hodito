@@ -15,6 +15,51 @@ interface UnitInputProps {
 }
 
 const FIELD_WIDTH = '72px';
+const MAX_REQUIRED_UNIT_COUNT = 1_000_000;
+
+const findRequiredUnitCount = (
+  currentCount: number,
+  targetValue: number,
+  evaluate: (unitCount: number) => number
+): number => {
+  const sanitize = (value: number) => Math.max(0, Math.floor(Number.isFinite(value) ? value : 0));
+  let low = sanitize(currentCount);
+  let high = low;
+  let highValue = evaluate(high);
+
+  if (highValue >= targetValue) {
+    return low;
+  }
+
+  if (high === 0) {
+    high = 100;
+    highValue = evaluate(high);
+  }
+
+  let iterations = 0;
+  while (highValue < targetValue && high < MAX_REQUIRED_UNIT_COUNT && iterations < 25) {
+    low = high;
+    high = Math.min(MAX_REQUIRED_UNIT_COUNT, Math.floor(high * 1.5) + 100);
+    highValue = evaluate(high);
+    iterations += 1;
+  }
+
+  if (highValue < targetValue) {
+    return high;
+  }
+
+  while (low < high) {
+    const mid = Math.floor((low + high) / 2);
+    const midValue = evaluate(mid);
+    if (midValue >= targetValue) {
+      high = mid;
+    } else {
+      low = mid + 1;
+    }
+  }
+
+  return high;
+};
 
 const UnitInput: React.FC<UnitInputProps> = ({ label, value, onChange, id }) => {
   return (
@@ -100,6 +145,7 @@ const WarCalculatorComponent: React.FC = () => {
     ijsz: 0,
     lovas: 0,
     elit: 0,
+    tanya: 0,
     faj: 'none',
     katonai_moral: 75,
     maganyos_farkas: false,
@@ -113,7 +159,8 @@ const WarCalculatorComponent: React.FC = () => {
     hektar: 0,
     ortorony: 0,
     tudos: false,
-    tudomany_honapja: false
+    tudomany_honapja: false,
+    ijasz_plus: false
   });
 
   const [tamadoSettings, setTamadoSettings] = useState<WarSettings>({
@@ -122,6 +169,7 @@ const WarCalculatorComponent: React.FC = () => {
     ijsz: 0,
     lovas: 0,
     elit: 0,
+    tanya: 0,
     faj: 'none',
     katonai_moral: 75,
     maganyos_farkas: false,
@@ -134,7 +182,9 @@ const WarCalculatorComponent: React.FC = () => {
     irany: 'felfele',
     tudos: false,
     tudomany_honapja: false,
-    tabornok_szemelyiseg: false
+    tabornok_szemelyiseg: false,
+    lovas_plus: false,
+    elit_plus: false
   });
 
   const [vedoKristalygomb, setVedoKristalygomb] = useState('');
@@ -236,10 +286,12 @@ const WarCalculatorComponent: React.FC = () => {
       szovetseges_ijaszok: 0,
       tudos_szazalek: 0,
       lakashelyzeti_tekercs: 0,
+      tanya: 0,
       hektar: 0,
       ortorony: 0,
       tudos: false,
-      tudomany_honapja: false
+      tudomany_honapja: false,
+      ijasz_plus: false
     });
     setVedoBarakkCount(null);
   }, []);
@@ -265,7 +317,10 @@ const WarCalculatorComponent: React.FC = () => {
       tudos: false,
       tudomany_honapja: false,
       tabornok_szemelyiseg: false,
-      lakashelyzeti_tekercs: 0
+      tanya: 0,
+      lakashelyzeti_tekercs: 0,
+      lovas_plus: false,
+      elit_plus: false
     });
     setTamadoBarakkCount(null);
   }, []);
@@ -387,6 +442,36 @@ const WarCalculatorComponent: React.FC = () => {
     () => Array.from({ length: tamadoTabornokMax + 1 }, (_, index) => index),
     [tamadoTabornokMax]
   );
+
+  const handleRequiredArchersCalculation = useCallback(() => {
+    const targetAttack = tamadoResults.tamadoero;
+    if (targetAttack <= 0) {
+      return;
+    }
+
+    setVedoSettings(prev => {
+      const base = { ...prev, ijsz: 0 };
+      const requiredArchers = findRequiredUnitCount(0, targetAttack + 1, count =>
+        WarCalculator.calculateDefense({ ...base, ijsz: count })
+      );
+      return { ...base, ijsz: requiredArchers };
+    });
+  }, [tamadoResults.tamadoero]);
+
+  const handleRequiredCavalryCalculation = useCallback(() => {
+    const targetDefense = vedoResults.vedoero;
+    if (targetDefense <= 0) {
+      return;
+    }
+
+    setTamadoSettings(prev => {
+      const base = { ...prev, lovas: 0 };
+      const requiredCavalry = findRequiredUnitCount(0, targetDefense + 1, count =>
+        WarCalculator.calculateAttack({ ...base, lovas: count })
+      );
+      return { ...base, lovas: requiredCavalry };
+    });
+  }, [vedoResults.vedoero]);
 
   return (
     <div className="min-h-screen bg-base-200">
@@ -516,6 +601,11 @@ const WarCalculatorComponent: React.FC = () => {
                     label="Tudomány hónapja"
                     checked={vedoSettings.tudomany_honapja || false}
                     onChange={handleTudomanyHonapjaToggle}
+                  />
+                  <CheckboxInput
+                    label="Íjász+ időszak"
+                    checked={vedoSettings.ijasz_plus || false}
+                    onChange={(checked) => updateVedoSettings({ ijasz_plus: checked })}
                   />
                   <div className="flex items-center justify-between gap-1.5">
                     <label className="text-xs font-medium label-text whitespace-nowrap">Hadi tekercs:</label>
@@ -742,6 +832,16 @@ const WarCalculatorComponent: React.FC = () => {
                     checked={tamadoSettings.tudomany_honapja || false}
                     onChange={handleTudomanyHonapjaToggle}
                   />
+                  <CheckboxInput
+                    label="Lovas+ időszak"
+                    checked={tamadoSettings.lovas_plus || false}
+                    onChange={(checked) => updateTamadoSettings({ lovas_plus: checked })}
+                  />
+                  <CheckboxInput
+                    label="Elit+ időszak"
+                    checked={tamadoSettings.elit_plus || false}
+                    onChange={(checked) => updateTamadoSettings({ elit_plus: checked })}
+                  />
                     <div className="flex items-center justify-between gap-1.5">
                       <label className="text-xs font-medium label-text whitespace-nowrap">Hadi tekercs:</label>
                       <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
@@ -930,13 +1030,28 @@ const WarCalculatorComponent: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="bg-base-200/70 rounded-lg p-3">
+                <div className="bg-base-200/70 rounded-lg p-3 space-y-2">
                   <p className="text-xs font-semibold text-base-content/70 uppercase tracking-wide">Gabonaszükséglet</p>
-                  <p className="text-sm text-base-content">
-                    Támadó: <span className="font-semibold">{formatNumber(tamadoResults.gabonaszukseglet)} bála</span>
+                  <p className="text-sm text-base-content font-semibold">
+                    {formatNumber(tamadoResults.gabonaszukseglet)} bála
                   </p>
                 </div>
-
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm w-full"
+                    onClick={handleRequiredArchersCalculation}
+                  >
+                    Mennyi íjász kell a védéshez
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm w-full"
+                    onClick={handleRequiredCavalryCalculation}
+                  >
+                    Mennyi lovas kell a beütéshez
+                  </button>
+                </div>
               </div>
             </div>
             </div>

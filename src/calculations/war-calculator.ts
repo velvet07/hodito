@@ -26,14 +26,17 @@ export class WarCalculator {
     const { katona, vedo = 0, tamado, ijsz, lovas, elit, faj, katonai_moral, 
             maganyos_farkas, vedelem, kitamadasi_bonusz, elohalott_szint = 0,
             szabadsagon_szovetsegesek = 0, szovetseges_ijaszok = 0,
-            tudos_szazalek, lakashelyzeti_tekercs, hektar = 0, ortorony = 0 } = settings;
+            tudos_szazalek, lakashelyzeti_tekercs, hektar = 0, ortorony = 0,
+            ijasz_plus } = settings;
 
     // 1. LÉPÉS: Saját sereg védőértéke (őrtornyokkal együtt)
+    const baseIjszDefense = UNIT_VALUES.ijsz.vedo + (ijasz_plus ? 1 : 0);
+
     let alapVedoero = 
       katona * UNIT_VALUES.katona.vedo +
       vedo * UNIT_VALUES.vedo.vedo +
       tamado * UNIT_VALUES.tamado.vedo +
-      ijsz * UNIT_VALUES.ijsz.vedo +
+      ijsz * baseIjszDefense +
       lovas * UNIT_VALUES.lovas.vedo +
       elit * UNIT_VALUES.elit.vedo;
 
@@ -44,9 +47,10 @@ export class WarCalculator {
     const ortoronyIjsz = Math.min(ijsz, maxOrtoronyIjsz);
 
     // Dokumentáció szerint: az őrtoronyban lévő íjászok védőereje megduplázódik
-    const alapIjszVedo = UNIT_VALUES.ijsz.vedo; // 6
-    const ortoronyIjszVedo = (faj === 'elf') ? 16 : 12; // Megduplázódik: elf 8*2=16, egyéb 6*2=12
-    alapVedoero += ortoronyIjsz * (ortoronyIjszVedo - alapIjszVedo);
+    const elfTowerBonus = 10; // 6 -> 16 különbség
+    const baseTowerBonus = 6; // 6 -> 12 különbség
+    const ortoronyIjszVedo = baseIjszDefense + (faj === 'elf' ? elfTowerBonus : baseTowerBonus);
+    alapVedoero += ortoronyIjsz * (ortoronyIjszVedo - baseIjszDefense);
 
     // 2. LÉPÉS: Segítő seregek értékének hozzáadása
     alapVedoero += szovetseges_ijaszok * UNIT_VALUES.ijsz.vedo;
@@ -112,14 +116,17 @@ export class WarCalculator {
   static calculateAttack(settings: WarSettings): number {
     const { katona, tamado, ijsz, lovas, elit, faj, katonai_moral,
             maganyos_farkas, verszomj, tabornok = 0, tabornok_szemelyiseg = false,
-            elohalott_szint = 0, tudos_szazalek, irany } = settings;
+            elohalott_szint = 0, tudos_szazalek, irany, lovas_plus, elit_plus } = settings;
+
+    const baseLovasAttack = UNIT_VALUES.lovas.tamado + (lovas_plus ? 1 : 0);
+    const baseElitAttack = UNIT_VALUES.elit.tamado + (elit_plus ? 1 : 0);
 
     let alapTamadoero = 
       katona * UNIT_VALUES.katona.tamado +
       tamado * UNIT_VALUES.tamado.tamado +
       ijsz * UNIT_VALUES.ijsz.tamado +
-      lovas * UNIT_VALUES.lovas.tamado +
-      elit * UNIT_VALUES.elit.tamado;
+      lovas * baseLovasAttack +
+      elit * baseElitAttack;
 
     let tamadoero = alapTamadoero;
 
@@ -164,9 +171,17 @@ export class WarCalculator {
 
   // Gabonaszükséglet számítás
   static calculateGrainRequirement(settings: WarSettings): number {
-    const { katona, tamado, ijsz, lovas, elit, kor = 2 } = settings;
-    const osszesKatona = katona + tamado + ijsz + lovas + elit;
-    return osszesKatona * kor;
+    const { katona = 0, vedo = 0, tamado = 0, ijsz = 0, lovas = 0, elit = 0, kor = 2, tanya = 0 } = settings;
+    const osszesEgyseg = katona + vedo + tamado + ijsz + lovas + elit;
+    if (osszesEgyseg <= 0) {
+      return 0;
+    }
+    const fogyasztasPerKor = Math.ceil(osszesEgyseg / 5); // 1 bála -> 5 egység
+    const totalConsumption = fogyasztasPerKor * kor;
+    const termelesPerKor = tanya * 50;
+    const totalProduction = termelesPerKor * kor;
+    const deficit = totalConsumption - totalProduction;
+    return deficit > 0 ? deficit : 0;
   }
 
   // Teljes háború számítás

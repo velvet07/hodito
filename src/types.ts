@@ -87,6 +87,7 @@ export interface WarSettings {
   ijsz: number;
   lovas: number;
   elit: number;
+  tanya?: number;
   faj: Race;
   katonai_moral: number;
   maganyos_farkas: boolean;
@@ -101,6 +102,9 @@ export interface WarSettings {
   lakashelyzeti_tekercs: number;
   tudomany_honapja?: boolean;
   tudos?: boolean;
+  ijasz_plus?: boolean;
+  lovas_plus?: boolean;
+  elit_plus?: boolean;
   hektar?: number;
   ortorony?: number;
   kor?: number;
