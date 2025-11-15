@@ -20,7 +20,7 @@ export const BuildingInput: React.FC<BuildingInputProps> = ({
 }) => {
   return (
     <div className="flex items-center gap-2">
-      <label className="text-xs font-medium whitespace-nowrap label-text flex-1 pr-2 text-right">
+      <label className="text-xs font-medium whitespace-nowrap label-text flex-1 pr-2 text-left">
         {label}:
       </label>
       <div className="flex items-center gap-1.5">
