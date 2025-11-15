@@ -19,8 +19,8 @@ export const BuildingInput: React.FC<BuildingInputProps> = ({
   id
 }) => {
   return (
-    <div className="flex items-center justify-between gap-1.5">
-      <label className="text-xs font-medium whitespace-nowrap label-text">
+    <div className="flex items-center gap-2">
+      <label className="text-xs font-medium whitespace-nowrap label-text flex-1 pr-2 text-right">
         {label}:
       </label>
       <div className="flex items-center gap-1.5">
@@ -38,7 +38,7 @@ export const BuildingInput: React.FC<BuildingInputProps> = ({
           }`}
           style={{ width: '62px', minWidth: '62px' }}
         />
-        <span className="text-xs text-base-content/50 text-right min-w-[3ch]">
+        <span className="text-xs text-base-content/50 text-left min-w-[4ch]">
           {formatPercent(percent, 100)}
         </span>
       </div>
