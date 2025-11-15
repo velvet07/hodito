@@ -527,8 +527,8 @@ const BuildingCalculatorComponent: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Content Grid - Épületek, Eredmények, Beállítások */}
-        <div className="grid grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(320px,1.1fr)] gap-3 lg:gap-5 max-w-6xl mx-auto">
+        {/* Main Content Grid - Épületek, Eredmények */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-5 max-w-6xl mx-auto">
           {/* Left Column: Épületek */}
           <div className="card bg-base-100 shadow-xl col-span-1">
             <div className="card-body gap-4 p-4 sm:p-5 break-words">
