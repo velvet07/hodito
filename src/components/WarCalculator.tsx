@@ -521,9 +521,10 @@ const WarCalculatorComponent: React.FC = () => {
                 Védők
               </h2>
             
-            <div className="space-y-3">
+              <div className="space-y-3">
               {/* Védőerő */}
               <div className="pb-2">
+                  <div className="mt-1" aria-hidden="true"></div>
                 <div className="divider"></div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium label-text">Védőerő:</span>
@@ -751,9 +752,10 @@ const WarCalculatorComponent: React.FC = () => {
                 Támadók
               </h2>
             
-            <div className="space-y-3">
+              <div className="space-y-3">
               {/* Támadóerő */}
               <div className="pb-2">
+                  <div className="mt-1" aria-hidden="true"></div>
                 <div className="divider"></div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium label-text">Támadóerő:</span>
