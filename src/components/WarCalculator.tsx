@@ -63,21 +63,22 @@ const findRequiredUnitCount = (
 
 const UnitInput: React.FC<UnitInputProps> = ({ label, value, onChange, id }) => {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 w-full">
-      <label className="text-xs font-medium label-text break-words pr-2 flex-1 min-w-0">
+    <div className="flex flex-wrap items-center gap-2 w-full">
+      <label className="text-xs font-medium label-text break-words flex-1 min-w-0 text-left">
         {label}:
       </label>
-      <input
-        type="text"
-        id={id}
-        value={value || ''}
-        onChange={(e) => {
-          const num = parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0;
-          onChange(num);
-        }}
-        className="input input-bordered input-sm text-xs shrink-0"
-        style={{ width: FIELD_WIDTH }}
-      />
+      <div className="flex justify-end flex-shrink-0" style={{ width: FIELD_WIDTH }}>
+        <input
+          type="text"
+          id={id}
+          value={value || ''}
+          onChange={(e) => {
+            const num = parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0;
+            onChange(num);
+          }}
+          className="input input-bordered input-sm text-xs w-full text-right"
+        />
+      </div>
     </div>
   );
 };
