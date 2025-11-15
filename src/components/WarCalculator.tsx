@@ -520,7 +520,6 @@ const WarCalculatorComponent: React.FC = () => {
               <h2 className="card-title text-xl">
                 Védők
               </h2>
-              <div className="divider"></div>
             
             <div className="space-y-3">
               {/* Védőerő */}
@@ -751,7 +750,6 @@ const WarCalculatorComponent: React.FC = () => {
               <h2 className="card-title text-xl">
                 Támadók
               </h2>
-              <div className="divider"></div>
             
             <div className="space-y-3">
               {/* Támadóerő */}
