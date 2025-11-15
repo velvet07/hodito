@@ -607,7 +607,7 @@ const WarCalculatorComponent: React.FC = () => {
                     checked={vedoSettings.ijasz_plus || false}
                     onChange={(checked) => updateVedoSettings({ ijasz_plus: checked })}
                   />
-                  <div className="h-2" aria-hidden="true"></div>
+                  <div className="h-4" aria-hidden="true"></div>
                   <div className="flex flex-wrap items-center justify-between gap-1.5">
                     <label className="text-xs font-medium label-text">Hadi tekercs:</label>
                   <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
