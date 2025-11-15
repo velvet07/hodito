@@ -346,14 +346,14 @@ const BuildingCalculatorComponent: React.FC = () => {
         </div>
 
         {/* Main Content Grid - Épületek, Eredmények, Beállítások */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 max-w-6xl mx-auto">
+        <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(320px,1.1fr)] gap-3 lg:gap-5 max-w-6xl mx-auto">
           {/* Left Column: Épületek */}
           <div className="card bg-base-100 shadow-xl">
-            <div className="card-body">
+            <div className="card-body gap-4 p-4 sm:p-5 break-words">
               <h2 className="card-title text-xl">
                 Épületek
               </h2>
-              <div className="divider"></div>
+              <div className="mt-1" aria-hidden="true"></div>
             
             <div className="space-y-3">
               <BuildingInput
@@ -421,11 +421,11 @@ const BuildingCalculatorComponent: React.FC = () => {
 
           {/* Middle Column: Eredmények */}
           <div className="card bg-base-100 shadow-xl">
-            <div className="card-body">
+            <div className="card-body gap-4 p-4 sm:p-5 break-words">
               <h2 className="card-title text-xl">
                 Eredmények
               </h2>
-              <div className="divider"></div>
+              <div className="mt-1" aria-hidden="true"></div>
             
             <div className="space-y-4">
               {/* Alapadatok */}
@@ -615,11 +615,11 @@ const BuildingCalculatorComponent: React.FC = () => {
 
           {/* Right Column: Beállítások */}
           <div className="card bg-base-100 shadow-xl">
-            <div className="card-body">
+            <div className="card-body gap-4 p-4 sm:p-5 break-words">
               <h2 className="card-title text-xl">
                 Beállítások
               </h2>
-              <div className="divider"></div>
+              <div className="mt-1" aria-hidden="true"></div>
             
             <div className="space-y-3">
               {/* Faj */}
