@@ -19,11 +19,11 @@ export const BuildingInput: React.FC<BuildingInputProps> = ({
   id
 }) => {
   return (
-    <div className="flex items-center gap-2">
-      <label className="text-xs font-medium whitespace-nowrap label-text flex-1 pr-2 text-left">
+    <div className="flex flex-wrap items-center gap-2 w-full">
+      <label className="text-xs font-medium whitespace-normal break-words label-text flex-1 min-w-0 pr-2 text-left">
         {label}:
       </label>
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 flex-shrink-0">
         <input
           type="text"
           id={id}
