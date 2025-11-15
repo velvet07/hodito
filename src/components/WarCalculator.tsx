@@ -63,8 +63,8 @@ const findRequiredUnitCount = (
 
 const UnitInput: React.FC<UnitInputProps> = ({ label, value, onChange, id }) => {
   return (
-    <div className="flex items-center justify-between gap-1.5">
-      <label className="text-xs font-medium label-text whitespace-nowrap">
+    <div className="flex flex-wrap items-center justify-between gap-2 w-full">
+      <label className="text-xs font-medium label-text break-words pr-2 flex-1 min-w-0">
         {label}:
       </label>
       <input
@@ -75,7 +75,7 @@ const UnitInput: React.FC<UnitInputProps> = ({ label, value, onChange, id }) => 
           const num = parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0;
           onChange(num);
         }}
-        className="input input-bordered input-sm text-xs"
+        className="input input-bordered input-sm text-xs shrink-0"
         style={{ width: FIELD_WIDTH }}
       />
     </div>
@@ -513,10 +513,10 @@ const WarCalculatorComponent: React.FC = () => {
           </div>
         </header>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(320px,1.1fr)] gap-3 lg:gap-5 max-w-6xl mx-auto">
           {/* Védő oszlop */}
           <div className={`card bg-base-100 shadow-xl border-2 ${vedoBorderClass}`}>
-            <div className="card-body">
+            <div className="card-body gap-4 p-4 sm:p-5 break-words">
               <h2 className="card-title text-xl">
                 Védők
               </h2>
@@ -549,8 +549,8 @@ const WarCalculatorComponent: React.FC = () => {
               {/* Katonai morál */}
               <div className="pt-2">
                 <div className="divider"></div>
-                <div className="flex items-center justify-between gap-1.5">
-                  <label className="text-xs font-medium label-text whitespace-nowrap">Katonai morál:</label>
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
+                  <label className="text-xs font-medium label-text">Katonai morál:</label>
                   <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
                     <input
                       type="text"
@@ -607,8 +607,8 @@ const WarCalculatorComponent: React.FC = () => {
                     checked={vedoSettings.ijasz_plus || false}
                     onChange={(checked) => updateVedoSettings({ ijasz_plus: checked })}
                   />
-                  <div className="flex items-center justify-between gap-1.5">
-                    <label className="text-xs font-medium label-text whitespace-nowrap">Hadi tekercs:</label>
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <label className="text-xs font-medium label-text">Hadi tekercs:</label>
                   <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
                       <input
                         type="text"
@@ -646,8 +646,8 @@ const WarCalculatorComponent: React.FC = () => {
                     onChange={(checked) => updateVedoSettings({ kitamadasi_bonusz: checked })}
                     disabled={vedoSettings.faj !== 'ork'}
                   />
-                  <div className="flex items-center justify-between gap-1.5">
-                    <label className="text-xs font-medium label-text whitespace-nowrap">Élőhalott szintje:</label>
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <label className="text-xs font-medium label-text">Élőhalott szintje:</label>
                     <select
                       value={vedoSettings.elohalott_szint || 5}
                       onChange={(e) => updateVedoSettings({ elohalott_szint: parseInt(e.target.value) })}
@@ -663,8 +663,8 @@ const WarCalculatorComponent: React.FC = () => {
                       <option value="5">5.</option>
                     </select>
                   </div>
-                  <div className="flex items-center justify-between gap-1.5">
-                    <label className="text-xs font-medium label-text whitespace-nowrap">Szabadságon lévő szövetségesek:</label>
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <label className="text-xs font-medium label-text">Szabadságon lévő szövetségesek:</label>
                     <select
                       value={vedoSettings.szabadsagon_szovetsegesek || 0}
                       onChange={(e) => updateVedoSettings({ szabadsagon_szovetsegesek: parseInt(e.target.value) })}
@@ -678,8 +678,8 @@ const WarCalculatorComponent: React.FC = () => {
                       <option value="3">3</option>
                     </select>
                   </div>
-                  <div className="flex items-center justify-between gap-1.5">
-                    <label className="text-xs font-medium label-text whitespace-nowrap">Lakáshelyzeti tekercs:</label>
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <label className="text-xs font-medium label-text">Lakáshelyzeti tekercs:</label>
                   <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
                       <input
                         type="text"
@@ -746,7 +746,7 @@ const WarCalculatorComponent: React.FC = () => {
 
           {/* Támadó oszlop */}
           <div className={`card bg-base-100 shadow-xl border-2 ${tamadoBorderClass}`}>
-            <div className="card-body">
+            <div className="card-body gap-4 p-4 sm:p-5 break-words">
               <h2 className="card-title text-xl">
                 Támadók
               </h2>
@@ -779,8 +779,8 @@ const WarCalculatorComponent: React.FC = () => {
               {/* Katonai morál */}
               <div className="pt-2">
                 <div className="divider"></div>
-                <div className="flex items-center justify-between gap-1.5">
-                  <label className="text-xs font-medium label-text whitespace-nowrap">Katonai morál:</label>
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
+                  <label className="text-xs font-medium label-text">Katonai morál:</label>
                   <div className="flex items-center gap-1.5">
                     <input
                       type="text"
@@ -842,8 +842,8 @@ const WarCalculatorComponent: React.FC = () => {
                     checked={tamadoSettings.elit_plus || false}
                     onChange={(checked) => updateTamadoSettings({ elit_plus: checked })}
                   />
-                    <div className="flex items-center justify-between gap-1.5">
-                      <label className="text-xs font-medium label-text whitespace-nowrap">Hadi tekercs:</label>
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <label className="text-xs font-medium label-text">Hadi tekercs:</label>
                       <div className="flex items-center gap-1.5" style={{ width: FIELD_WIDTH }}>
                         <input
                           type="text"
@@ -880,8 +880,8 @@ const WarCalculatorComponent: React.FC = () => {
                     checked={tamadoSettings.tabornok_szemelyiseg || false}
                     onChange={(checked) => updateTamadoSettings({ tabornok_szemelyiseg: checked })}
                   />
-                  <div className="flex items-center justify-between gap-1.5">
-                    <label className="text-xs font-medium label-text whitespace-nowrap">Tábornok:</label>
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <label className="text-xs font-medium label-text">Tábornok:</label>
                     <select
                       value={tamadoSettings.tabornok || 0}
                       onChange={(e) => updateTamadoSettings({ tabornok: parseInt(e.target.value) })}
@@ -901,8 +901,8 @@ const WarCalculatorComponent: React.FC = () => {
                 <div className="divider"></div>
                 <h3 className="text-sm font-semibold text-base-content mb-2">Támadó beállítások</h3>
                 <div className="space-y-1.5">
-                  <div className="flex items-center justify-between gap-1.5">
-                    <label className="text-xs font-medium label-text whitespace-nowrap">Kör:</label>
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <label className="text-xs font-medium label-text">Kör:</label>
                     <input
                       type="text"
                       value={tamadoSettings.kor || 2}
@@ -916,7 +916,7 @@ const WarCalculatorComponent: React.FC = () => {
                       <span className="label-text text-xs">Irány:</span>
                     </label>
                     <div className="space-y-1">
-                      <label className="flex items-center gap-2 text-xs cursor-pointer">
+                      <label className="flex items-center gap-2 text-xs cursor-pointer break-words">
                         <input
                           type="radio"
                           name="tamado_irany"
@@ -928,7 +928,7 @@ const WarCalculatorComponent: React.FC = () => {
                         />
                         <span>Felfele (nagyobb értékű ország)</span>
                       </label>
-                      <label className="flex items-center gap-2 text-xs cursor-pointer">
+                      <label className="flex items-center gap-2 text-xs cursor-pointer break-words">
                         <input
                           type="radio"
                           name="tamado_irany"
@@ -997,8 +997,8 @@ const WarCalculatorComponent: React.FC = () => {
           </div>
 
           {/* Eredmény oszlop */}
-          <div className="card bg-base-100 shadow-xl">
-            <div className="card-body">
+          <div className="card bg-base-100 shadow-xl col-span-2 md:col-span-1">
+            <div className="card-body gap-4 p-4 sm:p-5 break-words">
               <h2 className="card-title text-xl">
                 Eredmény
               </h2>
@@ -1039,14 +1039,14 @@ const WarCalculatorComponent: React.FC = () => {
                 <div className="space-y-2">
                   <button
                     type="button"
-                    className="btn btn-primary btn-sm w-full"
+                    className="btn btn-primary btn-sm w-full whitespace-normal leading-tight normal-case text-center"
                     onClick={handleRequiredArchersCalculation}
                   >
                     Mennyi íjász kell a védéshez
                   </button>
                   <button
                     type="button"
-                    className="btn btn-primary btn-sm w-full"
+                    className="btn btn-primary btn-sm w-full whitespace-normal leading-tight normal-case text-center"
                     onClick={handleRequiredCavalryCalculation}
                   >
                     Mennyi lovas kell a beütéshez
