@@ -345,6 +345,188 @@ const BuildingCalculatorComponent: React.FC = () => {
           </div>
         </div>
 
+        {/* Beállítások */}
+        <div className="mb-6 card bg-base-100 shadow-xl max-w-6xl mx-auto">
+          <div className="card-body gap-4 p-4 sm:p-5 break-words">
+            <h2 className="card-title text-xl">
+              Beállítások
+            </h2>
+            <div className="mt-1" aria-hidden="true"></div>
+          
+          <div className="space-y-3">
+            {/* Faj */}
+            <div>
+              <label className="block text-xs font-medium text-base-content mb-2">Faj:</label>
+              <select
+                value={settings.faj}
+                onChange={(e) => setSettings(prev => ({ ...prev, faj: e.target.value as Race }))}
+                className="select select-bordered select-sm w-full text-xs"
+              >
+                <option value="none">válassz</option>
+                <option value="elf">Elf</option>
+                <option value="ork">Ork</option>
+                <option value="felelf">Félelf</option>
+                <option value="torpe">Törpe</option>
+                <option value="gnom">Gnóm</option>
+                <option value="orias">Óriás</option>
+                <option value="elohalott">Élőhalott</option>
+                <option value="ember">Ember</option>
+              </select>
+            </div>
+
+            {/* Személyiség és Időszakok - két oszlopban */}
+            <div className="grid grid-cols-2 gap-x-4">
+              {/* Személyiségek */}
+                       <div>
+                <label className="block text-xs font-medium text-base-content mb-2">Személyiség(ek):</label>
+                <div className="space-y-1.5">
+                           {PERSONALITY_OPTIONS.map(({ key, label, description }) => (
+                             <label key={key} className="flex items-center cursor-pointer">
+                      <input
+                                 type="checkbox"
+                                 id={`szemelyiseg_${key}`}
+                                 checked={settings.szemelyisegek.includes(key)}
+                                 onChange={() => handlePersonalityToggle(key)}
+                                 className="checkbox checkbox-primary"
+                                 style={{ height: '14px', width: '14px' }}
+                      />
+                               <span className="ml-2 text-xs text-base-content">
+                                 {label}
+                                 {description && (
+                                   <span className="block text-[11px] text-base-content/50">
+                                     {description}
+                                   </span>
+                                 )}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Időszakok */}
+              <div>
+                <label className="block text-xs font-medium text-base-content mb-2">Időszakok:</label>
+                <div className="space-y-1.5">
+                  {[
+                    { key: 'bo_termes', label: 'Bő termés (+20%)' },
+                    { key: 'ragcsalok', label: 'Rágcsálók (-10%)' },
+                    { key: 'nyersanyag_plus', label: 'Nyersanyag+ (+20%)' },
+                    { key: 'nyersanyag_minus', label: 'Nyersanyag- (-10%)' },
+                    { key: 'tudomany_honapja', label: 'Tudomány hónapja' },
+                    { key: 'zsugoraru', label: 'Zsugoráru (3x)' }
+                  ].map(period => (
+                    <label key={period.key} className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        id={`idoszak_${period.key}`}
+                        checked={settings.idoszakok.includes(period.key)}
+                        onChange={() => handlePeriodToggle(period.key)}
+                        className="checkbox checkbox-primary"
+                        style={{ height: '14px', width: '14px' }}
+                      />
+                      <span className="ml-2 text-xs text-base-content">
+                        {period.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Élőhalott szint */}
+            {settings.faj === 'elohalott' && (
+              <div>
+                <label className="block text-xs font-medium text-base-content mb-2">Szint:</label>
+                <select
+                  value={settings.szint || 5}
+                  onChange={(e) => setSettings(prev => ({ ...prev, szint: parseInt(e.target.value) }))}
+                  className="select select-bordered select-sm w-full text-xs"
+                >
+                  <option value="5">5.</option>
+                  <option value="4">4.</option>
+                  <option value="3">3.</option>
+                  <option value="2">2.</option>
+                  <option value="1">1.</option>
+                </select>
+              </div>
+            )}
+
+            {/* Skip tekercs checkbox */}
+            <label className="flex items-start cursor-pointer">
+              <input
+                type="checkbox"
+                id="skip_tekercs"
+                checked={settings.skip_tekercs}
+                onChange={(e) => setSettings(prev => ({ ...prev, skip_tekercs: e.target.checked }))}
+                className="checkbox checkbox-primary mt-1"
+                style={{ height: '14px', width: '14px' }}
+              />
+              <span className="ml-2 text-xs text-base-content">
+                Számolás az elérhető legmagasabb tekercsszámmal.
+                <span className="block text-xs text-base-content/50 mt-0.5">
+                  (ekkor figyelmen kívül hagyja a tekercsekhez beírt értékeket)
+                </span>
+              </span>
+            </label>
+
+            {/* Tekercsek */}
+            <div className="pt-2 border-t border-base-300">
+              <h3 className="text-xs font-semibold text-base-content mb-2">Tekercsek</h3>
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="block text-xs text-base-content mb-1">Mezőgazdaság:</label>
+                  <div className="flex items-center">
+                    <input
+                      type="text"
+                      value={scrolls.mezogazdasag || ''}
+                      onChange={(e) => {
+                        const num = parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0;
+                        setScrolls(prev => ({ ...prev, mezogazdasag: num }));
+                      }}
+                      disabled={settings.skip_tekercs}
+                      className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
+                    />
+                    <span className="ml-1 text-xs text-base-content/50">%</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs text-base-content mb-1">Lakáshelyzet:</label>
+                  <div className="flex items-center">
+                    <input
+                      type="text"
+                      value={scrolls.lakashelyzeti || ''}
+                      onChange={(e) => {
+                        const num = parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0;
+                        setScrolls(prev => ({ ...prev, lakashelyzeti: num }));
+                      }}
+                      disabled={settings.skip_tekercs}
+                      className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
+                    />
+                    <span className="ml-1 text-xs text-base-content/50">%</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs text-base-content mb-1">Bányászat:</label>
+                  <div className="flex items-center">
+                    <input
+                      type="text"
+                      value={scrolls.banyaszat || ''}
+                      onChange={(e) => {
+                        const num = parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0;
+                        setScrolls(prev => ({ ...prev, banyaszat: num }));
+                      }}
+                      disabled={settings.skip_tekercs}
+                      className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
+                    />
+                    <span className="ml-1 text-xs text-base-content/50">%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+
         {/* Main Content Grid - Épületek, Eredmények, Beállítások */}
         <div className="grid grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(320px,1.1fr)] gap-3 lg:gap-5 max-w-6xl mx-auto">
           {/* Left Column: Épületek */}
@@ -613,187 +795,6 @@ const BuildingCalculatorComponent: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Beállítások */}
-          <div className="card bg-base-100 shadow-xl col-span-2 lg:col-span-1">
-            <div className="card-body gap-4 p-4 sm:p-5 break-words">
-              <h2 className="card-title text-xl">
-                Beállítások
-              </h2>
-              <div className="mt-1" aria-hidden="true"></div>
-            
-            <div className="space-y-3">
-              {/* Faj */}
-              <div>
-                <label className="block text-xs font-medium text-base-content mb-2">Faj:</label>
-                <select
-                  value={settings.faj}
-                  onChange={(e) => setSettings(prev => ({ ...prev, faj: e.target.value as Race }))}
-                  className="select select-bordered select-sm w-full text-xs"
-                >
-                  <option value="none">válassz</option>
-                  <option value="elf">Elf</option>
-                  <option value="ork">Ork</option>
-                  <option value="felelf">Félelf</option>
-                  <option value="torpe">Törpe</option>
-                  <option value="gnom">Gnóm</option>
-                  <option value="orias">Óriás</option>
-                  <option value="elohalott">Élőhalott</option>
-                  <option value="ember">Ember</option>
-                </select>
-              </div>
-
-              {/* Személyiség és Időszakok - két oszlopban */}
-              <div className="grid grid-cols-2 gap-x-4">
-                {/* Személyiségek */}
-                         <div>
-                  <label className="block text-xs font-medium text-base-content mb-2">Személyiség(ek):</label>
-                  <div className="space-y-1.5">
-                             {PERSONALITY_OPTIONS.map(({ key, label, description }) => (
-                               <label key={key} className="flex items-center cursor-pointer">
-                        <input
-                                   type="checkbox"
-                                   id={`szemelyiseg_${key}`}
-                                   checked={settings.szemelyisegek.includes(key)}
-                                   onChange={() => handlePersonalityToggle(key)}
-                                   className="checkbox checkbox-primary"
-                                   style={{ height: '14px', width: '14px' }}
-                        />
-                                 <span className="ml-2 text-xs text-base-content">
-                                   {label}
-                                   {description && (
-                                     <span className="block text-[11px] text-base-content/50">
-                                       {description}
-                                     </span>
-                                   )}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Időszakok */}
-                <div>
-                  <label className="block text-xs font-medium text-base-content mb-2">Időszakok:</label>
-                  <div className="space-y-1.5">
-                    {[
-                      { key: 'bo_termes', label: 'Bő termés (+20%)' },
-                      { key: 'ragcsalok', label: 'Rágcsálók (-10%)' },
-                      { key: 'nyersanyag_plus', label: 'Nyersanyag+ (+20%)' },
-                      { key: 'nyersanyag_minus', label: 'Nyersanyag- (-10%)' },
-                      { key: 'tudomany_honapja', label: 'Tudomány hónapja' },
-                      { key: 'zsugoraru', label: 'Zsugoráru (3x)' }
-                    ].map(period => (
-                      <label key={period.key} className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          id={`idoszak_${period.key}`}
-                          checked={settings.idoszakok.includes(period.key)}
-                          onChange={() => handlePeriodToggle(period.key)}
-                          className="checkbox checkbox-primary"
-                          style={{ height: '14px', width: '14px' }}
-                        />
-                        <span className="ml-2 text-xs text-base-content">
-                          {period.label}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Élőhalott szint */}
-              {settings.faj === 'elohalott' && (
-                <div>
-                  <label className="block text-xs font-medium text-base-content mb-2">Szint:</label>
-                  <select
-                    value={settings.szint || 5}
-                    onChange={(e) => setSettings(prev => ({ ...prev, szint: parseInt(e.target.value) }))}
-                    className="select select-bordered select-sm w-full text-xs"
-                  >
-                    <option value="5">5.</option>
-                    <option value="4">4.</option>
-                    <option value="3">3.</option>
-                    <option value="2">2.</option>
-                    <option value="1">1.</option>
-                  </select>
-                </div>
-              )}
-
-              {/* Skip tekercs checkbox */}
-              <label className="flex items-start cursor-pointer">
-                <input
-                  type="checkbox"
-                  id="skip_tekercs"
-                  checked={settings.skip_tekercs}
-                  onChange={(e) => setSettings(prev => ({ ...prev, skip_tekercs: e.target.checked }))}
-                  className="checkbox checkbox-primary mt-1"
-                  style={{ height: '14px', width: '14px' }}
-                />
-                <span className="ml-2 text-xs text-base-content">
-                  Számolás az elérhető legmagasabb tekercsszámmal.
-                  <span className="block text-xs text-base-content/50 mt-0.5">
-                    (ekkor figyelmen kívül hagyja a tekercsekhez beírt értékeket)
-                  </span>
-                </span>
-              </label>
-
-              {/* Tekercsek */}
-              <div className="pt-2 border-t border-base-300">
-                <h3 className="text-xs font-semibold text-base-content mb-2">Tekercsek</h3>
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="block text-xs text-base-content mb-1">Mezőgazdaság:</label>
-                    <div className="flex items-center">
-                      <input
-                        type="text"
-                        value={scrolls.mezogazdasag || ''}
-                        onChange={(e) => {
-                          const num = parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0;
-                          setScrolls(prev => ({ ...prev, mezogazdasag: num }));
-                        }}
-                        disabled={settings.skip_tekercs}
-                        className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
-                      />
-                      <span className="ml-1 text-xs text-base-content/50">%</span>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-base-content mb-1">Lakáshelyzet:</label>
-                    <div className="flex items-center">
-                      <input
-                        type="text"
-                        value={scrolls.lakashelyzeti || ''}
-                        onChange={(e) => {
-                          const num = parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0;
-                          setScrolls(prev => ({ ...prev, lakashelyzeti: num }));
-                        }}
-                        disabled={settings.skip_tekercs}
-                        className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
-                      />
-                      <span className="ml-1 text-xs text-base-content/50">%</span>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-base-content mb-1">Bányászat:</label>
-                    <div className="flex items-center">
-                      <input
-                        type="text"
-                        value={scrolls.banyaszat || ''}
-                        onChange={(e) => {
-                          const num = parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0;
-                          setScrolls(prev => ({ ...prev, banyaszat: num }));
-                        }}
-                        disabled={settings.skip_tekercs}
-                        className="input input-bordered input-sm w-full max-w-[6ch] text-xs"
-                      />
-                      <span className="ml-1 text-xs text-base-content/50">%</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
