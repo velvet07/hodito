@@ -1,0 +1,75 @@
+---
+description: DevOps, CI/CD és környezet konfiguráció
+alwaysApply: false
+---
+
+## Mode 7 · DevOps
+
+### CI/CD (GitHub Actions példa)
+```yaml
+name: CI/CD Pipeline
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run type-check
+      - run: npm run test:coverage
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-args: '--prod'
+```
+
+### Docker multi-stage
+```dockerfile
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY . .
+RUN npm ci && npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /app/.next/standalone ./
+EXPOSE 3000
+CMD ["node", "server.js"]
+```
+
+### Környezeti változók (`.env.example`)
+```
+DATABASE_URL="postgresql://user:pass@localhost:5432/db"
+JWT_SECRET="your-secret-key"
+NEXT_PUBLIC_API_URL="http://localhost:4000"
+BARION_POS_KEY="your-barion-key"
+```
+
+### Release folyamat
+1. Merge main-be → CI futtatja lint, type-check, test.
+2. Ha sikeres, automatikus deploy Vercel/Supabase-re.
+3. Release note: változás összefoglaló + migrációs lépések.
+
+### Operáció
+- Monitorozás: Vercel Analytics + Supabase logok.
+- Rollback stratégia: előző sikeres deploy újraaktiválása.

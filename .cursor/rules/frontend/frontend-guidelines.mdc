@@ -1,0 +1,56 @@
+---
+description: Frontend (React + Tailwind + TypeScript) szabályok
+globs:
+  - "src/**/*.tsx"
+---
+
+## Mode 4 · Frontend
+
+### Komponens szerkezet
+```ts
+'use client';
+import { useState, useCallback } from 'react';
+
+interface Props { /* ... */ }
+
+export function MyComponent({ prop }: Props) {
+  const [state, setState] = useState(null);
+
+  const handleClick = useCallback(() => { /* ... */ }, [/* deps */]);
+
+  if (loading) return <LoadingState />;
+  if (error) return <ErrorState error={error} />;
+
+  return <div className="container">{/* JSX */}</div>;
+}
+```
+
+### Kötelezők
+- **Loading/Error/Empty** állapot minden async folyamathoz.
+- **A11y**: ARIA attribútumok, fókuszkezelés, billentyű támogatás.
+- **Reszponzív**: mobil-first layout, Tailwind breakpointok, grid/flex.
+- **Állapotkezelés**: preferált Zustand vagy React Context; ne használj global `any`.
+- **Event handlerek**: `useCallback`, kerüld inline definiálást listákban.
+
+### Magyar hibaüzenetek
+```ts
+export const ERROR_MESSAGES = {
+  REQUIRED_FIELD: 'Ez a mező kötelező',
+  INVALID_EMAIL: 'Érvénytelen e-mail cím',
+  PASSWORD_TOO_SHORT: 'A jelszónak legalább 8 karakter hosszúnak kell lennie',
+  NETWORK_ERROR: 'Hálózati hiba történt',
+} as const;
+```
+
+### Adat- és időformátum
+- Dátum: `new Date().toLocaleDateString('hu-HU')`.
+- Valuta: `new Intl.NumberFormat('hu-HU',{ style: 'currency', currency: 'HUF', minimumFractionDigits: 0 }).format(value)`.
+
+### API hívások
+- URL-eket ENV-ből (`process.env.NEXT_PUBLIC_API_URL`) olvasd.
+- Használj `try/catch`-et, hibát magyar nyelven jelenítsd meg.
+
+### Kódminőség
+- `strict` TypeScript, nincs `any`.
+- Használd ESLint/Prettier beállításokat.
+- Új util/komponenst dokumentálj rövid JSDoc/TSDoc kommenttel.

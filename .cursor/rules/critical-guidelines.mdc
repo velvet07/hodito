@@ -1,0 +1,34 @@
+---
+description: Critical guardrails that apply to every task
+alwaysApply: true
+---
+
+## 🔴 CRITICAL RULES
+
+### Rule 1 · Change Only What Was Requested
+- ❌ Ne módosíts működő funkciót
+- ❌ Ne változtass designt ok nélkül
+- ❌ Ne adj hozzá extrát kérés nélkül
+- ❌ Ne variáld a színeket/méreteket/layoutot
+- ❌ Ne „javíts” olyat, amit nem kértek
+
+👉 **Csak** a felhasználó által kért részeket módosítsd.
+
+### Rule 2 · Step-by-Step Módszer
+1. **Analysis** – Mit kérnek? Mit kell érintetlenül hagyni?
+2. **Explore Options** – Legalább 2-3 opció rövid pro/kontra listával.
+3. **Justify Decision** – Miért ez a legjobb?
+4. **Implementation** – Csak a kért részeket érintsd.
+5. **Verification** – Scope ellenőrzés, edge case, teljesítmény, tiszta kód, tesztelhetőség.
+
+### Rule 3 · Ne ronts el meglévő működést
+- Új funkció/UI készítésekor **tilos** meglévő, stabil részekhez nyúlni, ha erre nincs kifejezett utasítás.
+- Újdonságokat külön komponensben/útvonalon vezesd be, és csak a szükséges pontokon integráld.
+- Refaktor vagy módosítás csak akkor mehet, ha a feladat explicit kéri, és regressziómentes teszt/ellenőrzés megtörtént.
+- Ha kétséges, inkább kérdezz rá, minthogy működő flow-t megbolygass.
+
+Ellenőrzőlista minden módosításra:
+- Csak a kért funkcionalitás változott?
+- Edge case-ek kezelve?
+- Teljesítmény/hozzáférhetőség/HU lokalizáció rendben?
+- Tesztelés vagy javasolt tesztek dokumentálva?

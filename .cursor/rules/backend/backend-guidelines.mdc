@@ -1,0 +1,68 @@
+---
+description: Backend/API irányelvek (Node, Express, Prisma)
+globs:
+  - "backend/**/*"
+  - "server/**/*"
+  - "api/**/*"
+---
+
+## Mode 5 · Backend
+
+### Architektúra
+`Route → Controller → Service → Database`
+
+- **Route**: deklaráld endpointot, middleware, Zod validáció.
+- **Controller**: HTTP-specifikus logika, status code, response shape.
+- **Service**: üzleti logika, Prisma hívások.
+- **Database**: Prisma schema + migrációk (Supabase/PostgreSQL).
+
+### Validáció és válasz séma
+```ts
+const createUserSchema = z.object({
+  email: z.string().email({ message: 'Érvénytelen e-mail cím' }),
+  name: z.string().min(2),
+  password: z.string().min(8),
+});
+
+res.status(201).json({
+  success: true,
+  data,
+  message: 'Sikeres művelet',
+});
+```
+
+Hibáknál:
+```ts
+res.status(err.status ?? 500).json({
+  success: false,
+  error: {
+    code: err.code ?? 'INTERNAL_ERROR',
+    message: err.message ?? 'Ismeretlen hiba történt',
+    details: err.details ?? [],
+  },
+});
+```
+
+### Biztonság
+- JWT auth, bcrypt (≥10 kör).
+- Rate limiting loginra (pl. express-rate-limit, 15 perc / 5 próbálkozás).
+- Ne logolj érzékeny adatot.
+- CORS konfigurálása, csak szükséges origin.
+
+### 27% ÁFA helper
+```ts
+const HUNGARIAN_VAT_RATE = 0.27;
+export function calculateVAT(netPrice: number) {
+  const vatAmount = Math.round(netPrice * HUNGARIAN_VAT_RATE * 100) / 100;
+  const grossPrice = Math.round((netPrice + vatAmount) * 100) / 100;
+  return { netPrice, vatAmount, grossPrice };
+}
+```
+
+### Hibakezelés
+- `try/catch` a controllerben, dobj `AppError`-t a service-ben.
+- 500-as hibánál logold (logger vagy console.error), de üzenet maradjon általános.
+
+### Lokalizáció
+- Visszajelzések magyarul: „Felhasználó sikeresen létrehozva”, „Érvénytelen adatok”.
+- Időbélyegek ISO vagy `hu-HU` formátumban.

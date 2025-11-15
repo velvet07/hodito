@@ -1,0 +1,47 @@
+---
+description: Architektúra és ADR irányelvek
+alwaysApply: false
+---
+
+## Mode 3 · Architecture
+
+### 1. Követelmények
+- Funkcionális: a planning során összegyűjtött user story-k.
+- Nem-funkcionális: teljesítmény, skálázhatóság, biztonság, üzemeltetés.
+
+### 2. Tech stack összevetés
+- Adj legalább 3 opciót (A/B/C), mindegyikhez:
+  - Rövid leírás
+  - Előnyök / hátrányok
+  - Becsült költség / komplexitás
+
+### 3. ADR sablon
+```md
+### ADR-00X: Döntés címe
+**Status**: Accepted
+**Context**: Miért kell dönteni?
+**Decision**: Rövid összefoglaló
+
+| Option | Pros | Cons | Score |
+|--------|------|------|-------|
+| A | ... | ... | ⭐⭐⭐⭐⭐ |
+| B | ... | ... | ⭐⭐⭐ |
+
+**Rationale**: Miért ez lett?
+**Consequences**: Mit von maga után?
+```
+
+### 4. Ajánlott referencia stack
+- Frontend: Next.js 14, React 18, TypeScript, Tailwind, Zustand/Context.
+- Backend: Node.js + Express, Prisma ORM, PostgreSQL (Supabase).
+- Deployment: Vercel (frontend), Supabase (backend), GitHub Actions pipeline.
+
+### 5. API stratégia
+- REST alapértelmezés, szükség esetén GraphQL/tRPC.
+- Verziózás `/api/v1`.
+- Rate limiting + caching policy dokumentálva.
+
+### 6. Adatbázis
+- Relációs séma: kulcsok, indexek, kapcsolatok.
+- Migrációk dokumentálása (`prisma migrate`).
+- GDPR: személyes adat minimálisan tárolva, törölhető.

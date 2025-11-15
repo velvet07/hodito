@@ -1,0 +1,38 @@
+---
+description: Biztonsági és GDPR követelmények
+alwaysApply: false
+---
+
+## Mode 8 · Security
+
+### OWASP Top 10 (gyors ellenőrzőlista)
+- A01 Broken Access Control: role alapú ellenőrzés, saját erőforrás elérés.
+- A02 Cryptographic Failures: bcrypt (>=10), HTTPS, titkok .env-ben.
+- A03 Injection: parametrizált lekérdezés (Prisma), nincs `eval`/`innerHTML`.
+- A05 Security Misconfiguration: biztonsági headerek, friss függőségek.
+- A07 Identification & Authentication Failures: erős jelszó policy, rate limit, lockout.
+
+### Rate limiting példa
+```ts
+import rateLimit from 'express-rate-limit';
+
+export const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: 'Túl sok próbálkozás. Próbáld újra később.',
+});
+```
+
+### GDPR kötelezők
+- **Cookie banner** magyar szöveggel, link `adatvedelem` oldalra.
+- **Adat export**: `exportUserData(userId)` – összes kapcsolt rekord JSON-ban.
+- **Adat törlés**: végleges törlés kérésre (`deleteUserAccount`).
+- **Privacy policy** link minden oldalon elérhető.
+
+### PII kezelés
+- Naplókban ne szerepeljen teljes név/email.
+- Titkos kulcsokat ne tárold kódban, csak env-ben (pl. `process.env.JWT_SECRET`).
+
+### Biztonsági review output
+- Potenciális sebezhetőség listája súlyosság szerinti sorrendben.
+- Javasolt mitigáció + szükséges további teszt.

@@ -1,0 +1,62 @@
+---
+description: Tesztelési elvárások és sablonok
+globs:
+  - "tests/**/*"
+  - "**/*.test.*"
+  - "**/__tests__/**/*"
+---
+
+## Mode 6 · Testing
+
+### Teszt piramis
+- Unit: 70% (üzleti logika, utilok, hookok)
+- Integration: 20% (komponens + API)
+- E2E: 10% (kritikus user flow)
+
+### Vitest minta
+```ts
+import { describe, it, expect } from 'vitest';
+import { calculateVAT } from '../utils';
+
+describe('calculateVAT', () => {
+  it('27% ÁFA-t számol', () => {
+    const result = calculateVAT(10000);
+    expect(result.vatAmount).toBe(2700);
+    expect(result.grossPrice).toBe(12700);
+  });
+
+  it('0 nettó árnál 0 bruttót ad', () => {
+    expect(calculateVAT(0).grossPrice).toBe(0);
+  });
+
+  it('negatív árra hibát dob', () => {
+    expect(() => calculateVAT(-1)).toThrow();
+  });
+});
+```
+
+### Playwright minta
+```ts
+import { test, expect } from '@playwright/test';
+
+test('Felhasználó végigmegy a regisztráción', async ({ page }) => {
+  await page.goto('/register');
+  await page.fill('input[name="email"]', 'teszt@example.com');
+  await page.fill('input[name="password"]', 'SecurePass123');
+  await page.click('button[type="submit"]');
+  await expect(page).toHaveURL('/dashboard');
+  await expect(page.locator('text=Üdvözlünk')).toBeVisible();
+});
+```
+
+### Coverage célok
+- Unit ≥ 80%
+- Critical integration flow-okra 100%
+- Legalább egy happy path + egy hiba path E2E-ben
+
+### Bug riport sablon
+1. Lépések reprodukáláshoz
+2. Elvárt eredmény
+3. Tényleges eredmény
+4. Környezet (böngésző, platform, build hash)
+5. Log vagy screenshot

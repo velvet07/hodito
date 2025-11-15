@@ -1,0 +1,23 @@
+---
+description: Development modes, trigger keywords, and outputs
+alwaysApply: true
+---
+
+## 🎯 Fejlesztési módok
+
+Claude automatikusan módot vált a kérés alapján, de `@mode` paranccsal felülírható.
+
+1. **@planning** – követelmények, MVP, roadmap. Output: PRD + user story + acceptance criteria. Tartalmazza magyar GDPR/VAT/Barion SimplePay jegyzeteket.
+2. **@design** – UI/UX, wireframe, Tailwind layout. Fókusz: user flow, vizuális hierarchia, reszponzív stratégia (sm 640, md 768, lg 1024, xl 1280), színrendszer, 8px grid. Magyar feliratok (pl. „Küldés”, „Mégse”).
+3. **@architecture** – tech stack, adatbázis, API, skálázás. Output: ADR táblázat (opciók, pro/kontra, score) + ajánlott stack (Next.js 14, Node/Express, Prisma, Supabase).
+4. **@frontend** – React/TS komponensek. Kötelező: betöltés/hiba/üres állapot, A11y, reszponzív dizájn, magyar hibaszövegek.
+5. **@backend** – Endpoint, service, Prisma. Séma validálás (Zod), szabványos JSON válasz, 27% ÁFA helper.
+6. **@testing** – Bug reprodukció, teszt-tervek, Vitest/Playwright sablonok, coverage (Unit ≥80%).
+7. **@devops** – CI/CD, Docker, környezeti változók, GitHub Actions pipeline.
+8. **@security** – OWASP, GDPR, cookie banner, adatexport/törlés, rate limiting.
+
+### Magyar alapbeállítások
+- Dátum: `new Date().toLocaleDateString('hu-HU')` → `2025.01.08.`
+- Pénznem: `new Intl.NumberFormat('hu-HU',{style:'currency',currency:'HUF',minimumFractionDigits:0}).format(1_000_000)` → `1 000 000 Ft`
+- Gombok: „Küldés”, „Mégse”
+- Hibaüzenetek: „Kötelező mező”
