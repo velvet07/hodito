@@ -305,7 +305,7 @@ const BuildingCalculatorComponent: React.FC = () => {
                 rows={5}
                 value={buildingListText}
                 onChange={(e) => setBuildingListText(e.target.value)}
-                placeholder="Szabad terület: 100&#10;Ház: 50&#10;Barakk: 20..."
+                placeholder='Illeszd be a Tanácsadók oldalról az "Építés/Felfedezés - hátralevő körök száma" részt'
               />
               {buildingListText && buildingListText.trim().length > 0 && (
                 <button
@@ -346,9 +346,9 @@ const BuildingCalculatorComponent: React.FC = () => {
         </div>
 
         {/* Main Content Grid - Épületek, Eredmények, Beállítások */}
-        <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(320px,1.1fr)] gap-3 lg:gap-5 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(320px,1.1fr)] gap-3 lg:gap-5 max-w-6xl mx-auto">
           {/* Left Column: Épületek */}
-          <div className="card bg-base-100 shadow-xl">
+          <div className="card bg-base-100 shadow-xl col-span-1">
             <div className="card-body gap-4 p-4 sm:p-5 break-words">
               <h2 className="card-title text-xl">
                 Épületek
@@ -420,7 +420,7 @@ const BuildingCalculatorComponent: React.FC = () => {
           </div>
 
           {/* Middle Column: Eredmények */}
-          <div className="card bg-base-100 shadow-xl">
+          <div className="card bg-base-100 shadow-xl col-span-1">
             <div className="card-body gap-4 p-4 sm:p-5 break-words">
               <h2 className="card-title text-xl">
                 Eredmények
@@ -614,7 +614,7 @@ const BuildingCalculatorComponent: React.FC = () => {
           </div>
 
           {/* Right Column: Beállítások */}
-          <div className="card bg-base-100 shadow-xl">
+          <div className="card bg-base-100 shadow-xl col-span-2 lg:col-span-1">
             <div className="card-body gap-4 p-4 sm:p-5 break-words">
               <h2 className="card-title text-xl">
                 Beállítások
